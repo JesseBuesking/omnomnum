@@ -194,13 +194,13 @@ typedef union {
 #define YYNSTATE             26
 #define YYNRULE              146
 #define YY_MAX_SHIFT         25
-#define YY_MIN_SHIFTREDUCE   155
-#define YY_MAX_SHIFTREDUCE   300
-#define YY_MIN_REDUCE        301
-#define YY_MAX_REDUCE        446
-#define YY_ERROR_ACTION      447
-#define YY_ACCEPT_ACTION     448
-#define YY_NO_ACTION         449
+#define YY_MIN_SHIFTREDUCE   158
+#define YY_MAX_SHIFTREDUCE   303
+#define YY_MIN_REDUCE        304
+#define YY_MAX_REDUCE        449
+#define YY_ERROR_ACTION      450
+#define YY_ACCEPT_ACTION     451
+#define YY_NO_ACTION         452
 /************* End control #defines *******************************************/
 
 /* Define the yytestcase() macro to be a no-op if is not already defined
@@ -272,106 +272,109 @@ typedef union {
 **  yy_default[]       Default action for each state.
 **
 *********** Begin parsing tables **********************************************/
-#define YY_ACTTAB_COUNT (867)
+#define YY_ACTTAB_COUNT (893)
 static const YYACTIONTYPE yy_action[] = {
- /*     0 */   298,    3,  205,  211,  438,  219,  231,   12,  164,  170,
- /*    10 */   176,  182,  188,  194,  200,  206,  212,    9,  220,  232,
- /*    20 */   237,  238,  239,  240,  241,  242,  243,  244,  245,  246,
- /*    30 */   247,  248,  249,  250,  251,  252,  253,  254,  255,  256,
- /*    40 */   257,  258,  259,  260,  261,  262,  263,  264,  265,  266,
- /*    50 */   267,  268,  269,  270,  271,  272,  273,  274,  275,  276,
- /*    60 */   277,  278,  279,  280,  281,  282,  283,  284,  285,  286,
- /*    70 */   287,  288,  289,  290,  297,    3,  221,  168,  174,  233,
- /*    80 */   437,   12,  164,  170,  176,  182,  188,  194,  200,  206,
- /*    90 */   212,    9,  220,  232,  237,  238,  239,  240,  241,  242,
- /*   100 */   243,  244,  245,  246,  247,  248,  249,  250,  251,  252,
- /*   110 */   253,  254,  255,  256,  257,  258,  259,  260,  261,  262,
- /*   120 */   263,  264,  265,  266,  267,  268,  269,  270,  271,  272,
- /*   130 */   273,  274,  275,  276,  277,  278,  279,  280,  281,  282,
- /*   140 */   283,  284,  285,  286,  287,  288,  289,  290,   12,  164,
- /*   150 */   170,  176,  182,  188,  194,  200,  206,  212,    9,  220,
- /*   160 */   232,  237,  238,  239,  240,  241,  242,  243,  244,  245,
- /*   170 */   246,  247,  248,  249,  250,  251,  252,  253,  254,  255,
- /*   180 */   256,  257,  258,  259,  260,  261,  262,  263,  264,  265,
- /*   190 */   266,  267,  268,  269,  270,  271,  272,  273,  274,  275,
- /*   200 */   276,  277,  278,  279,  280,  281,  282,  283,  284,  285,
- /*   210 */   286,  287,  288,  289,  290,   13,  180,  186,  303,  182,
- /*   220 */   188,  194,  200,  206,  212,    9,  220,  232,  237,  238,
- /*   230 */   239,  240,  241,  242,  243,  244,  245,  246,  247,  248,
- /*   240 */   249,  250,  251,  252,  253,  254,  255,  256,  257,  258,
- /*   250 */   259,  260,  261,  262,  263,  264,  265,  266,  267,  268,
- /*   260 */   269,  270,  271,  272,  273,  274,  275,  276,  277,  278,
- /*   270 */   279,  280,  281,  282,  283,  284,  285,  286,  287,  288,
- /*   280 */   289,  290,   14,   23,  303,  158,  303,  160,  194,  200,
- /*   290 */   206,  212,    9,  220,  232,  237,  238,  239,  240,  241,
- /*   300 */   242,  243,  244,  245,  246,  247,  248,  249,  250,  251,
- /*   310 */   252,  253,  254,  255,  256,  257,  258,  259,  260,  261,
- /*   320 */   262,  263,  264,  265,  266,  267,  268,  269,  270,  271,
- /*   330 */   272,  273,  274,  275,  276,  277,  278,  279,  280,  281,
- /*   340 */   282,  283,  284,  285,  286,  287,  288,  289,  290,   15,
- /*   350 */   193,  199,  205,  211,  303,  219,  231,  206,  212,    9,
- /*   360 */   220,  232,  237,  238,  239,  240,  241,  242,  243,  244,
- /*   370 */   245,  246,  247,  248,  249,  250,  251,  252,  253,  254,
- /*   380 */   255,  256,  257,  258,  259,  260,  261,  262,  263,  264,
- /*   390 */   265,  266,  267,  268,  269,  270,  271,  272,  273,  274,
- /*   400 */   275,  276,  277,  278,  279,  280,  281,  282,  283,  284,
- /*   410 */   285,  286,  287,  288,  289,  290,   21,  214,  303,  226,
- /*   420 */    11,  224,  222,  223,  236,  235,    9,  220,  232,  237,
- /*   430 */   238,  239,  240,  241,  242,  243,  244,  245,  246,  247,
- /*   440 */   248,  249,  250,  251,  252,  253,  254,  255,  256,  257,
- /*   450 */   258,  259,  260,  261,  262,  263,  264,  265,  266,  267,
- /*   460 */   268,  269,  270,  271,  272,  273,  274,  275,  276,  277,
- /*   470 */   278,  279,  280,  281,  282,  283,  284,  285,  286,  287,
- /*   480 */   288,  289,  290,   10,  192,  198,  237,  238,  239,  240,
- /*   490 */   241,  242,  243,  244,  245,  246,  247,  248,  249,  250,
- /*   500 */   251,  252,  253,  254,  255,  256,  257,  258,  259,  260,
- /*   510 */   261,  262,  263,  264,  265,  266,  267,  268,  269,  270,
- /*   520 */   271,  272,  273,  274,  275,  276,  277,  278,  279,  280,
- /*   530 */   281,  282,  283,  284,  285,  286,  287,  288,  289,  290,
- /*   540 */   237,  238,  239,  240,  241,  242,  243,  244,  245,  246,
- /*   550 */   247,  248,  249,  250,  251,  252,  253,  254,  255,  256,
- /*   560 */   257,  258,  259,  260,  261,  262,  263,  264,  265,  266,
- /*   570 */   267,  268,  269,  270,  271,  272,  273,  274,  275,  276,
- /*   580 */   277,  278,  279,  280,  281,  282,  283,  284,  285,  286,
- /*   590 */   287,  288,  289,  290,  448,   25,   24,    2,    1,    2,
- /*   600 */   155,   16,  162,    4,  167,  166,   17,    5,  179,  178,
- /*   610 */    18,    6,  191,  190,   19,    7,  203,  202,   20,    8,
- /*   620 */   217,  215,   22,   11,  224,  222,  223,  236,  235,  295,
- /*   630 */   157,    2,  159,    2,  155,   16,  162,    4,  167,  166,
- /*   640 */    17,    5,  179,  178,   18,    6,  191,  190,   19,    7,
- /*   650 */   203,  202,   20,    8,  217,  215,   22,   11,  224,  222,
- /*   660 */   223,  236,  235,  293,  303,    1,  299,  155,   16,  162,
- /*   670 */     4,  167,  166,   17,    5,  179,  178,   18,    6,  191,
- /*   680 */   190,   19,    7,  203,  202,   20,    8,  217,  215,   22,
- /*   690 */    11,  224,  222,  223,  236,  235,  156,   16,  162,    4,
- /*   700 */   167,  166,   17,    5,  179,  178,   18,    6,  191,  190,
- /*   710 */    19,    7,  203,  202,   20,    8,  217,  215,   22,   11,
- /*   720 */   224,  222,  223,  236,  235,  165,  303,  171,    5,  179,
- /*   730 */   178,   18,    6,  191,  190,   19,    7,  203,  202,   20,
- /*   740 */     8,  217,  215,   22,   11,  224,  222,  223,  236,  235,
- /*   750 */   177,  303,  183,    6,  191,  190,   19,    7,  203,  202,
- /*   760 */    20,    8,  217,  215,   22,   11,  224,  222,  223,  236,
- /*   770 */   235,  237,  238,  239,  240,  241,  242,  243,  244,  245,
- /*   780 */   189,  303,  195,    7,  203,  202,   20,    8,  217,  215,
- /*   790 */    22,   11,  224,  222,  223,  236,  235,  303,  264,  265,
- /*   800 */   266,  267,  268,  269,  270,  271,  272,  201,  303,  207,
- /*   810 */     8,  217,  215,   22,   11,  224,  222,  223,  236,  235,
- /*   820 */   169,  175,  181,  187,  193,  199,  205,  211,  303,  219,
- /*   830 */   231,  216,  303,  228,   11,  224,  222,  223,  236,  235,
- /*   840 */   213,  303,  225,   11,  224,  222,  223,  236,  235,  181,
- /*   850 */   187,  193,  199,  205,  211,  303,  219,  231,  303,  204,
- /*   860 */   210,  303,  303,  219,  231,  218,  230,
+ /*     0 */   301,    3,  195,  201,  207,  213,  441,   12,  167,  173,
+ /*    10 */   179,  185,  191,  197,  203,  209,  215,    9,  223,  235,
+ /*    20 */   240,  241,  242,  243,  244,  245,  246,  247,  248,  249,
+ /*    30 */   250,  251,  252,  253,  254,  255,  256,  257,  258,  259,
+ /*    40 */   260,  261,  262,  263,  264,  265,  266,  267,  268,  269,
+ /*    50 */   270,  271,  272,  273,  274,  275,  276,  277,  278,  279,
+ /*    60 */   280,  281,  282,  283,  284,  285,  286,  287,  288,  289,
+ /*    70 */   290,  291,  292,  293,  300,    3,  208,  214,  440,  222,
+ /*    80 */   234,   12,  167,  173,  179,  185,  191,  197,  203,  209,
+ /*    90 */   215,    9,  223,  235,  240,  241,  242,  243,  244,  245,
+ /*   100 */   246,  247,  248,  249,  250,  251,  252,  253,  254,  255,
+ /*   110 */   256,  257,  258,  259,  260,  261,  262,  263,  264,  265,
+ /*   120 */   266,  267,  268,  269,  270,  271,  272,  273,  274,  275,
+ /*   130 */   276,  277,  278,  279,  280,  281,  282,  283,  284,  285,
+ /*   140 */   286,  287,  288,  289,  290,  291,  292,  293,   12,  167,
+ /*   150 */   173,  179,  185,  191,  197,  203,  209,  215,    9,  223,
+ /*   160 */   235,  240,  241,  242,  243,  244,  245,  246,  247,  248,
+ /*   170 */   249,  250,  251,  252,  253,  254,  255,  256,  257,  258,
+ /*   180 */   259,  260,  261,  262,  263,  264,  265,  266,  267,  268,
+ /*   190 */   269,  270,  271,  272,  273,  274,  275,  276,  277,  278,
+ /*   200 */   279,  280,  281,  282,  283,  284,  285,  286,  287,  288,
+ /*   210 */   289,  290,  291,  292,  293,   14,  207,  213,  306,  185,
+ /*   220 */   191,  197,  203,  209,  215,    9,  223,  235,  240,  241,
+ /*   230 */   242,  243,  244,  245,  246,  247,  248,  249,  250,  251,
+ /*   240 */   252,  253,  254,  255,  256,  257,  258,  259,  260,  261,
+ /*   250 */   262,  263,  264,  265,  266,  267,  268,  269,  270,  271,
+ /*   260 */   272,  273,  274,  275,  276,  277,  278,  279,  280,  281,
+ /*   270 */   282,  283,  284,  285,  286,  287,  288,  289,  290,  291,
+ /*   280 */   292,  293,   16,   23,  306,  161,  306,  163,  197,  203,
+ /*   290 */   209,  215,    9,  223,  235,  240,  241,  242,  243,  244,
+ /*   300 */   245,  246,  247,  248,  249,  250,  251,  252,  253,  254,
+ /*   310 */   255,  256,  257,  258,  259,  260,  261,  262,  263,  264,
+ /*   320 */   265,  266,  267,  268,  269,  270,  271,  272,  273,  274,
+ /*   330 */   275,  276,  277,  278,  279,  280,  281,  282,  283,  284,
+ /*   340 */   285,  286,  287,  288,  289,  290,  291,  292,  293,   18,
+ /*   350 */   183,  189,  195,  201,  207,  213,  306,  209,  215,    9,
+ /*   360 */   223,  235,  240,  241,  242,  243,  244,  245,  246,  247,
+ /*   370 */   248,  249,  250,  251,  252,  253,  254,  255,  256,  257,
+ /*   380 */   258,  259,  260,  261,  262,  263,  264,  265,  266,  267,
+ /*   390 */   268,  269,  270,  271,  272,  273,  274,  275,  276,  277,
+ /*   400 */   278,  279,  280,  281,  282,  283,  284,  285,  286,  287,
+ /*   410 */   288,  289,  290,  291,  292,  293,   21,  217,  306,  229,
+ /*   420 */    11,  227,  225,  226,  239,  238,    9,  223,  235,  240,
+ /*   430 */   241,  242,  243,  244,  245,  246,  247,  248,  249,  250,
+ /*   440 */   251,  252,  253,  254,  255,  256,  257,  258,  259,  260,
+ /*   450 */   261,  262,  263,  264,  265,  266,  267,  268,  269,  270,
+ /*   460 */   271,  272,  273,  274,  275,  276,  277,  278,  279,  280,
+ /*   470 */   281,  282,  283,  284,  285,  286,  287,  288,  289,  290,
+ /*   480 */   291,  292,  293,   10,  306,  306,  240,  241,  242,  243,
+ /*   490 */   244,  245,  246,  247,  248,  249,  250,  251,  252,  253,
+ /*   500 */   254,  255,  256,  257,  258,  259,  260,  261,  262,  263,
+ /*   510 */   264,  265,  266,  267,  268,  269,  270,  271,  272,  273,
+ /*   520 */   274,  275,  276,  277,  278,  279,  280,  281,  282,  283,
+ /*   530 */   284,  285,  286,  287,  288,  289,  290,  291,  292,  293,
+ /*   540 */   240,  241,  242,  243,  244,  245,  246,  247,  248,  249,
+ /*   550 */   250,  251,  252,  253,  254,  255,  256,  257,  258,  259,
+ /*   560 */   260,  261,  262,  263,  264,  265,  266,  267,  268,  269,
+ /*   570 */   270,  271,  272,  273,  274,  275,  276,  277,  278,  279,
+ /*   580 */   280,  281,  282,  283,  284,  285,  286,  287,  288,  289,
+ /*   590 */   290,  291,  292,  293,  451,   25,   24,    2,    1,    2,
+ /*   600 */   158,   19,  165,    4,  170,  169,   13,  176,    5,  182,
+ /*   610 */   181,  188,    6,  194,  193,  200,    7,  206,  205,    8,
+ /*   620 */   220,  218,   22,   11,  227,  225,  226,  239,  238,  298,
+ /*   630 */   160,    2,  162,    2,  158,   19,  165,    4,  170,  169,
+ /*   640 */    13,  176,    5,  182,  181,  188,    6,  194,  193,  200,
+ /*   650 */     7,  206,  205,    8,  220,  218,   22,   11,  227,  225,
+ /*   660 */   226,  239,  238,  296,  306,    1,  302,  158,   19,  165,
+ /*   670 */     4,  170,  169,   13,  176,    5,  182,  181,  188,    6,
+ /*   680 */   194,  193,  200,    7,  206,  205,    8,  220,  218,   22,
+ /*   690 */    11,  227,  225,  226,  239,  238,  159,   19,  165,    4,
+ /*   700 */   170,  169,   13,  176,    5,  182,  181,  188,    6,  194,
+ /*   710 */   193,  200,    7,  206,  205,    8,  220,  218,   22,   11,
+ /*   720 */   227,  225,  226,  239,  238,  168,  306,   15,  174,    5,
+ /*   730 */   182,  181,  188,    6,  194,  193,  200,    7,  206,  205,
+ /*   740 */     8,  220,  218,   22,   11,  227,  225,  226,  239,  238,
+ /*   750 */    17,  224,  306,  180,  236,  186,    6,  194,  193,  200,
+ /*   760 */     7,  206,  205,    8,  220,  218,   22,   11,  227,  225,
+ /*   770 */   226,  239,  238,  210,  306,  240,  241,  242,  243,  244,
+ /*   780 */   245,  246,  247,  248,  204,  306,    8,  220,  218,   22,
+ /*   790 */    11,  227,  225,  226,  239,  238,  222,  234,  221,  233,
+ /*   800 */   306,  306,  267,  268,  269,  270,  271,  272,  273,  274,
+ /*   810 */   275,   20,  306,  306,  306,  306,  306,  306,  192,  306,
+ /*   820 */   198,    7,  206,  205,    8,  220,  218,   22,   11,  227,
+ /*   830 */   225,  226,  239,  238,  172,  178,  184,  190,  196,  202,
+ /*   840 */   208,  214,  306,  222,  234,  219,  306,  231,   11,  227,
+ /*   850 */   225,  226,  239,  238,  306,  306,  306,  306,  216,  306,
+ /*   860 */   228,   11,  227,  225,  226,  239,  238,  306,  306,  171,
+ /*   870 */   177,  183,  189,  195,  201,  207,  213,  184,  190,  196,
+ /*   880 */   202,  208,  214,  306,  222,  234,  196,  202,  208,  214,
+ /*   890 */   306,  222,  234,
 };
 static const YYCODETYPE yy_lookahead[] = {
- /*     0 */     1,    2,   16,   17,    0,   19,   20,    8,    9,   10,
+ /*     0 */     1,    2,   14,   15,   16,   17,    0,    8,    9,   10,
  /*    10 */    11,   12,   13,   14,   15,   16,   17,   18,   19,   20,
  /*    20 */    21,   22,   23,   24,   25,   26,   27,   28,   29,   30,
  /*    30 */    31,   32,   33,   34,   35,   36,   37,   38,   39,   40,
  /*    40 */    41,   42,   43,   44,   45,   46,   47,   48,   49,   50,
  /*    50 */    51,   52,   53,   54,   55,   56,   57,   58,   59,   60,
  /*    60 */    61,   62,   63,   64,   65,   66,   67,   68,   69,   70,
- /*    70 */    71,   72,   73,   74,    1,    2,  106,   10,   11,  109,
- /*    80 */     0,    8,    9,   10,   11,   12,   13,   14,   15,   16,
+ /*    70 */    71,   72,   73,   74,    1,    2,   16,   17,    0,   19,
+ /*    80 */    20,    8,    9,   10,   11,   12,   13,   14,   15,   16,
  /*    90 */    17,   18,   19,   20,   21,   22,   23,   24,   25,   26,
  /*   100 */    27,   28,   29,   30,   31,   32,   33,   34,   35,   36,
  /*   110 */    37,   38,   39,   40,   41,   42,   43,   44,   45,   46,
@@ -384,7 +387,7 @@ static const YYCODETYPE yy_lookahead[] = {
  /*   180 */    40,   41,   42,   43,   44,   45,   46,   47,   48,   49,
  /*   190 */    50,   51,   52,   53,   54,   55,   56,   57,   58,   59,
  /*   200 */    60,   61,   62,   63,   64,   65,   66,   67,   68,   69,
- /*   210 */    70,   71,   72,   73,   74,    8,   12,   13,  111,   12,
+ /*   210 */    70,   71,   72,   73,   74,    8,   16,   17,  111,   12,
  /*   220 */    13,   14,   15,   16,   17,   18,   19,   20,   21,   22,
  /*   230 */    23,   24,   25,   26,   27,   28,   29,   30,   31,   32,
  /*   240 */    33,   34,   35,   36,   37,   38,   39,   40,   41,   42,
@@ -398,7 +401,7 @@ static const YYCODETYPE yy_lookahead[] = {
  /*   320 */    46,   47,   48,   49,   50,   51,   52,   53,   54,   55,
  /*   330 */    56,   57,   58,   59,   60,   61,   62,   63,   64,   65,
  /*   340 */    66,   67,   68,   69,   70,   71,   72,   73,   74,    8,
- /*   350 */    14,   15,   16,   17,  111,   19,   20,   16,   17,   18,
+ /*   350 */    12,   13,   14,   15,   16,   17,  111,   16,   17,   18,
  /*   360 */    19,   20,   21,   22,   23,   24,   25,   26,   27,   28,
  /*   370 */    29,   30,   31,   32,   33,   34,   35,   36,   37,   38,
  /*   380 */    39,   40,   41,   42,   43,   44,   45,   46,   47,   48,
@@ -411,7 +414,7 @@ static const YYCODETYPE yy_lookahead[] = {
  /*   450 */    42,   43,   44,   45,   46,   47,   48,   49,   50,   51,
  /*   460 */    52,   53,   54,   55,   56,   57,   58,   59,   60,   61,
  /*   470 */    62,   63,   64,   65,   66,   67,   68,   69,   70,   71,
- /*   480 */    72,   73,   74,   18,   14,   15,   21,   22,   23,   24,
+ /*   480 */    72,   73,   74,   18,  111,  111,   21,   22,   23,   24,
  /*   490 */    25,   26,   27,   28,   29,   30,   31,   32,   33,   34,
  /*   500 */    35,   36,   37,   38,   39,   40,   41,   42,   43,   44,
  /*   510 */    45,   46,   47,   48,   49,   50,   51,   52,   53,   54,
@@ -438,40 +441,43 @@ static const YYCODETYPE yy_lookahead[] = {
  /*   720 */   106,  107,  108,  109,  110,   86,  111,   88,   89,   90,
  /*   730 */    91,   92,   93,   94,   95,   96,   97,   98,   99,  100,
  /*   740 */   101,  102,  103,  104,  105,  106,  107,  108,  109,  110,
- /*   750 */    90,  111,   92,   93,   94,   95,   96,   97,   98,   99,
- /*   760 */   100,  101,  102,  103,  104,  105,  106,  107,  108,  109,
- /*   770 */   110,   21,   22,   23,   24,   25,   26,   27,   28,   29,
- /*   780 */    94,  111,   96,   97,   98,   99,  100,  101,  102,  103,
- /*   790 */   104,  105,  106,  107,  108,  109,  110,  111,   48,   49,
- /*   800 */    50,   51,   52,   53,   54,   55,   56,   98,  111,  100,
- /*   810 */   101,  102,  103,  104,  105,  106,  107,  108,  109,  110,
- /*   820 */    10,   11,   12,   13,   14,   15,   16,   17,  111,   19,
- /*   830 */    20,  102,  111,  104,  105,  106,  107,  108,  109,  110,
- /*   840 */   102,  111,  104,  105,  106,  107,  108,  109,  110,   12,
- /*   850 */    13,   14,   15,   16,   17,  111,   19,   20,  111,   16,
- /*   860 */    17,  111,  111,   19,   20,   19,   20,
+ /*   750 */    88,  106,  111,   91,  109,   93,   94,   95,   96,   97,
+ /*   760 */    98,   99,  100,  101,  102,  103,  104,  105,  106,  107,
+ /*   770 */   108,  109,  110,   88,  111,   21,   22,   23,   24,   25,
+ /*   780 */    26,   27,   28,   29,   99,  111,  101,  102,  103,  104,
+ /*   790 */   105,  106,  107,  108,  109,  110,   19,   20,   19,   20,
+ /*   800 */   111,  111,   48,   49,   50,   51,   52,   53,   54,   55,
+ /*   810 */    56,   88,  111,  111,  111,  111,  111,  111,   95,  111,
+ /*   820 */    97,   98,   99,  100,  101,  102,  103,  104,  105,  106,
+ /*   830 */   107,  108,  109,  110,   10,   11,   12,   13,   14,   15,
+ /*   840 */    16,   17,  111,   19,   20,  102,  111,  104,  105,  106,
+ /*   850 */   107,  108,  109,  110,  111,  111,  111,  111,  102,  111,
+ /*   860 */   104,  105,  106,  107,  108,  109,  110,  111,  111,   10,
+ /*   870 */    11,   12,   13,   14,   15,   16,   17,   12,   13,   14,
+ /*   880 */    15,   16,   17,  111,   19,   20,   14,   15,   16,   17,
+ /*   890 */   111,   19,   20,
 };
-#define YY_SHIFT_USE_DFLT (867)
+#define YY_SHIFT_USE_DFLT (893)
 #define YY_SHIFT_COUNT    (25)
-#define YY_SHIFT_MIN      (-14)
-#define YY_SHIFT_MAX      (846)
+#define YY_SHIFT_MIN      (-12)
+#define YY_SHIFT_MAX      (872)
 static const short yy_shift_ofst[] = {
  /*     0 */    -1,   73,   -1,  140,  207,  274,  341,  408,  465,  519,
- /*    10 */   519,  750,  810,  837,  336,  -14,  280,   67,  204,  470,
- /*    20 */   843,  844,  846,  626,    4,   80,
+ /*    10 */   519,  754,  824,  859,  865,  338,  872,  -12,   60,  280,
+ /*    20 */   200,  777,  779,  626,    6,   78,
 };
-#define YY_REDUCE_USE_DFLT (-31)
+#define YY_REDUCE_USE_DFLT (-1)
 #define YY_REDUCE_COUNT (11)
-#define YY_REDUCE_MIN   (-30)
-#define YY_REDUCE_MAX   (738)
+#define YY_REDUCE_MIN   (0)
+#define YY_REDUCE_MAX   (756)
 static const short yy_reduce_ofst[] = {
- /*     0 */   518,  552,  585,  614,  639,  660,  686,  709,  315,  729,
- /*    10 */   738,  -30,
+ /*     0 */   518,  552,  585,  614,  639,  662,  723,  685,  315,  743,
+ /*    10 */   756,  645,
 };
 static const YYACTIONTYPE yy_default[] = {
- /*     0 */   447,  442,  440,  447,  318,  330,  342,  354,  373,  447,
- /*    10 */   447,  380,  309,  447,  447,  447,  307,  319,  331,  343,
- /*    20 */   355,  447,  375,  447,  447,  447,
+ /*     0 */   450,  445,  443,  450,  321,  333,  345,  357,  376,  450,
+ /*    10 */   450,  383,  312,  358,  450,  358,  450,  358,  450,  310,
+ /*    20 */   358,  450,  378,  450,  450,  450,
 };
 /********** End of lemon-generated parsing tables *****************************/
 
@@ -598,10 +604,10 @@ static const char *const yyTokenName[] = {
   "program",       "num_nonnum",    "nonnum_num",    "numbers",     
   "nonnum",        "number",        "final_number",  "one_to_999999999999999",
   "first_to_999999999999999th",  "trillions",     "first_to_999999999999th",  "trillionths", 
-  "one_to_999999999999",  "billions",      "first_to_999999999th",  "billionths",  
-  "one_to_999999999",  "millions",      "first_to_999999th",  "millionths",  
-  "one_to_999999",  "thousands",     "first_to_999th",  "thousandths", 
-  "one_to_999",    "hundreds",      "first_to_99th",  "hundredths",  
+  "one_to_999",    "one_to_999999999999",  "billions",      "first_to_999999999th",
+  "billionths",    "one_to_999999999",  "millions",      "first_to_999999th",
+  "millionths",    "one_to_999999",  "thousands",     "first_to_999th",
+  "thousandths",   "hundreds",      "first_to_99th",  "hundredths",  
   "one_to_99",     "tens",          "first_to_9th",  "tenth",       
   "tenth_to_19th",  "one_to_9",      "ten_to_19",   
 };
@@ -624,37 +630,37 @@ static const char *const yyRuleName[] = {
  /*  10 */ "first_to_999999999999999th ::= trillions first_to_999999999999th",
  /*  11 */ "first_to_999999999999999th ::= trillionths",
  /*  12 */ "first_to_999999999999999th ::= first_to_999999999999th",
- /*  13 */ "trillionths ::= one_to_999999999999 TRILLIONTH",
+ /*  13 */ "trillionths ::= one_to_999 TRILLIONTH",
  /*  14 */ "trillionths ::= NUMBER TRILLIONTH",
  /*  15 */ "trillionths ::= TRILLIONTH",
  /*  16 */ "one_to_999999999999999 ::= trillions one_to_999999999999",
  /*  17 */ "one_to_999999999999999 ::= trillions",
  /*  18 */ "one_to_999999999999999 ::= one_to_999999999999",
- /*  19 */ "trillions ::= one_to_999999999999 TRILLION",
+ /*  19 */ "trillions ::= one_to_999 TRILLION",
  /*  20 */ "trillions ::= NUMBER TRILLION",
  /*  21 */ "trillions ::= TRILLION",
  /*  22 */ "first_to_999999999999th ::= billions first_to_999999999th",
  /*  23 */ "first_to_999999999999th ::= billionths",
  /*  24 */ "first_to_999999999999th ::= first_to_999999999th",
- /*  25 */ "billionths ::= one_to_999999999 BILLIONTH",
+ /*  25 */ "billionths ::= one_to_999 BILLIONTH",
  /*  26 */ "billionths ::= NUMBER BILLIONTH",
  /*  27 */ "billionths ::= BILLIONTH",
  /*  28 */ "one_to_999999999999 ::= billions one_to_999999999",
  /*  29 */ "one_to_999999999999 ::= billions",
  /*  30 */ "one_to_999999999999 ::= one_to_999999999",
- /*  31 */ "billions ::= one_to_999999999 BILLION",
+ /*  31 */ "billions ::= one_to_999 BILLION",
  /*  32 */ "billions ::= NUMBER BILLION",
  /*  33 */ "billions ::= BILLION",
  /*  34 */ "first_to_999999999th ::= millions first_to_999999th",
  /*  35 */ "first_to_999999999th ::= millionths",
  /*  36 */ "first_to_999999999th ::= first_to_999999th",
- /*  37 */ "millionths ::= one_to_999999 MILLIONTH",
+ /*  37 */ "millionths ::= one_to_999 MILLIONTH",
  /*  38 */ "millionths ::= NUMBER MILLIONTH",
  /*  39 */ "millionths ::= MILLIONTH",
  /*  40 */ "one_to_999999999 ::= millions one_to_999999",
  /*  41 */ "one_to_999999999 ::= millions",
  /*  42 */ "one_to_999999999 ::= one_to_999999",
- /*  43 */ "millions ::= one_to_999999 MILLION",
+ /*  43 */ "millions ::= one_to_999 MILLION",
  /*  44 */ "millions ::= NUMBER MILLION",
  /*  45 */ "millions ::= MILLION",
  /*  46 */ "first_to_999999th ::= thousands first_to_999th",
@@ -1172,44 +1178,44 @@ static const struct {
   { 86, 2 },
   { 86, 1 },
   { 86, 1 },
-  { 91, 2 },
-  { 91, 2 },
-  { 91, 1 },
-  { 88, 2 },
-  { 88, 1 },
-  { 88, 1 },
-  { 89, 2 },
-  { 89, 2 },
-  { 89, 1 },
-  { 90, 2 },
-  { 90, 1 },
-  { 90, 1 },
-  { 95, 2 },
-  { 95, 2 },
-  { 95, 1 },
+  { 92, 2 },
   { 92, 2 },
   { 92, 1 },
-  { 92, 1 },
-  { 93, 2 },
-  { 93, 2 },
-  { 93, 1 },
-  { 94, 2 },
-  { 94, 1 },
-  { 94, 1 },
-  { 99, 2 },
-  { 99, 2 },
-  { 99, 1 },
+  { 89, 2 },
+  { 89, 1 },
+  { 89, 1 },
+  { 90, 2 },
+  { 90, 2 },
+  { 90, 1 },
+  { 91, 2 },
+  { 91, 1 },
+  { 91, 1 },
+  { 96, 2 },
   { 96, 2 },
   { 96, 1 },
-  { 96, 1 },
-  { 97, 2 },
+  { 93, 2 },
+  { 93, 1 },
+  { 93, 1 },
+  { 94, 2 },
+  { 94, 2 },
+  { 94, 1 },
+  { 95, 2 },
+  { 95, 1 },
+  { 95, 1 },
+  { 100, 2 },
+  { 100, 2 },
+  { 100, 1 },
   { 97, 2 },
   { 97, 1 },
-  { 98, 3 },
+  { 97, 1 },
+  { 98, 2 },
   { 98, 2 },
   { 98, 1 },
-  { 98, 2 },
-  { 98, 1 },
+  { 99, 3 },
+  { 99, 2 },
+  { 99, 1 },
+  { 99, 2 },
+  { 99, 1 },
   { 103, 2 },
   { 103, 2 },
   { 103, 1 },
@@ -1217,11 +1223,11 @@ static const struct {
   { 102, 1 },
   { 102, 1 },
   { 102, 1 },
-  { 100, 3 },
-  { 100, 2 },
-  { 100, 1 },
-  { 100, 2 },
-  { 100, 1 },
+  { 88, 3 },
+  { 88, 2 },
+  { 88, 1 },
+  { 88, 2 },
+  { 88, 1 },
   { 101, 2 },
   { 101, 2 },
   { 101, 1 },
@@ -1361,7 +1367,7 @@ static void yy_reduce(
 {
     insertYYSTYPE(&state->yystypeList, yymsp[0].minor.yy0);
 }
-#line 1365 "parser.c"
+#line 1371 "parser.c"
         break;
       case 1: /* number ::= NEGATIVE final_number */
 #line 89 "parser.yy"
@@ -1371,30 +1377,30 @@ static void yy_reduce(
     yymsp[0].minor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos);
     insertYYSTYPE(&state->yystypeList, yymsp[0].minor.yy0);
 }
-#line 1375 "parser.c"
+#line 1381 "parser.c"
         break;
       case 2: /* final_number ::= one_to_999999999999999 AND_A QUARTER */
 #line 96 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-2].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-2].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-2].minor.yy0.double_value + 0.25; }
-#line 1380 "parser.c"
+#line 1386 "parser.c"
   yymsp[-2].minor.yy0 = yylhsminor.yy0;
         break;
       case 3: /* final_number ::= one_to_999999999999999 QUARTERS */
 #line 97 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value / 4.0; }
-#line 1386 "parser.c"
+#line 1392 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 4: /* final_number ::= one_to_999999999999999 AND_A HALF */
 #line 98 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-2].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-2].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-2].minor.yy0.double_value + 0.5; }
-#line 1392 "parser.c"
+#line 1398 "parser.c"
   yymsp[-2].minor.yy0 = yylhsminor.yy0;
         break;
       case 5: /* final_number ::= one_to_999999999999999 HALVES */
 #line 99 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value / 2.0; }
-#line 1398 "parser.c"
+#line 1404 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 6: /* final_number ::= one_to_999999999999999 */
@@ -1414,7 +1420,7 @@ static void yy_reduce(
       case 81: /* one_to_99 ::= one_to_9 */ yytestcase(yyruleno==81);
 #line 100 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = yymsp[0].minor.yy0.double_value; }
-#line 1418 "parser.c"
+#line 1424 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 7: /* final_number ::= first_to_999999999999999th */
@@ -1433,13 +1439,13 @@ static void yy_reduce(
       case 69: /* first_to_99th ::= first_to_9th */ yytestcase(yyruleno==69);
 #line 101 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = yymsp[0].minor.yy0.double_value; yylhsminor.yy0.suffix = yymsp[0].minor.yy0.suffix; }
-#line 1437 "parser.c"
+#line 1443 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 9: /* final_number ::= ZERO */
 #line 112 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 0.0; }
-#line 1443 "parser.c"
+#line 1449 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 10: /* first_to_999999999999999th ::= trillions first_to_999999999999th */
@@ -1450,20 +1456,20 @@ static void yy_reduce(
       case 66: /* first_to_99th ::= tens first_to_9th */ yytestcase(yyruleno==66);
 #line 135 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value + yymsp[0].minor.yy0.double_value; yylhsminor.yy0.suffix = yymsp[0].minor.yy0.suffix; }
-#line 1454 "parser.c"
+#line 1460 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
-      case 13: /* trillionths ::= one_to_999999999999 TRILLIONTH */
+      case 13: /* trillionths ::= one_to_999 TRILLIONTH */
       case 14: /* trillionths ::= NUMBER TRILLIONTH */ yytestcase(yyruleno==14);
 #line 139 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1461 "parser.c"
+#line 1467 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 15: /* trillionths ::= TRILLIONTH */
 #line 141 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1467 "parser.c"
+#line 1473 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 16: /* one_to_999999999999999 ::= trillions one_to_999999999999 */
@@ -1474,470 +1480,470 @@ static void yy_reduce(
       case 78: /* one_to_99 ::= tens one_to_9 */ yytestcase(yyruleno==78);
 #line 151 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value + yymsp[0].minor.yy0.double_value; }
-#line 1478 "parser.c"
+#line 1484 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
-      case 19: /* trillions ::= one_to_999999999999 TRILLION */
+      case 19: /* trillions ::= one_to_999 TRILLION */
       case 20: /* trillions ::= NUMBER TRILLION */ yytestcase(yyruleno==20);
 #line 155 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000000000.0; }
-#line 1485 "parser.c"
+#line 1491 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 21: /* trillions ::= TRILLION */
 #line 157 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000000000.0; }
-#line 1491 "parser.c"
+#line 1497 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
-      case 25: /* billionths ::= one_to_999999999 BILLIONTH */
+      case 25: /* billionths ::= one_to_999 BILLIONTH */
       case 26: /* billionths ::= NUMBER BILLIONTH */ yytestcase(yyruleno==26);
 #line 167 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1498 "parser.c"
+#line 1504 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 27: /* billionths ::= BILLIONTH */
 #line 169 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1504 "parser.c"
+#line 1510 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
-      case 31: /* billions ::= one_to_999999999 BILLION */
+      case 31: /* billions ::= one_to_999 BILLION */
       case 32: /* billions ::= NUMBER BILLION */ yytestcase(yyruleno==32);
 #line 183 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000000.0; }
-#line 1511 "parser.c"
+#line 1517 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 33: /* billions ::= BILLION */
 #line 185 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000000.0; }
-#line 1517 "parser.c"
+#line 1523 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
-      case 37: /* millionths ::= one_to_999999 MILLIONTH */
+      case 37: /* millionths ::= one_to_999 MILLIONTH */
       case 38: /* millionths ::= NUMBER MILLIONTH */ yytestcase(yyruleno==38);
 #line 195 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1524 "parser.c"
+#line 1530 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 39: /* millionths ::= MILLIONTH */
 #line 197 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000.0; yylhsminor.yy0.suffix = TH; }
-#line 1530 "parser.c"
+#line 1536 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
-      case 43: /* millions ::= one_to_999999 MILLION */
+      case 43: /* millions ::= one_to_999 MILLION */
       case 44: /* millions ::= NUMBER MILLION */ yytestcase(yyruleno==44);
 #line 211 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000000.0; }
-#line 1537 "parser.c"
+#line 1543 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 45: /* millions ::= MILLION */
 #line 213 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000000.0; }
-#line 1543 "parser.c"
+#line 1549 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 49: /* thousandths ::= one_to_999 THOUSANDTH */
       case 50: /* thousandths ::= NUMBER THOUSANDTH */ yytestcase(yyruleno==50);
 #line 223 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000.0; yylhsminor.yy0.suffix = TH; }
-#line 1550 "parser.c"
+#line 1556 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 51: /* thousandths ::= THOUSANDTH */
 #line 225 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000.0; yylhsminor.yy0.suffix = TH; }
-#line 1556 "parser.c"
+#line 1562 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 55: /* thousands ::= one_to_999 THOUSAND */
       case 56: /* thousands ::= NUMBER THOUSAND */ yytestcase(yyruleno==56);
 #line 239 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 1000.0; }
-#line 1563 "parser.c"
+#line 1569 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 57: /* thousands ::= THOUSAND */
 #line 241 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1000.0; }
-#line 1569 "parser.c"
+#line 1575 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 58: /* first_to_999th ::= hundreds AND first_to_99th */
 #line 247 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-2].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-2].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-2].minor.yy0.double_value + yymsp[0].minor.yy0.double_value; yylhsminor.yy0.suffix = yymsp[0].minor.yy0.suffix; }
-#line 1575 "parser.c"
+#line 1581 "parser.c"
   yymsp[-2].minor.yy0 = yylhsminor.yy0;
         break;
       case 61: /* first_to_999th ::= AND first_to_99th */
 #line 250 "parser.yy"
 { yymsp[-1].minor.yy0.spos = yymsp[0].minor.yy0.spos; yymsp[-1].minor.yy0.epos = yymsp[0].minor.yy0.epos; yymsp[-1].minor.yy0.double_value = yymsp[0].minor.yy0.double_value; yymsp[-1].minor.yy0.suffix = yymsp[0].minor.yy0.suffix; }
-#line 1581 "parser.c"
+#line 1587 "parser.c"
         break;
       case 63: /* hundredths ::= one_to_99 HUNDREDTH */
       case 64: /* hundredths ::= NUMBER HUNDREDTH */ yytestcase(yyruleno==64);
 #line 253 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 100.0; yylhsminor.yy0.suffix = TH; }
-#line 1587 "parser.c"
+#line 1593 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 65: /* hundredths ::= HUNDREDTH */
 #line 255 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 100.0; yylhsminor.yy0.suffix = TH; }
-#line 1593 "parser.c"
+#line 1599 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 70: /* one_to_999 ::= hundreds AND one_to_99 */
 #line 270 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-2].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-2].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-2].minor.yy0.double_value + yymsp[0].minor.yy0.double_value; }
-#line 1599 "parser.c"
+#line 1605 "parser.c"
   yymsp[-2].minor.yy0 = yylhsminor.yy0;
         break;
       case 73: /* one_to_999 ::= AND one_to_99 */
 #line 273 "parser.yy"
 { yymsp[-1].minor.yy0.spos = yymsp[0].minor.yy0.spos; yymsp[-1].minor.yy0.epos = yymsp[0].minor.yy0.epos; yymsp[-1].minor.yy0.double_value = yymsp[0].minor.yy0.double_value; }
-#line 1605 "parser.c"
+#line 1611 "parser.c"
         break;
       case 75: /* hundreds ::= one_to_99 HUNDRED */
       case 76: /* hundreds ::= NUMBER HUNDRED */ yytestcase(yyruleno==76);
 #line 276 "parser.yy"
 { yylhsminor.yy0.spos = mini(yymsp[-1].minor.yy0.spos, yymsp[0].minor.yy0.spos); yylhsminor.yy0.epos = maxi(yymsp[-1].minor.yy0.epos, yymsp[0].minor.yy0.epos); yylhsminor.yy0.double_value = yymsp[-1].minor.yy0.double_value * 100.0; }
-#line 1611 "parser.c"
+#line 1617 "parser.c"
   yymsp[-1].minor.yy0 = yylhsminor.yy0;
         break;
       case 77: /* hundreds ::= HUNDRED */
 #line 278 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 100.0; }
-#line 1617 "parser.c"
+#line 1623 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 82: /* one_to_9 ::= ONE */
 #line 289 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1.0; }
-#line 1623 "parser.c"
+#line 1629 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 83: /* one_to_9 ::= TWO */
 #line 290 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 2.0; }
-#line 1629 "parser.c"
+#line 1635 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 84: /* one_to_9 ::= THREE */
 #line 291 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 3.0; }
-#line 1635 "parser.c"
+#line 1641 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 85: /* one_to_9 ::= FOUR */
 #line 292 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 4.0; }
-#line 1641 "parser.c"
+#line 1647 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 86: /* one_to_9 ::= FIVE */
 #line 293 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 5.0; }
-#line 1647 "parser.c"
+#line 1653 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 87: /* one_to_9 ::= SIX */
 #line 294 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 6.0; }
-#line 1653 "parser.c"
+#line 1659 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 88: /* one_to_9 ::= SEVEN */
 #line 295 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 7.0; }
-#line 1659 "parser.c"
+#line 1665 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 89: /* one_to_9 ::= EIGHT */
 #line 296 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 8.0; }
-#line 1665 "parser.c"
+#line 1671 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 90: /* one_to_9 ::= NINE */
 #line 297 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 9.0; }
-#line 1671 "parser.c"
+#line 1677 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 91: /* ten_to_19 ::= TEN */
 #line 299 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 10.0; }
-#line 1677 "parser.c"
+#line 1683 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 92: /* ten_to_19 ::= ELEVEN */
 #line 300 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 11.0; }
-#line 1683 "parser.c"
+#line 1689 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 93: /* ten_to_19 ::= TWELVE */
 #line 301 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 12.0; }
-#line 1689 "parser.c"
+#line 1695 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 94: /* ten_to_19 ::= THIRTEEN */
 #line 302 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 13.0; }
-#line 1695 "parser.c"
+#line 1701 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 95: /* ten_to_19 ::= FOURTEEN */
 #line 303 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 14.0; }
-#line 1701 "parser.c"
+#line 1707 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 96: /* ten_to_19 ::= FIFTEEN */
 #line 304 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 15.0; }
-#line 1707 "parser.c"
+#line 1713 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 97: /* ten_to_19 ::= SIXTEEN */
 #line 305 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 16.0; }
-#line 1713 "parser.c"
+#line 1719 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 98: /* ten_to_19 ::= SEVENTEEN */
 #line 306 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 17.0; }
-#line 1719 "parser.c"
+#line 1725 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 99: /* ten_to_19 ::= EIGHTEEN */
 #line 307 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 18.0; }
-#line 1725 "parser.c"
+#line 1731 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 100: /* ten_to_19 ::= NINETEEN */
 #line 308 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 19.0; }
-#line 1731 "parser.c"
+#line 1737 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 101: /* tens ::= TWENTY */
 #line 310 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 20.0; }
-#line 1737 "parser.c"
+#line 1743 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 102: /* tens ::= THIRTY */
 #line 311 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 30.0; }
-#line 1743 "parser.c"
+#line 1749 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 103: /* tens ::= FORTY */
 #line 312 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 40.0; }
-#line 1749 "parser.c"
+#line 1755 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 104: /* tens ::= FIFTY */
 #line 313 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 50.0; }
-#line 1755 "parser.c"
+#line 1761 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 105: /* tens ::= SIXTY */
 #line 314 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 60.0; }
-#line 1761 "parser.c"
+#line 1767 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 106: /* tens ::= SEVENTY */
 #line 315 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 70.0; }
-#line 1767 "parser.c"
+#line 1773 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 107: /* tens ::= EIGHTY */
 #line 316 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 80.0; }
-#line 1773 "parser.c"
+#line 1779 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 108: /* tens ::= NINETY */
 #line 317 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 90.0; }
-#line 1779 "parser.c"
+#line 1785 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 109: /* first_to_9th ::= FIRST */
 #line 319 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 1.0; yylhsminor.yy0.suffix = ST; }
-#line 1785 "parser.c"
+#line 1791 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 110: /* first_to_9th ::= SECOND */
 #line 320 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 2.0; yylhsminor.yy0.suffix = ND; }
-#line 1791 "parser.c"
+#line 1797 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 111: /* first_to_9th ::= THIRD */
 #line 321 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 3.0; yylhsminor.yy0.suffix = RD; }
-#line 1797 "parser.c"
+#line 1803 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 112: /* first_to_9th ::= FOURTH */
 #line 322 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 4.0; yylhsminor.yy0.suffix = TH; }
-#line 1803 "parser.c"
+#line 1809 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 113: /* first_to_9th ::= FIFTH */
 #line 323 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 5.0; yylhsminor.yy0.suffix = TH; }
-#line 1809 "parser.c"
+#line 1815 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 114: /* first_to_9th ::= SIXTH */
 #line 324 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 6.0; yylhsminor.yy0.suffix = TH; }
-#line 1815 "parser.c"
+#line 1821 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 115: /* first_to_9th ::= SEVENTH */
 #line 325 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 7.0; yylhsminor.yy0.suffix = TH; }
-#line 1821 "parser.c"
+#line 1827 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 116: /* first_to_9th ::= EIGHTH */
 #line 326 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 8.0; yylhsminor.yy0.suffix = TH; }
-#line 1827 "parser.c"
+#line 1833 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 117: /* first_to_9th ::= NINTH */
 #line 327 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 9.0; yylhsminor.yy0.suffix = TH; }
-#line 1833 "parser.c"
+#line 1839 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 118: /* tenth_to_19th ::= TENTH */
 #line 329 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 10.0; yylhsminor.yy0.suffix = TH; }
-#line 1839 "parser.c"
+#line 1845 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 119: /* tenth_to_19th ::= ELEVENTH */
 #line 330 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 11.0; yylhsminor.yy0.suffix = TH; }
-#line 1845 "parser.c"
+#line 1851 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 120: /* tenth_to_19th ::= TWELFTH */
 #line 331 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 12.0; yylhsminor.yy0.suffix = TH; }
-#line 1851 "parser.c"
+#line 1857 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 121: /* tenth_to_19th ::= THIRTEENTH */
 #line 332 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 13.0; yylhsminor.yy0.suffix = TH; }
-#line 1857 "parser.c"
+#line 1863 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 122: /* tenth_to_19th ::= FOURTEENTH */
 #line 333 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 14.0; yylhsminor.yy0.suffix = TH; }
-#line 1863 "parser.c"
+#line 1869 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 123: /* tenth_to_19th ::= FIFTEENTH */
 #line 334 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 15.0; yylhsminor.yy0.suffix = TH; }
-#line 1869 "parser.c"
+#line 1875 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 124: /* tenth_to_19th ::= SIXTEENTH */
 #line 335 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 16.0; yylhsminor.yy0.suffix = TH; }
-#line 1875 "parser.c"
+#line 1881 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 125: /* tenth_to_19th ::= SEVENTEENTH */
 #line 336 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 17.0; yylhsminor.yy0.suffix = TH; }
-#line 1881 "parser.c"
+#line 1887 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 126: /* tenth_to_19th ::= EIGHTEENTH */
 #line 337 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 18.0; yylhsminor.yy0.suffix = TH; }
-#line 1887 "parser.c"
+#line 1893 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 127: /* tenth_to_19th ::= NINETEENTH */
 #line 338 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 19.0; yylhsminor.yy0.suffix = TH; }
-#line 1893 "parser.c"
+#line 1899 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 128: /* tenth ::= TWENTIETH */
 #line 340 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 20.0; yylhsminor.yy0.suffix = TH; }
-#line 1899 "parser.c"
+#line 1905 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 129: /* tenth ::= THIRTIETH */
 #line 341 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 30.0; yylhsminor.yy0.suffix = TH; }
-#line 1905 "parser.c"
+#line 1911 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 130: /* tenth ::= FOURTIETH */
 #line 342 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 40.0; yylhsminor.yy0.suffix = TH; }
-#line 1911 "parser.c"
+#line 1917 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 131: /* tenth ::= FIFTIETH */
 #line 343 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 50.0; yylhsminor.yy0.suffix = TH; }
-#line 1917 "parser.c"
+#line 1923 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 132: /* tenth ::= SIXTIETH */
 #line 344 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 60.0; yylhsminor.yy0.suffix = TH; }
-#line 1923 "parser.c"
+#line 1929 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 133: /* tenth ::= SEVENTIETH */
 #line 345 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 70.0; yylhsminor.yy0.suffix = TH; }
-#line 1929 "parser.c"
+#line 1935 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 134: /* tenth ::= EIGHTIETH */
 #line 346 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 80.0; yylhsminor.yy0.suffix = TH; }
-#line 1935 "parser.c"
+#line 1941 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       case 135: /* tenth ::= NINETIETH */
 #line 347 "parser.yy"
 { yylhsminor.yy0.spos = yymsp[0].minor.yy0.spos; yylhsminor.yy0.epos = yymsp[0].minor.yy0.epos; yylhsminor.yy0.double_value = 90.0; yylhsminor.yy0.suffix = TH; }
-#line 1941 "parser.c"
+#line 1947 "parser.c"
   yymsp[0].minor.yy0 = yylhsminor.yy0;
         break;
       default:
@@ -1997,7 +2003,7 @@ static void yy_parse_failed(
 #if print_errors
     fprintf(stderr,"Giving up.  Parser is hopelessly lost...\n");
 #endif
-#line 2001 "parser.c"
+#line 2007 "parser.c"
 /************ End %parse_failure code *****************************************/
   ParseARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
@@ -2020,7 +2026,7 @@ static void yy_syntax_error(
 #if print_errors
     fprintf(stderr, "Syntax error\n");
 #endif
-#line 2024 "parser.c"
+#line 2030 "parser.c"
 /************ End %syntax_error code ******************************************/
   ParseARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }

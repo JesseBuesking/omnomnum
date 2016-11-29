@@ -136,7 +136,7 @@ first_to_999999999999999th(A) ::= trillions(B) first_to_999999999999th(C). { A.s
 first_to_999999999999999th(A) ::= trillionths(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 first_to_999999999999999th(A) ::= first_to_999999999999th(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 
-trillionths(A) ::= one_to_999999999999(B) TRILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; A.suffix = TH; }
+trillionths(A) ::= one_to_999(B) TRILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; A.suffix = TH; }
 trillionths(A) ::= NUMBER(B) TRILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; A.suffix = TH; }
 trillionths(A) ::= TRILLIONTH(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000000000.0; A.suffix = TH; }
 
@@ -152,7 +152,7 @@ one_to_999999999999999(A) ::= trillions(B) one_to_999999999999(C). { A.spos = mi
 one_to_999999999999999(A) ::= trillions(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 one_to_999999999999999(A) ::= one_to_999999999999(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 
-trillions(A) ::= one_to_999999999999(B) TRILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; }
+trillions(A) ::= one_to_999(B) TRILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; }
 trillions(A) ::= NUMBER(B) TRILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000000.0; }
 trillions(A) ::= TRILLION(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000000000.0; }
 
@@ -164,7 +164,7 @@ first_to_999999999999th(A) ::= billions(B) first_to_999999999th(C). { A.spos = m
 first_to_999999999999th(A) ::= billionths(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 first_to_999999999999th(A) ::= first_to_999999999th(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 
-billionths(A) ::= one_to_999999999(B) BILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; A.suffix = TH; }
+billionths(A) ::= one_to_999(B) BILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; A.suffix = TH; }
 billionths(A) ::= NUMBER(B) BILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; A.suffix = TH; }
 billionths(A) ::= BILLIONTH(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000000.0; A.suffix = TH; }
 
@@ -180,7 +180,7 @@ one_to_999999999999(A) ::= billions(B) one_to_999999999(C). { A.spos = mini(B.sp
 one_to_999999999999(A) ::= billions(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 one_to_999999999999(A) ::= one_to_999999999(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 
-billions(A) ::= one_to_999999999(B) BILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; }
+billions(A) ::= one_to_999(B) BILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; }
 billions(A) ::= NUMBER(B) BILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000000.0; }
 billions(A) ::= BILLION(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000000.0; }
 
@@ -192,7 +192,7 @@ first_to_999999999th(A) ::= millions(B) first_to_999999th(C). { A.spos = mini(B.
 first_to_999999999th(A) ::= millionths(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 first_to_999999999th(A) ::= first_to_999999th(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; A.suffix = B.suffix; }
 
-millionths(A) ::= one_to_999999(B) MILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; A.suffix = TH; }
+millionths(A) ::= one_to_999(B) MILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; A.suffix = TH; }
 millionths(A) ::= NUMBER(B) MILLIONTH(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; A.suffix = TH; }
 millionths(A) ::= MILLIONTH(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000.0; A.suffix = TH; }
 
@@ -208,7 +208,7 @@ one_to_999999999(A) ::= millions(B) one_to_999999(C). { A.spos = mini(B.spos, C.
 one_to_999999999(A) ::= millions(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 one_to_999999999(A) ::= one_to_999999(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = B.double_value; }
 
-millions(A) ::= one_to_999999(B) MILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; }
+millions(A) ::= one_to_999(B) MILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; }
 millions(A) ::= NUMBER(B) MILLION(C). { A.spos = mini(B.spos, C.spos); A.epos = maxi(B.epos, C.epos); A.double_value = B.double_value * 1000000.0; }
 millions(A) ::= MILLION(B). { A.spos = B.spos; A.epos = B.epos; A.double_value = 1000000.0; }
 
