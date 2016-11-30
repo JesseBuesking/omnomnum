@@ -69,8 +69,8 @@ int compare(const void* a, const void* b) {
      YYSTYPE yya = * ( (YYSTYPE*) a );
      YYSTYPE yyb = * ( (YYSTYPE*) b );
 
-     if ( yya.spos == yyb.spos ) return 0;
-     else if ( yya.spos < yyb.spos ) return -1;
+     if ( yya.begin == yyb.begin ) return 0;
+     else if ( yya.begin < yyb.begin ) return -1;
      else return 1;
 }
 

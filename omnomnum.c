@@ -35,7 +35,7 @@
 #define TOKEN_SEPARATOR 10000
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
-    dtoa(s, A.double_value, precision);
+    dtoa(s, A.dbl, precision);
 
     switch (A.suffix) {
         case NO_SUFFIX:
@@ -128,8 +128,8 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         token_length = scan_token_length(&ss);
 
         // update position information
-        yylval.spos = start_pos;
-        yylval.epos = yylval.spos + token_length;
+        yylval.begin = start_pos;
+        yylval.end = yylval.begin + token_length;
         start_pos += token_length;
 
         if (parsing == 0 && (tok == TOKEN_CHARACTERS || tok == TOKEN_SEPARATOR)) {
@@ -154,14 +154,14 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
 
 #if debug
         sds value = sdsnewlen(ss.token, token_length);
-        printf("token is %s at %d - %d\n", value, yylval.spos, yylval.epos);
+        printf("token is %s at %d - %d\n", value, yylval.begin, yylval.end);
         sdsfree(value);
 #endif
 
         if (tok == TOKEN_NUMBER) {
             // turn string version of number into double
             sds value = sdsnewlen(ss.token, token_length);
-            sscanf(value, "%lf", &yylval.double_value);
+            sscanf(value, "%lf", &yylval.dbl);
             sdsfree(value);
         }
 
@@ -199,16 +199,16 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         for (i = 0; i < l.used; ++i) {
             YYSTYPE y = l.values[i];
 #if debug
-            printf("spos: %d, epos: %d, value: %lf, suffix: %d\n", y.spos, y.epos, y.double_value, y.suffix);
+            printf("begin: %d, end: %d, value: %lf, suffix: %d\n", y.begin, y.end, y.dbl, y.suffix);
 #endif
 
-            if (lastpos < y.spos) {
+            if (lastpos < y.begin) {
                 sds tmp = sdsdup(original);
-                sdsrange(tmp, lastpos, y.spos - 1);
+                sdsrange(tmp, lastpos, y.begin - 1);
                 state->result = sdscatsds(state->result, tmp);
                 sdsfree(tmp);
             }
-            lastpos = y.epos;
+            lastpos = y.end;
 
             yystypeToString(&numberHolder, y, 3);
             state->result = sdscatsds(state->result, numberHolder);
@@ -223,7 +223,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         }
 
         sds tmp = sdsdup(original);
-        sdsrange(tmp, l.values[l.used-1].epos, -1);
+        sdsrange(tmp, l.values[l.used-1].end, -1);
         state->result = sdscatsds(state->result, tmp);
         sdsfree(tmp);
         sdsfree(original);

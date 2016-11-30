@@ -58,13 +58,13 @@ enum parse_options {
 };
 
 typedef struct {
-    double double_value;
+    double dbl;
     enum suffixValues suffix;
     //double frac_num;
     //double frac_denom;
     //unsigned int is_frac;
-    unsigned int spos;
-    unsigned int epos;
+    unsigned int begin;
+    unsigned int end;
 } YYSTYPE;
 
 typedef struct {
