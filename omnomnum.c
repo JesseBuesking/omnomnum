@@ -85,7 +85,7 @@ void freeOmNomNum(void) {
 void normalize(const char *data, size_t data_len, ParserState *state) {
     YYSTYPE yylval;
     scanstate ss;
-    readmem_init(&ss, data, data_len);
+    scanstate_init(&ss, data, data_len);
 
     int tok;
     unsigned int start_pos = 0;
@@ -120,7 +120,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             tok = TOKEN_CHARACTERS;
         }
 
-        token_length = scan_token_length(&ss);
+        token_length = ss.cursor - ss.token;
 
         // update position information
         yylval.begin = start_pos;

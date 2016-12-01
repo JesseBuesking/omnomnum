@@ -38,7 +38,6 @@
 #include "scanner.def.h"
 #include "parser.h"
 #include "scan.h"
-#include "readmem.h"
 
 int omnomnum_scanner_start(scanstate *ss);
 

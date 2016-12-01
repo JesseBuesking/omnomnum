@@ -26,11 +26,11 @@ FINAL_LIBS=
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
 
-CSRC=parser.c read.c readfd.c readfp.c readmem.c readrand.c scan.c scan-dyn.c
-CHDR=read.h readfd.h readfp.h readmem.h readrand.h scan.h scan-dyn.h
+CSRC=parser.c read.c scan.c
+CHDR=read.h scan.h
 
-OMNOMNUM_OBJ=parser.o scan.o readmem.o omnomnum.o scanner.o sds.o dtoa.o scanner.def.o
-DEPS=parser.h scan.h readmem.h omnomnum.h scanner.h
+OMNOMNUM_OBJ=parser.o scan.o omnomnum.o scanner.o sds.o dtoa.o scanner.def.o
+DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
 
@@ -64,7 +64,7 @@ clean:
 
 .PHONY: all clean
 
-test/test_omnomnum.o: parser.h scan.h readmem.h omnomnum.h scanner.h test/test_omnomnum.c
+test/test_omnomnum.o: parser.h scan.h omnomnum.h scanner.h test/test_omnomnum.c
 	$(CXX) -std=c++11 -L/usr/local/include -I$(GTEST_DIR)/include -c test/test_omnomnum.c -o $@ -lyaml-cpp
 
 test/test_omnomnum: $(OMNOMNUM_OBJ) $(GTEST_DIR)/make/gtest_main.a test/test_omnomnum.o
@@ -73,7 +73,7 @@ test/test_omnomnum: $(OMNOMNUM_OBJ) $(GTEST_DIR)/make/gtest_main.a test/test_omn
 test: all test/test_omnomnum test/cases.yaml
 	cd test && ./test_omnomnum
 
-test/test_benchmark.o: parser.h scan.h readmem.h omnomnum.h scanner.h test/test_benchmark.c
+test/test_benchmark.o: parser.h scan.h omnomnum.h scanner.h test/test_benchmark.c
 	$(CXX) -O3 -msse4.2 -std=c++11 -L/usr/local/include -c test/test_benchmark.c -o $@ -lyaml-cpp
 
 test/test_benchmark: $(OMNOMNUM_OBJ) test/test_benchmark.o

@@ -1,18 +1,9 @@
-/* scan.c
- * Scott Bronson
- * 28 Dec 2004
- */
-
 #include <string.h>
 #include <assert.h>
 #include "scan.h"
 
-/** @file scan.c
- *
- * This file contains routines to manipulate scanstate structures.
- */
-
-/** Initializes the scanstate structure.
+/*
+ * Initializes the scanstate structure.
  *
  * @param ss The scanstate structure to initialize.
  * @param bufptr The buffer that the scanner should use.
@@ -29,39 +20,13 @@
  *
  * Also see scanstate_reset() and dynscan_create().
  */
-
 void scanstate_init(scanstate *ss, const char *bufptr, size_t bufsiz)
 {
     ss->cursor = bufptr;
-    ss->limit = bufptr;
     ss->marker = NULL;
     ss->token = bufptr;
     ss->last_read = 1;
     ss->bufptr = bufptr;
     ss->bufsiz = bufsiz;
-    ss->read = NULL;
-    ss->state = NULL;
+    ss->limit = ss->bufptr + ss->bufsiz;
 }
-
-
-/** Resets the given scanstate as if it was just created but doesn't
- * modify the scanner or the readproc.
- *
- * Doesn't modify:
- * - the reader or the readref.
- * - the scanner or the scanref.
- * - the userproc or userref.
- * - the buffer or buffer size
- *
- * If you want to reset the reader and scanner, you probably want
- * to detach and reattach them.
- */
-void scanstate_reset(scanstate *ss)
-{
-    ss->cursor = ss->bufptr;
-    ss->limit = ss->bufptr;
-    ss->marker = NULL;
-    ss->token = ss->bufptr;
-    ss->last_read = 1;
-}
-

@@ -33,7 +33,6 @@
 
 #include "scanner.h"
 #include "scan.h"
-#include "readmem.h"
 #include "sds.h"
 #include "parser.h"
 

@@ -31,12 +31,11 @@
 #include "scanner.def.h"
 #include "parser.h"
 #include "scan.h"
-#include "readmem.h"
 
 #define TOKEN_SEPARATOR 10000
 
 int omnomnum_scanner_start(scanstate *ss) {
-    scanner_enter(ss);
+    ss->token = ss->cursor;
 //std:
     /*!re2c
         SEPARATOR       = [ \r\n\t\f\-]+;

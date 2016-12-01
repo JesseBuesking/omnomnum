@@ -23,7 +23,8 @@
 #include <sys/types.h>
 
 
-/** @file scan.h
+/*
+ * @file scan.h
  *
  * This file contains the definition of the scanstate, the most
  * important data structure for a scanner.  It also contains some
@@ -67,7 +68,6 @@
  * state.
  */
 
-
 #ifndef R2SCAN_H
 #define R2SCAN_H
 
@@ -78,7 +78,8 @@
 #define YYLIMIT     (ss->limit)
 #define YYMARKER    (ss->marker)
 
-/** Fills the scan buffer with more data.
+/*
+ * Fills the scan buffer with more data.
  *
  * This routine needs to force a return if 0 bytes were read because
  * otherwise the re2c scanner will end up scanning garbage way off
@@ -99,19 +100,17 @@
  * If you're using the re2c lib but writing your own re2c scanners,
  * call ss->read directly.
  */
-
-#define YYFILL(n)   do { \
-		if(ss->last_read > 0) ss->last_read = (*ss->read)(ss); \
-		if(ss->last_read < 0) return ss->last_read; \
-		if((ss)->cursor >= (ss)->limit) return 0; \
-	} while(0);
+#define YYFILL(n) do { \
+    if (ss->last_read < 0) return ss->last_read; \
+    if (ss->cursor >= ss->limit) return 0; \
+} while(0);
 
 
 // forward declaration
 struct scanstate;
 
-
-/** Readprocs are provide the scanners with data.
+/*
+ * Readprocs are provide the scanners with data.
  *
  * Each scanner has a single readproc that feeds it with data.
  * The re2c library includes some standard readprocs 
@@ -129,11 +128,11 @@ struct scanstate;
  * See \ref error_handling for more on how errors are propagated
  * through the re2c library.
  */
-
 typedef ssize_t (*readproc)(struct scanstate *ss);
 
 
-/** Scans the data and returns the next token.
+/*
+ * Scans the data and returns the next token.
  *
  * A scanner is simply one or more functions that accept a scanstate
  * object and return the next token in that stream.
@@ -149,12 +148,12 @@ typedef ssize_t (*readproc)(struct scanstate *ss);
  * there's not enough data available to determine the next
  * token.
  */
-
 typedef int (*scanproc)(struct scanstate *ss);
 
 
 
-/** Contains all state for a single scan session.
+/*
+ * Contains all state for a single scan session.
  *
  * This structure is used by a scanner to preserve its state.
  *
@@ -163,26 +162,20 @@ typedef int (*scanproc)(struct scanstate *ss);
  * This means that any time you want to read data into the buffer,
  * you need to cast the pointers to be nonconst.
  */
-
 struct scanstate {
-    const char *cursor; ///< The current character being looked at by the scanner.  This is the same as re2c's YYCURSOR.
-    const char *limit;  ///< The last (uppermost) valid character in the current buffer.  This is the same as re2c's YYLIMIT.
-    const char *marker; ///< Used internally by re2c engine to handle backtracking.  This is the same as re2c's YYMARKER.
-
-    const char *token;  ///< The start of the current token.
-    int line;           ///< The scanner may or may not maintain the current line number in this field.  Typically a scanner's attach routine sets this field to 1 if it properly keeps track of line numbers and leaves it set to 0 if it doesn't.  See \ref linenos for more.
-    ssize_t last_read;         ///< The return value from the last time the ::readproc was called.  If last_read is 0 (eof) or negative (error), then the readproc should not be called.
-
-    const char *bufptr; ///< The buffer currently in use.
-    size_t bufsiz;   ///< The maximum number of bytes that the buffer can hold.
-
-    readproc read;      ///< Routine that refills the scan buffer.  See ::readproc.
-    scanproc state;     ///< The entrypoint for the scanning routine.  More complex scanners are made up of multiple individual scan routines -- \ref startstates -- and they store their state here.
+    const char *cursor; /*The current character being looked at by the scanner. This is the same as re2c's YYCURSOR.*/
+    const char *limit;  /*The last (uppermost) valid character in the current buffer. This is the same as re2c's YYLIMIT.*/
+    const char *marker; /*Used internally by re2c engine to handle backtracking. This is the same as re2c's YYMARKER.*/
+    const char *token;  /*The start of the current token.*/
+    ssize_t last_read;  /*The return value from the last time the ::readproc was called. If last_read is 0 (eof) or negative (error), then the readproc should not be called.*/
+    const char *bufptr; /*The buffer currently in use.*/
+    size_t bufsiz;      /*The maximum number of bytes that the buffer can hold.*/
 };
 typedef struct scanstate scanstate;
 
 
-/** Initializes a given scanstate structure.
+/*
+ * Initializes a given scanstate structure.
  *
  * Call this to prepare a scanner for use.  Some calls, such as readmem_init()
  * and dynscan_create
@@ -192,176 +185,7 @@ typedef struct scanstate scanstate;
  * @param bufptr The scan buffer.
  * @param bufsiz Size, in bytes, of bufptr.  Pass 0 when bufptr is NULL.
  */
-
 void scanstate_init(scanstate *ss, const char *bufptr, size_t bufsiz);
-void scanstate_reset(scanstate *ss);
-
-
-/** Returns true when there's no more data to be scanned.
- *
- * It is much better to just call scan_next_token() until it returns
- * 0 (EOF) or a negative number (a readproc error).
- * While there are a few cases where it's useful to reliably
- * check for EOF without having to scan a token, this is often a
- * sign of bad design.  Therefore, try to use scan_is_finished() sparingly.
- *
- * There's a slim chance that this routine will call the readproc.
- * If the buffer
- * contains no more data but the file is not at eof, we must execute
- * a read to discover if there's any more data available.
- * If the read returns EOF or an error, scan_is_finished will return 1.
- *
- * How this macro works:
- *
- * - If there's still more data in the buffer, then we're not finished.
- * - If there's no data in the buffer and the previous read returned
- *   EOF or an error, then we're finished.
- * - If there's no data in the buffer but we're not at eof, then we need
- *   to execute a read to see if there's more data available.
- * - If the previous read returned EOF or error, then we're finished.
- *   Otherwise, there's now more data in the buffer so we're not done.
- */
-
-#define scan_is_finished(ss) \
-    (((ss)->cursor < (ss)->limit) ? 0 : \
-		 ((ss)->last_read <= 0 || ((*(ss)->read)(ss) <= 0)) \
-    )
-
-
-/** Fetches the next token in the stream from the scanner.
- *
- * This routine causes the scanner to actually scan.
- * Here is an example of how to call it:
- *
- * <pre>
- * do {
- *     int token = scan_next_token(ss);
- *     if(token < 0) {
- *         // scanner's readproc returned an error
- *         break;
- *     }
- *     handle_token(token);
- * } while(token);
- * </pre>
- *
- * handle_token() must properly handle eof (token == 0).
- * You generally want to pass the EOF to the parser consuming
- * the tokenized data.  This allows it to complain if it's
- * in a bad state, such as when parsing an unterminated string
- * constant, etc.
- *
- * @param ss The scanstate with a readproc and a scanner attached.
- *
- * @returns The next token from the input stream (tokens are always
- * greater than 0).  Returns 0 if the input stream is at EOF and
- * there are no more tokens.  Returns a negative value if the
- * ::readproc returned an error.
- */
-
-#define scan_next_token(ss) ((*((ss)->state))(ss))
-
-
-/** Returns the text of the most recently scanned token.
- *
- * This returns all the text of the most recently matched token.
- * Note that this data is only valid until the next time 
- * you call scan_next_token.
- *
- * EXAMPLE:
- *
- * <pre>
- *  printf("Token is: %.*s\n", token_length(ss), token_start(ss));
- * </pre>
- *
- * See also scan_token_end() and scan_token_length().
- * You can also use scan_token_dup() to access the current token.
- */
-
-#define scan_token_start(ss) ((ss)->token)
-
-/** Returns a pointer to the end of the most recently scanned token.
- *
- * Returns a pointer to the character following the last character of the
- * most recently scanned token.
- *
- * token_end(ss) - token_start(ss) == token_length(ss)
- *
- * See scan_token_start().
- */
-
-#define scan_token_end(ss) ((ss)->cursor)
-
-/** Returns the length in bytes of the most recently scanned token.
- *
- * See the example in scan_token_start().
- */
-
-#define scan_token_length(ss) ((ss)->cursor - (ss)->token)
-
-/** Copies the text of the current token into a malloc'd memory buffer.
- *
- * Because it copies the token, the data in the buffer will be valid
- * until you call free(3) to release it.
- *
- * This macro just calls strdup(3) internally.  Make sure to
- * include <string.h> if you use this macro in your own code.
- *
- * Because it calls malloc, this routine is quite slow.
- * See scan_token_start() for a speedy way to access the
- * text of the current token.
- */
-
-#define scan_token_dup(ss) strndup(token_start(ss), token_length(ss))
-
-
-/** Pushes the current token back onto the stream
- *
- * Calling scan_pushback returns the scanner to the state it was in
- * immediately prior to returning the current token.  If you decide that
- * you don't want to handle this particular token right now,
- * you can push it back
- * onto the scanner.  It will be returned the next time scan_token()
- * is called.
- *
- * Note that you can only push back a single token.
- * Also, some scanners may become confused by pushing a token back.
- * Generally, if the scanner maintains any sort of state on its own,
- * you cannot use scan_pushback on it.
- *
- * Finally, this doesn't back the line number up.  Because most tokens
- * don't span multiple lines, this is generally not a problem.  However,
- * if you're pushing a token back and want to ensure the correct line
- * number is maintained, you'll have to do something like this:
- *
- * <pre>
- *     // First ensure that the scanner you're using doesn't
- *     // have internal state that will be screwed up if you
- *     // re-scan the current token!
- *
- *     oldline = ss->line;
- *     tok = scan_next_token(ss);
- *     if(tok == push_me_back) {
- *         scan_pushback(ss);
- *         ss->line = oldline;
- *     }
- * </pre>
- *
- * Yes, it takes some effort to call this function safely.
- * But it is all worth it when you really need it.
- */
-
-#define scan_pushback(ss) ((ss)->cursor = (ss)->token)
-
-/** Prepares a scanner to scan the next token.
- *
- * This macro must be called by scanners only!  See
- * \ref writing_scanners for more.
- *
- * Scanners must call scanner_enter() at the beginning of each ::scanproc
- * to prepare the scanner to scan a new token.
- */
-
-#define scanner_enter(ss) ((ss)->token = (ss)->cursor)
 
 #endif
 
