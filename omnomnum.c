@@ -85,17 +85,12 @@ void freeOmNomNum(void) {
 void normalize(const char *data, size_t data_len, ParserState *state) {
     YYSTYPE yylval;
     scanstate ss;
-    scanstate_init(&ss, NULL, 0);
-    readmem_attach(&ss, data, data_len);
+    readmem_init(&ss, data, data_len);
 
     int tok;
     unsigned int start_pos = 0;
     unsigned int token_length = 0;
     int parsing = 0;
-
-	// Initialize the scanner to read from this string constant.
-    readmem_init_str(&ss, data);
-    ss.line = 1;
 
 #if debug
     ParseTrace(stderr, (char*)"[Parser] >> ");

@@ -176,14 +176,8 @@ struct scanstate {
     const char *bufptr; ///< The buffer currently in use.
     size_t bufsiz;   ///< The maximum number of bytes that the buffer can hold.
 
-    void *readref;      ///< Data specific to the ::readproc (i.e. for readfp_attach(), readref contains the FILE*).
     readproc read;      ///< Routine that refills the scan buffer.  See ::readproc.
-
-    void *scanref;      ///< Data specific to the scanner.  Only the scanner may use this field.
     scanproc state;     ///< The entrypoint for the scanning routine.  More complex scanners are made up of multiple individual scan routines -- \ref startstates -- and they store their state here.
-
-    void *userref;      ///< Never touched by any re2c routines.   Well, except scanstate_init(), which clears both this field and userproc to 0.  It could be used to associate a parser with this scanstate.
-    void *userproc;     ///< Never touched by any re2c routines.  See scanstate::userref.
 };
 typedef struct scanstate scanstate;
 
@@ -195,9 +189,7 @@ typedef struct scanstate scanstate;
  *
  * @param ss The scanstate to initialize.  There is no need to clear this
  *   memory first -- scanstate_init initializes every field.
- * @param bufptr The scan buffer.  Pass NULL if you don't care to specify
- *   a scan buffer, such as when attaching a readproc that includes its
- *   own buffer (readmem_attach()).
+ * @param bufptr The scan buffer.
  * @param bufsiz Size, in bytes, of bufptr.  Pass 0 when bufptr is NULL.
  */
 
@@ -360,26 +352,6 @@ void scanstate_reset(scanstate *ss);
 
 #define scan_pushback(ss) ((ss)->cursor = (ss)->token)
 
-
-/**
- * Sets the current line number in the scanner to the given value.
- *
- * It's generally better to use this macro to manipulate the
- * line number because it's more visible and easier to grep for.
- */
-
-#define scan_set_line(ss,n) ((ss)->line=(n));
-
-
-/** Increments the current line number by 1.
- *
- * It's generally better to use this macro to manipulate the
- * line number because it's more visible and easier to grep for.
- */
-
-#define scan_inc_line(ss)   ((ss)->line++);
-
-
 /** Prepares a scanner to scan the next token.
  *
  * This macro must be called by scanners only!  See
@@ -390,12 +362,6 @@ void scanstate_reset(scanstate *ss);
  */
 
 #define scanner_enter(ss) ((ss)->token = (ss)->cursor)
-
-
-/** This gives the version number of the re2c library currently being used.
- */
-
-extern const char *re2c_library_version;
 
 #endif
 
