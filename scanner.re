@@ -28,9 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "scanner.def.h"
-#include "parser.h"
-#include "scan.h"
+#include "scanner.h"
 
 #define TOKEN_SEPARATOR 10000
 

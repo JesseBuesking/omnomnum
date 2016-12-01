@@ -27,10 +27,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #include "scanner.def.h"
+// pull in definitions for malloc and free
 #include <stdlib.h>
-#include <stddef.h>
 
 size_t RESET_LIST_SIZE = 8;
 

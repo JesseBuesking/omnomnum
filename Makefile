@@ -26,10 +26,7 @@ FINAL_LIBS=
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
 
-CSRC=parser.c read.c scan.c
-CHDR=read.h scan.h
-
-OMNOMNUM_OBJ=parser.o scan.o omnomnum.o scanner.o sds.o dtoa.o scanner.def.o
+OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;

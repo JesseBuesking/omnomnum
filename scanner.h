@@ -31,9 +31,8 @@
 #ifndef OMNOMNUM_SCANNER_H_
 #define OMNOMNUM_SCANNER_H_
 
-#include <stdio.h>
+// pull in definitions for malloc and free
 #include <stdlib.h>
-#include <string.h>
 
 #include "scanner.def.h"
 #include "parser.h"

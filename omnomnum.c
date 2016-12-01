@@ -87,9 +87,8 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     scanstate ss;
     scanstate_init(&ss, data, data_len);
 
+    int parse_second = state->options & PARSE_SECOND;
     int tok;
-    unsigned int start_pos = 0;
-    unsigned int token_length = 0;
     int parsing = 0;
 
 #if debug
@@ -97,77 +96,69 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
 #endif
     int last_tok = -1;
 
-    do
-    {
+    for(;;) {
         tok = omnomnum_scanner_start(&ss);
 
 #if debug
-        printf("line %2d, token %d\n", ss.line, tok);
+        sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
+        printf("token is %s at %d - %d\n", value, ss.token - data, ss.cursor - data);
+        sdsfree(value);
 #endif
 
-        if (tok == 0) {
+        if (tok <= 0) {
+            if (tok < 0) {
+                printf("Scanner returned an error: %d\n", tok);
+            }
             break;
         }
 
-        if (tok < 0) {
-            printf("Scanner returned an error: %d\n", tok);
-            break;
-        }
-
-        if (tok == TOKEN_SECOND && (state->options & PARSE_SECOND) == 0) {
+        if (tok == TOKEN_SECOND && parse_second == 0) {
             // dont' parse "second" by default. easiest way to do this is to
             // treat it as a character token
             tok = TOKEN_CHARACTERS;
         }
 
-        token_length = ss.cursor - ss.token;
+        if (parsing == 0) {
+            if (tok == TOKEN_CHARACTERS || tok == TOKEN_SEPARATOR) {
+                // not parsing and we've found a character. gobble it and continue
+                last_tok = tok;
+                continue;
+            }
+        } else {
+            if (tok == TOKEN_CHARACTERS) {
+                if (last_tok != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, yylval, state);
+                }
 
-        // update position information
-        yylval.begin = start_pos;
-        yylval.end = yylval.begin + token_length;
-        start_pos += token_length;
-
-        if (parsing == 0 && (tok == TOKEN_CHARACTERS || tok == TOKEN_SEPARATOR)) {
-            // not parsing and we've found a character. gobble it and continue
-            last_tok = tok;
-            continue;
+                ParseReset(pParser);
+                last_tok = tok;
+                parsing = 0;
+                continue;
+            }
         }
 
-        if (parsing == 1 && tok == TOKEN_CHARACTERS) {
-            if (last_tok != TOKEN_SEPARATOR) {
-                // number followed by character... e.g. "oneself"
-            } else {
-                // finish whatever we had and reset
-                Parse(pParser, 0, yylval, state);
+        if (tok != TOKEN_SEPARATOR && last_tok != TOKEN_CHARACTERS) {
+            if (tok == TOKEN_NUMBER) {
+                // turn string version of number into double
+                sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
+                sscanf(value, "%lf", &yylval.dbl);
+                sdsfree(value);
             }
 
-            ParseReset(pParser);
-            last_tok = tok;
-            parsing = 0;
-            continue;
-        }
+            // update position information
+            yylval.begin = ss.token - data;
+            yylval.end = ss.cursor - data;
 
-#if debug
-        sds value = sdsnewlen(ss.token, token_length);
-        printf("token is %s at %d - %d\n", value, yylval.begin, yylval.end);
-        sdsfree(value);
-#endif
-
-        if (tok == TOKEN_NUMBER) {
-            // turn string version of number into double
-            sds value = sdsnewlen(ss.token, token_length);
-            sscanf(value, "%lf", &yylval.dbl);
-            sdsfree(value);
-        }
-
-        if (tok != TOKEN_SEPARATOR && (last_tok == -1 || last_tok != TOKEN_CHARACTERS)) {
             // parse stuff
             Parse(pParser, tok, yylval, state);
             parsing = 1;
         }
 
         last_tok = tok;
-    } while (tok);
+    }
 
     if (parsing == 1) {
         Parse(pParser, 0, yylval, state);
