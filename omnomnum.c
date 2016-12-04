@@ -87,8 +87,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     scanstate ss;
     scanstate_init(&ss, data, data_len);
 
-    int parse_second = state->options & PARSE_SECOND;
-    int tok;
+    ScannerValue scanner_value;
     int parsing = 0;
 
 #if debug
@@ -97,7 +96,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     int last_tok = -1;
 
     for(;;) {
-        tok = omnomnum_scanner_start(&ss);
+        scanner_value = omnomnum_scanner_start(&state, &ss);
 
 #if debug
         sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
@@ -105,27 +104,21 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         sdsfree(value);
 #endif
 
-        if (tok <= 0) {
-            if (tok < 0) {
-                printf("Scanner returned an error: %d\n", tok);
+        if (scanner_value.token <= 0) {
+            if (scanner_value.token < 0) {
+                printf("Scanner returned an error: %d\n", scanner_value.token);
             }
             break;
         }
 
-        if (tok == TOKEN_SECOND && parse_second == 0) {
-            // dont' parse "second" by default. easiest way to do this is to
-            // treat it as a character token
-            tok = TOKEN_CHARACTERS;
-        }
-
         if (parsing == 0) {
-            if (tok == TOKEN_CHARACTERS || tok == TOKEN_SEPARATOR) {
+            if (scanner_value.token == TOKEN_CHARACTERS || scanner_value.token == TOKEN_SEPARATOR) {
                 // not parsing and we've found a character. gobble it and continue
-                last_tok = tok;
+                last_tok = scanner_value.token;
                 continue;
             }
         } else {
-            if (tok == TOKEN_CHARACTERS) {
+            if (scanner_value.token == TOKEN_CHARACTERS) {
                 if (last_tok != TOKEN_SEPARATOR) {
                     // number followed by character... e.g. "oneself"
                 } else {
@@ -134,14 +127,14 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                 }
 
                 ParseReset(pParser);
-                last_tok = tok;
+                last_tok = scanner_value.token;
                 parsing = 0;
                 continue;
             }
         }
 
-        if (tok != TOKEN_SEPARATOR && last_tok != TOKEN_CHARACTERS) {
-            if (tok == TOKEN_NUMBER) {
+        if (scanner_value.token != TOKEN_SEPARATOR && last_tok != TOKEN_CHARACTERS) {
+            if (scanner_value.token == TOKEN_NUMBER) {
                 // turn string version of number into double
                 sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
                 sscanf(value, "%lf", &yylval.dbl);
@@ -153,11 +146,11 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             yylval.end = ss.cursor - data;
 
             // parse stuff
-            Parse(pParser, tok, yylval, state);
+            Parse(pParser, scanner_value.token, yylval, state);
             parsing = 1;
         }
 
-        last_tok = tok;
+        last_tok = scanner_value.token;
     }
 
     if (parsing == 1) {

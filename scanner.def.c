@@ -79,7 +79,7 @@ void sortYYSTYPElist(YYSTYPEList *l) {
 
 void initParserState(ParserState *state) {
     state->error = NO_ERROR;
-    state->options = NO_OPTIONS;
+    state->parse_second = false;
     initYYSTYPEList(&(state->yystypeList), 4);
 }
 
@@ -88,7 +88,7 @@ void resetParserState(ParserState *state) {
     sdsfree(state->result);
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
-    state->options = NO_OPTIONS;
+    state->parse_second = false;
 }
 
 void freeParserState(ParserState *state) {

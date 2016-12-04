@@ -1,8 +1,8 @@
 #if defined (__cplusplus)
 extern "C" {
 #endif
-#include "omnomnum.h"
-#include "dtoa.h"
+#include "../omnomnum.h"
+#include "../dtoa.h"
 #if defined (__cplusplus)
 }
 #endif

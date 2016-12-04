@@ -921,7 +921,17 @@ void ParseFree(
   (*freeProc)((void*)pParser);
 }
 
-/* 
+/*
+** Return the peak depth of the stack for a parser.
+*/
+#ifdef YYTRACKMAXSTACKDEPTH
+int ParseStackPeak(void *p){
+  yyParser *pParser = (yyParser*)p;
+  return pParser->yyhwm;
+}
+#endif
+
+/*
 ** Deallocate and destroy a parser.  Destructors are called for
 ** all stack elements before shutting the parser down.
 **
@@ -962,16 +972,6 @@ void ParseReset(
     pParser->yystack[0].major = 0;
   }
 }
-
-/*
-** Return the peak depth of the stack for a parser.
-*/
-#ifdef YYTRACKMAXSTACKDEPTH
-int ParseStackPeak(void *p){
-  yyParser *pParser = (yyParser*)p;
-  return pParser->yyhwm;
-}
-#endif
 
 /*
 ** Find the appropriate action for a parser given the terminal

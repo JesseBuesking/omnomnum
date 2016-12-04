@@ -6,10 +6,10 @@
 #define ParseTOKENTYPE  YYSTYPE 
 #define ParseARG_PDECL , ParserState *state 
 void Parse(void *yyp,int yymajor,ParseTOKENTYPE yyminor ParseARG_PDECL);
+void ParseReset(void *p);
 #if defined(YYTRACKMAXSTACKDEPTH)
 int ParseStackPeak(void *p);
 #endif
-void ParseReset(void *p);
 void ParseFree(void *p,void(*freeProc)(void *));
 void *ParseAlloc(void *(*mallocProc)(YYMALLOCARGTYPE));
 #if !defined(NDEBUG)

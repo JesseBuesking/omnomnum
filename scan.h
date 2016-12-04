@@ -34,6 +34,7 @@
 #include <sys/types.h>
 // pull in definition for NULL
 #include <string.h>
+#include "scanner.def.h"
 
 // for re2c...
 #define YYCTYPE     char
@@ -45,7 +46,11 @@
  * Fills the scan buffer with more data. Since we're reading from memory, this
  * does nothing.
  */
-#define YYFILL(n) if (ss->cursor >= ss->limit) return 0;
+static ScannerValue YYFILL(int n) {
+    ScannerValue value;
+    value.token = 0;
+    return value;
+}
 
 // forward declaration
 struct scanstate;

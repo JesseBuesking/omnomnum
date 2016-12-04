@@ -32,6 +32,7 @@
 #define SCANNER_DEF_H
 
 #include "sds.h"
+#include <stdbool.h>
 
 enum suffixValues
 {
@@ -50,11 +51,6 @@ enum errors {
     NO_ERROR,
     SYNTAX_ERROR,
     PARSE_FAILURE
-};
-
-enum parse_options {
-    NO_OPTIONS = 0,
-    PARSE_SECOND = 1 << 0
 };
 
 typedef struct {
@@ -78,8 +74,12 @@ typedef struct {
     sds result;
     enum errors error;
     YYSTYPEList yystypeList;
-    enum parse_options options;
+    bool parse_second;
 } ParserState;
+
+typedef struct {
+    int token;
+} ScannerValue;
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
