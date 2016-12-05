@@ -9,7 +9,7 @@ extern "C" {
 
 #include <benchmark/benchmark.h>
 
-const int REPETITIONS = 10;
+const int REPETITIONS = 20;
 
 void BM_simple(benchmark::State& state) {
     ParserState pstate;

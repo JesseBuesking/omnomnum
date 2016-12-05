@@ -32,10 +32,10 @@
 
 #define TOKEN_SEPARATOR 10000
 
-ScannerValue omnomnum_scanner_start(ParserState *state, scanstate *ss) {
+ScannerValue omnomnum_scanner_start(ParserState *state, void *pParser, YYSTYPE *yylval, scanstate *ss) {
     ScannerValue value;
+fast_path:
     ss->token = ss->cursor;
-//std:
     /*!re2c
         SEPARATOR       = [ \r\n\t\f\-]+;
         END             = "\x00";
@@ -47,9 +47,48 @@ ScannerValue omnomnum_scanner_start(ParserState *state, scanstate *ss) {
         THREE_PART_DATE = [0-9]{2,4} "/" [0-9]{2,4} "/" [0-9]{2,4};
         TWO_PART_DATE   = [0-9]+ "/" [0-9]+;
 
-        THREE_PART_DATE { value.token = TOKEN_CHARACTERS; return value; }
-        TWO_PART_DATE { value.token = TOKEN_CHARACTERS; return value; }
-        NUMBER { value.token = TOKEN_NUMBER; return value; }
+        THREE_PART_DATE {
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, *yylval, state);
+                }
+
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+        }
+        TWO_PART_DATE {
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, *yylval, state);
+                }
+
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+        }
+        NUMBER {
+            value.token = TOKEN_NUMBER;
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return value;
+        }
 
         'and' { value.token = TOKEN_AND; return value; }
         'and a' { value.token = TOKEN_AND_A; return value; }
@@ -101,14 +140,27 @@ ScannerValue omnomnum_scanner_start(ParserState *state, scanstate *ss) {
 
         'first' { value.token = TOKEN_FIRST; return value; }
         'second' {
-            if (state->parse_second) {
+            if (!state->parse_second) {
                 // dont' parse "second" by default. easiest way to do this is to
                 // treat it as a character token
-                value.token = TOKEN_CHARACTERS;
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                        // number followed by character... e.g. "oneself"
+                    } else {
+                        // finish whatever we had and reset
+                        Parse(pParser, 0, *yylval, state);
+                    }
+
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
             } else {
                 value.token = TOKEN_SECOND;
+                return value;
             }
-            return value;
         }
         'third' { value.token = TOKEN_THIRD; return value; }
         'fourth' { value.token = TOKEN_FOURTH; return value; }
@@ -189,10 +241,34 @@ ScannerValue omnomnum_scanner_start(ParserState *state, scanstate *ss) {
         //'halves' { value.token = TOKEN_HALVES; return value; }
 
         //SEPARATOR { goto std; }
-        SEPARATOR { value.token = TOKEN_SEPARATOR; return value; }
+        SEPARATOR {
+            if (!state->is_parsing) {
+                // not parsing and we've found a character. gobble it and continue
+                state->last_token = TOKEN_SEPARATOR;
+                goto fast_path;
+            }
+
+            value.token = TOKEN_SEPARATOR;
+            return value;
+        }
 
         END { value.token = 0; return value; }
 
-        CHARS { value.token = TOKEN_CHARACTERS; return value; }
+        CHARS {
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, *yylval, state);
+                }
+
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+        }
     */
 }

@@ -88,15 +88,15 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     scanstate_init(&ss, data, data_len);
 
     ScannerValue scanner_value;
-    int parsing = 0;
+    state->is_parsing = false;
 
 #if debug
     ParseTrace(stderr, (char*)"[Parser] >> ");
 #endif
-    int last_tok = -1;
+    state->last_token = -1;
 
     for(;;) {
-        scanner_value = omnomnum_scanner_start(&state, &ss);
+        scanner_value = omnomnum_scanner_start(state, pParser, &yylval, &ss);
 
 #if debug
         sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
@@ -111,49 +111,20 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             break;
         }
 
-        if (parsing == 0) {
-            if (scanner_value.token == TOKEN_CHARACTERS || scanner_value.token == TOKEN_SEPARATOR) {
-                // not parsing and we've found a character. gobble it and continue
-                last_tok = scanner_value.token;
-                continue;
-            }
-        } else {
-            if (scanner_value.token == TOKEN_CHARACTERS) {
-                if (last_tok != TOKEN_SEPARATOR) {
-                    // number followed by character... e.g. "oneself"
-                } else {
-                    // finish whatever we had and reset
-                    Parse(pParser, 0, yylval, state);
-                }
-
-                ParseReset(pParser);
-                last_tok = scanner_value.token;
-                parsing = 0;
-                continue;
-            }
-        }
-
-        if (scanner_value.token != TOKEN_SEPARATOR && last_tok != TOKEN_CHARACTERS) {
-            if (scanner_value.token == TOKEN_NUMBER) {
-                // turn string version of number into double
-                sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
-                sscanf(value, "%lf", &yylval.dbl);
-                sdsfree(value);
-            }
-
+        if (scanner_value.token != TOKEN_SEPARATOR && state->last_token != TOKEN_CHARACTERS) {
             // update position information
             yylval.begin = ss.token - data;
             yylval.end = ss.cursor - data;
 
             // parse stuff
             Parse(pParser, scanner_value.token, yylval, state);
-            parsing = 1;
+            state->is_parsing = true;
         }
 
-        last_tok = scanner_value.token;
+        state->last_token = scanner_value.token;
     }
 
-    if (parsing == 1) {
+    if (state->is_parsing) {
         Parse(pParser, 0, yylval, state);
         ParseReset(pParser);
     }

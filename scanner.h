@@ -38,6 +38,6 @@
 #include "parser.h"
 #include "scan.h"
 
-ScannerValue omnomnum_scanner_start(ParserState *state, scanstate *ss);
+ScannerValue omnomnum_scanner_start(ParserState *state, void *pParser, YYSTYPE *yylval, scanstate *ss);
 
 #endif // OMNOMNUM_SCANNER_H_

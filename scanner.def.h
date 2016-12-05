@@ -75,6 +75,8 @@ typedef struct {
     enum errors error;
     YYSTYPEList yystypeList;
     bool parse_second;
+    bool is_parsing;
+    int last_token;
 } ParserState;
 
 typedef struct {
