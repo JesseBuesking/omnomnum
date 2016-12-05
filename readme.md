@@ -33,6 +33,10 @@ To run the benchmarks:
 
 - [x] Test for thread safety & make thread safe
     - Not needed for embedding in ruby since it has a global lock.
+- [ ] faster double to string
+- [ ] faster int to string
+- [ ] maybe try adding is_dbl and doing int to string by default
+  - use dbl by default, but do long double -> long int cast, then printf
 - [ ] Prevent parse error (falls back to reduce which works, but the grammar shouldn't be ambiguous).
 - [ ] Make sure numbers containing commas (and periods) work as well.
 - [ ] Clean up the Makefile.
