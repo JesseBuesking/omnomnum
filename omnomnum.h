@@ -35,6 +35,8 @@
 #include "scan.h"
 #include "sds.h"
 #include "parser.h"
+#include "branchlut/branchlut.h"
+#include "grisu2/grisu2.h"
 
 void initOmNomNum(void);
 void freeOmNomNum(void);

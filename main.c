@@ -29,6 +29,7 @@
  */
 
 #include "omnomnum.h"
+#include "branchlut/branchlut.h"
 
 void test_single(const char *data, int verbose) {
     ParserState state;
@@ -62,12 +63,22 @@ int main() {
 
     initOmNomNum();
 
+    long long int value = 100200300400500600;
+    char buffer[256] = { '\0' };
+    sprintf(buffer, "%ld", value);
+    printf("%s\n", buffer);
+
+    char buffer2[256] = { '\0' };
+    i64toa_branchlut(value, buffer2);
+    printf("%s\n", buffer2);
+
     /*test_single("one two three four five", 1);*/
     /*test_single("first day month two", 1);*/
     /*test_single("one hundred", 1);*/
     /*test_single("two million eight hundred and sixty seven thousand five hundred and thirty two seconds from now", 1);*/
 
-    test_loop("two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello");
+    test_loop("two hundred");
+    /*test_loop("two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello");*/
     /*test_loop("two hundred hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world");*/
 
     freeOmNomNum();

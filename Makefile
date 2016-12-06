@@ -26,10 +26,13 @@ DEBUG=-g -ggdb -Dprint_errors
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
 
-OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o grisu2/grisu2.o
+OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
+
+branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
+	$(OMNOMNUM_CC) -c $< -o branchlut/branchlut.o
 
 grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o grisu2/grisu2.o
