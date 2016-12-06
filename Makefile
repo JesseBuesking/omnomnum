@@ -19,17 +19,20 @@ OPT=$(OPTIMIZATION) -msse4.2
 
 FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG)
 FINAL_LDFLAGS=$(LDFLAGS) $(DEBUG)
-FINAL_LIBS=
-#DEBUG=-g -ggdb -Dprint_errors
+FINAL_LIBS=-lm
+DEBUG=-g -ggdb -Dprint_errors
 #DEBUG=-g -ggdb -Dprint_errors -Ddebug
 
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
 
-OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o
+OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o grisu2/grisu2.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
+
+grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
+	$(OMNOMNUM_CC) -c $< -o grisu2/grisu2.o
 
 %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $<

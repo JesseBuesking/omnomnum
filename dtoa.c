@@ -31,37 +31,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "sds.h"
+#include "grisu2/grisu2.h"
 
 /*
  * From http://stackoverflow.com/a/277810/435460, but converted to use sds.
  */
 
-void nDecimals(sds *s, double d, int n) {
-    int sz; double d2;
-
-    // Allow for negative.
-
-    d2 = (d >= 0) ? d : -d;
-    sz = (d >= 0) ? 0 : 1;
-
-    // Add one for each whole digit (0.xx special case).
-
-    if (d2 < 1) {
-        sz++;
-    }
-    while (d2 >= 1) {
-        d2 /= 10.0;
-        sz++;
-    }
-
-    // Adjust for decimal point and fractionals.
-
-    sz += 1 + n;
-
-    // Create format string then use it.
-    /*sprintf(s, "%*.*f", sz, n, d);*/
-    *s = sdscatprintf(*s, "%*.*f", sz, n, d);
-}
+char buffer[256];
 
 void morphNumericString(sds *s, int n) {
     char *p = strchr(*s, '.');                    // Find decimal point, if any.
@@ -85,6 +61,8 @@ void morphNumericString(sds *s, int n) {
 }
 
 void dtoa(sds *s, double d, int precision) {
-    nDecimals(s, d, precision);
+    memset(buffer, 0, 256);
+    fill_double(d, buffer);
+    *s = sdscat(*s, buffer);
     morphNumericString(s, precision);
 }
