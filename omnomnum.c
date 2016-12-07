@@ -87,7 +87,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     scanstate ss;
     scanstate_init(&ss, data, data_len);
 
-    ScannerValue scanner_value;
+    int scanner_value = -1;
     state->is_parsing = false;
 
 #if debug
@@ -104,24 +104,24 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         sdsfree(value);
 #endif
 
-        if (scanner_value.token <= 0) {
-            if (scanner_value.token < 0) {
-                printf("Scanner returned an error: %d\n", scanner_value.token);
+        if (scanner_value <= 0) {
+            if (scanner_value < 0) {
+                printf("Scanner returned an error: %d\n", scanner_value);
             }
             break;
         }
 
-        if (scanner_value.token != TOKEN_SEPARATOR && state->last_token != TOKEN_CHARACTERS) {
+        if (scanner_value != TOKEN_SEPARATOR && state->last_token != TOKEN_CHARACTERS) {
             // update position information
             yylval.begin = ss.token - data;
             yylval.end = ss.cursor - data;
 
             // parse stuff
-            Parse(pParser, scanner_value.token, yylval, state);
+            Parse(pParser, scanner_value, yylval, state);
             state->is_parsing = true;
         }
 
-        state->last_token = scanner_value.token;
+        state->last_token = scanner_value;
     }
 
     if (state->is_parsing) {
@@ -141,7 +141,9 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         state->result = sdsnew(data);
     } else {
         state->result = sdsempty();
-        sds original = sdsnew(data);
+        // must use sdsnewlen, otherwise null bytes in the middle of the string
+        // will terminate the string early
+        sds original = sdsnewlen(data, data_len);
 
         unsigned int lastpos = 0;
         unsigned int i = 0;

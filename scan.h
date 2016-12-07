@@ -46,11 +46,7 @@
  * Fills the scan buffer with more data. Since we're reading from memory, this
  * does nothing.
  */
-static ScannerValue YYFILL(int n) {
-    ScannerValue value;
-    value.token = 0;
-    return value;
-}
+#define YYFILL(n) if (ss->cursor >= ss->limit) return 0;
 
 // forward declaration
 struct scanstate;

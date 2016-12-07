@@ -79,10 +79,6 @@ typedef struct {
     int last_token;
 } ParserState;
 
-typedef struct {
-    int token;
-} ScannerValue;
-
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
 void resetYYSTYPElist(YYSTYPEList *l);

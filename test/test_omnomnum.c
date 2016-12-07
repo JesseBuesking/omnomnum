@@ -73,3 +73,28 @@ TEST(MorphStringTest, HandlesTrailingZeros) {
     morphNumericString(&s, 3);
     ASSERT_TRUE(strcmp("12", s) == 0) << "12 != " << s << "\n";
 }
+
+void printlen(char *value, int len) {
+    int i;
+    for (i = 0; i < len; i++) {
+        if (value[i] != 0) {
+            printf("%c", value[i]);
+        } else {
+            printf("\\0");
+        }
+    }
+    printf("\n");
+}
+
+TEST(NullByteTest, HandlesTrailingZeros) {
+    ParserState state;
+    initParserState(&state);
+
+    sds input = sdsnewlen("one \0 two", 9);
+    sds expect = sdsnewlen("1 \0 2", 5);
+
+    initOmNomNum();
+    normalize(input, sdslen(input), &state);
+
+    ASSERT_TRUE(sdscmp(expect, state.result) == 0);
+}
