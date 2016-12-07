@@ -72,6 +72,11 @@ int main() {
     i64toa_branchlut(value, buffer2);
     printf("%s\n", buffer2);
 
+    double dbl = 123456789.123456789;
+
+    printf("%lf\n", dbl);
+    printf("%ld\n", (uint64_t)dbl);
+
     /*test_single("one two three four five", 1);*/
     /*test_single("first day month two", 1);*/
     /*test_single("one hundred", 1);*/

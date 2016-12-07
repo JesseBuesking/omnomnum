@@ -12,9 +12,6 @@ extern "C" {
 const int REPETITIONS = 3;
 
 void BM_fast_double(benchmark::State& state) {
-    const char* data = "two hundred";
-    size_t data_len = strlen(data);
-
     double value = 10.234;
     while (state.KeepRunning()) {
         sds buffer = sdsempty();
@@ -25,9 +22,6 @@ void BM_fast_double(benchmark::State& state) {
 BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_normal_int(benchmark::State& state) {
-    const char* data = "two hundred";
-    size_t data_len = strlen(data);
-
     long long int value = 100200300400500600;
     while (state.KeepRunning()) {
         char buffer[256] = { '\0' };
@@ -37,9 +31,6 @@ void BM_normal_int(benchmark::State& state) {
 BENCHMARK(BM_normal_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_fast_int(benchmark::State& state) {
-    const char* data = "two hundred";
-    size_t data_len = strlen(data);
-
     long long int value = 100200300400500600;
     while (state.KeepRunning()) {
         char buffer2[256] = { '\0' };
@@ -47,6 +38,15 @@ void BM_fast_int(benchmark::State& state) {
     }
 }
 BENCHMARK(BM_fast_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+
+void BM_fast_dbl_to_int(benchmark::State& state) {
+    double value = 123456789.123456;
+    while (state.KeepRunning()) {
+        char buffer2[256] = { '\0' };
+        i64toa_branchlut((uint64_t)value, buffer2);
+    }
+}
+BENCHMARK(BM_fast_dbl_to_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_simple(benchmark::State& state) {
     ParserState pstate;
