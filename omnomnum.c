@@ -35,7 +35,13 @@
 #define TOKEN_SEPARATOR 10000
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
-    dtoa(s, A.dbl, precision);
+    if (A.is_dbl) {
+      dtoa(s, A.dbl, precision);
+    } else {
+      char buffer[256] = { '\0' };
+      i64toa_branchlut((uint64_t)A.dbl, buffer);
+      *s = sdscat(*s, buffer);
+    }
 
     switch (A.suffix) {
         case NO_SUFFIX:

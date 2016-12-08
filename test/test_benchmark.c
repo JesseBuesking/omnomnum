@@ -9,7 +9,7 @@ extern "C" {
 
 #include <benchmark/benchmark.h>
 
-const int REPETITIONS = 3;
+const int REPETITIONS = 10;
 
 void BM_fast_double(benchmark::State& state) {
     double value = 10.234;
@@ -22,7 +22,7 @@ void BM_fast_double(benchmark::State& state) {
 BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_normal_int(benchmark::State& state) {
-    long long int value = 100200300400500600;
+    long int value = 100200300400500600;
     while (state.KeepRunning()) {
         char buffer[256] = { '\0' };
         sprintf(buffer, "%ld", value);

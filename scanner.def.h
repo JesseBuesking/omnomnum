@@ -55,6 +55,7 @@ enum errors {
 
 typedef struct {
     double dbl;
+    bool is_dbl;
     enum suffixValues suffix;
     //double frac_num;
     //double frac_denom;

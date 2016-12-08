@@ -36,13 +36,14 @@ To run the benchmarks:
 - [x] faster double to string
 - [x] faster int to string
 - [x] allow for null byte within the string
-- [ ] maybe try adding is_dbl and doing int to string by default
+- [x] maybe try adding is_dbl and doing int to string by default
   - use dbl by default, but do long double -> long int cast, then printf
 - [ ] Prevent parse error (falls back to reduce which works, but the grammar shouldn't be ambiguous).
 - [ ] Make sure numbers containing commas (and periods) work as well.
 - [ ] Clean up the Makefile.
 - [ ] Reuse sds, but "grow"(shrink) to max size between if over DEFAULT_SIZE.
 - [ ] Fractions.
+- [ ] Clean up code. Better organization, cleaner files, etc.
 
 Performance related:
 - [ ] For faster parsing of strings with lots of numbers, sdscatprinf (sdscatprintf -> vsnprintf -> vfprintf -> \_\_printf_fp -> hack_digit) (faster dtoa implementation).
