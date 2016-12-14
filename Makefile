@@ -20,7 +20,7 @@ OPT=$(OPTIMIZATION) -msse4.2
 FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG)
 FINAL_LDFLAGS=$(LDFLAGS) $(DEBUG)
 FINAL_LIBS=-lm
-DEBUG=-g -ggdb -Dprint_errors
+#DEBUG=-g -ggdb -Dprint_errors
 #DEBUG=-g -ggdb -Dprint_errors -Ddebug
 
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)

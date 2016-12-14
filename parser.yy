@@ -297,14 +297,11 @@ hundredths(A) ::= HUNDREDTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.
 /*hundredths(A) ::= NUMBER(B) HUNDREDTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.suffix = THS; }*/
 /*hundredths(A) ::= HUNDREDTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; A.suffix = THS; }*/
 
-first_to_99th(A) ::= tens(B) first_to_9th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.suffix = C.suffix; A.is_dbl = B.is_dbl || C.is_dbl; }
-first_to_99th(A) ::= tenth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-first_to_99th(A) ::= tenth_to_19th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-first_to_99th(A) ::= first_to_9th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-
 /* --------------------------------------
 sub thousand regular
 -------------------------------------- */
+
+/*final_number(A) ::= one_to_999(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }*/
 
 one_to_999(A) ::= hundreds(B) AND one_to_99(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
 one_to_999(A) ::= hundreds(B) one_to_99(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
@@ -316,10 +313,31 @@ hundreds(A) ::= one_to_99(B) HUNDRED(C). { A.begin = mini(B.begin, C.begin); A.e
 hundreds(A) ::= NUMBER(B) HUNDRED(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.is_dbl = true; }
 hundreds(A) ::= HUNDRED(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; }
 
+/* --------------------------------------
+sub hundred ordinal
+-------------------------------------- */
+
+first_to_99th(A) ::= tens(B) first_to_9th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.suffix = C.suffix; A.is_dbl = B.is_dbl || C.is_dbl; }
+first_to_99th(A) ::= tenth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+first_to_99th(A) ::= tenth_to_19th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+first_to_99th(A) ::= first_to_9th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+
+/* --------------------------------------
+sub hundred regular
+-------------------------------------- */
+
+/*final_number(A) ::= one_to_99(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }*/
+
 one_to_99(A) ::= tens(B) one_to_9(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
 one_to_99(A) ::= tens(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-one_to_99(A) ::= ten_to_19(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-one_to_99(A) ::= one_to_9(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+one_to_99(A) ::= one_to_19(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+
+/* --------------------------------------
+sub twenty regular
+-------------------------------------- */
+
+one_to_19(A) ::= ten_to_19(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+one_to_19(A) ::= one_to_9(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
 
 /* --------------------------------------
 basic terminals

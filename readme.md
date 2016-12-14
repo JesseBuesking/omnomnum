@@ -38,9 +38,9 @@ To run the benchmarks:
 - [x] allow for null byte within the string
 - [x] maybe try adding is_dbl and doing int to string by default
   - use dbl by default, but do long double -> long int cast, then printf
+- [ ] Clean up the Makefile / fix it so I don't have to call clean before.
 - [ ] Prevent parse error (falls back to reduce which works, but the grammar shouldn't be ambiguous).
 - [ ] Make sure numbers containing commas (and periods) work as well.
-- [ ] Clean up the Makefile.
 - [ ] Reuse sds, but "grow"(shrink) to max size between if over DEFAULT_SIZE.
 - [ ] Fractions.
 - [ ] Clean up code. Better organization, cleaner files, etc.
@@ -48,3 +48,34 @@ To run the benchmarks:
 Performance related:
 - [ ] For faster parsing of strings with lots of numbers, sdscatprinf (sdscatprintf -> vsnprintf -> vfprintf -> \_\_printf_fp -> hack_digit) (faster dtoa implementation).
 - [ ] For faster parsing of strings with fewer numbers omnomnum_scanner_start and Parse (probably grammar changes).
+
+
+Notes
+---
+
+why doesn't final_number ::= one_to_999 work? I think resolving this might fix
+some other issues.
+
+999 999 999
+  nine hundred ninety nine million
+  nine hundred ninety nine thousand
+  nine hundred and ninety nine
+
+999 001 999
+  nine hundred ninety nine million
+  one thousand
+  nine hundred and ninety nine
+
+2000 - doesn't make sense
+  twenty hundred
+
+9900 - kinda makes sense
+  ninety nine hundred
+
+1999 - normal
+  nineteen hundred
+  ninety nine
+
+1999 - date wording
+  nineteen
+  ninety nine

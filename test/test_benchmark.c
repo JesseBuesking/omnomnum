@@ -19,7 +19,7 @@ void BM_fast_double(benchmark::State& state) {
         morphNumericString(&buffer, 3);
     }
 }
-BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+/*BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_normal_int(benchmark::State& state) {
     long int value = 100200300400500600;
@@ -28,7 +28,7 @@ void BM_normal_int(benchmark::State& state) {
         sprintf(buffer, "%ld", value);
     }
 }
-BENCHMARK(BM_normal_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+/*BENCHMARK(BM_normal_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_int(benchmark::State& state) {
     long long int value = 100200300400500600;
@@ -37,7 +37,7 @@ void BM_fast_int(benchmark::State& state) {
         i64toa_branchlut(value, buffer2);
     }
 }
-BENCHMARK(BM_fast_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+/*BENCHMARK(BM_fast_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_dbl_to_int(benchmark::State& state) {
     double value = 123456789.123456;
@@ -46,7 +46,7 @@ void BM_fast_dbl_to_int(benchmark::State& state) {
         i64toa_branchlut((uint64_t)value, buffer2);
     }
 }
-BENCHMARK(BM_fast_dbl_to_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+/*BENCHMARK(BM_fast_dbl_to_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_simple(benchmark::State& state) {
     ParserState pstate;
