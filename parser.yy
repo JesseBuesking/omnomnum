@@ -170,7 +170,7 @@ final_number(A) ::= ZERO(B). { A.begin = B.begin; A.end = B.end; A.dbl = 0.0; }
 sub quadrillion regular
 -------------------------------------- */
 
-first_to_999999999999999th(A) ::= less_than_thousand(B) TRILLION first_to_999999999999th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
+first_to_999999999999999th(A) ::= less_than_thousand(B) TRILLION first_to_999999999999th_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999999999999999th(A) ::= less_than_thousand(B) TRILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
 first_to_999999999999999th(A) ::= first_to_999999999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
@@ -196,7 +196,10 @@ final_number(A) ::= NUMBER(B) TRILLION(C). { A.begin = mini(B.begin, C.begin); A
 sub trillion ordinal
 -------------------------------------- */
 
-first_to_999999999999th(A) ::= less_than_thousand(B) BILLION first_to_999999999th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
+first_to_999999999999th_end_only(A) ::= first_to_999999999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+first_to_999999999999th_end_only(A) ::= first_to_999999999th_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+
+first_to_999999999999th(A) ::= less_than_thousand(B) BILLION first_to_999999999th_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999999999999th(A) ::= less_than_thousand(B) BILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
 first_to_999999999999th(A) ::= first_to_999999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
@@ -225,7 +228,10 @@ final_number(A) ::= NUMBER(B) BILLION(C). { A.begin = mini(B.begin, C.begin); A.
 sub billion ordinal
 -------------------------------------- */
 
-first_to_999999999th(A) ::= less_than_thousand(B) MILLION first_to_999999th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
+first_to_999999999th_end_only(A) ::= first_to_999999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+first_to_999999999th_end_only(A) ::= first_to_999999th_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+
+first_to_999999999th(A) ::= less_than_thousand(B) MILLION first_to_999999th_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999999999th(A) ::= less_than_thousand(B) MILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
 first_to_999999999th(A) ::= first_to_999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
@@ -254,7 +260,10 @@ final_number(A) ::= NUMBER(B) MILLION(C). { A.begin = mini(B.begin, C.begin); A.
 sub million ordinal
 -------------------------------------- */
 
-first_to_999999th(A) ::= less_than_thousand(B) THOUSAND first_to_999th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
+first_to_999999th_end_only(A) ::= first_to_999999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; A.suffix = B.suffix; }
+first_to_999999th_end_only(A) ::= first_to_999th_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; A.suffix = B.suffix; }
+
+first_to_999999th(A) ::= less_than_thousand(B) THOUSAND first_to_999th_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999999th(A) ::= less_than_thousand(B) THOUSANDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
 first_to_999999th(A) ::= first_to_999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
@@ -283,10 +292,12 @@ final_number(A) ::= NUMBER(B) THOUSAND(C). { A.begin = mini(B.begin, C.begin); A
 sub thousand ordinal
 -------------------------------------- */
 
+first_to_999th_end_only(A) ::= AND first_to_99th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+first_to_999th_end_only(A) ::= first_to_999th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+
 first_to_999th(A) ::= less_than_hundred(B) HUNDRED AND first_to_99th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999th(A) ::= less_than_hundred(B) HUNDRED first_to_99th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
 first_to_999th(A) ::= less_than_hundred(B) HUNDREDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-first_to_999th(A) ::= AND first_to_99th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 first_to_999th(A) ::= first_to_99th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
 final_number(A) ::= HUNDREDTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; A.suffix = TH; }

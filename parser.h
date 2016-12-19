@@ -73,8 +73,8 @@ void ParseTrace(FILE *TraceFILE,char *zTracePrompt);
 #define TOKEN_TWO                            22
 #define TOKEN_ONE                            21
 #define TOKEN_HUNDREDTH                      20
-#define TOKEN_AND                            19
-#define TOKEN_HUNDRED                        18
+#define TOKEN_HUNDRED                        19
+#define TOKEN_AND                            18
 #define TOKEN_THOUSANDTH                     17
 #define TOKEN_THOUSAND                       16
 #define TOKEN_MILLIONTH                      15
