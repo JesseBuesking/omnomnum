@@ -35,6 +35,11 @@
 #define TOKEN_SEPARATOR 10000
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
+    /*if (A.is_frac) {*/
+      /*dtoa(s, A.frac_num, precision);*/
+      /*s = sdscat(s, "/");*/
+      /*dtoa(s, A.frac_denom, precision);*/
+    /*}*/
     if (A.is_dbl) {
       dtoa(s, A.dbl, precision);
     } else {
