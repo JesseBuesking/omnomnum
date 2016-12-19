@@ -50,8 +50,7 @@ Performance related:
 - [ ] For faster parsing of strings with fewer numbers omnomnum_scanner_start and Parse (probably grammar changes).
 
 
-Notes
----
+## Notes
 
 why doesn't final_number ::= one_to_999 work? I think resolving this might fix
 some other issues.
@@ -79,3 +78,14 @@ some other issues.
 1999 - date wording
   nineteen
   ninety nine
+
+### Multiple numbers
+
+Multiple numbers back-to-back causes this grammar to be ambiguous (see the rule
+`numbers ::= numbers number.`). I believe it's not possible to resolve this. For
+example, take "one two" and "one thousand one hundred". Let's assume that you're
+on "two" in the first example, and the second "one" in the second example. It's
+not possible for the  parser to use any reduce rules in the second example
+because it doesn't yet know if there's more data available to match another
+rule -- the "hundred" -- or if it's safe to reduce like in the first example. I
+may be wrong, but this is my current understanding of why it's ambiguous.

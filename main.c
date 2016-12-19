@@ -79,7 +79,8 @@ int main() {
 
     /*test_single("one two three four five", 1);*/
     /*test_single("first day month two", 1);*/
-    test_single("one hundred", 1);
+    //test_single("ten", 1);
+    test_single("one billion and one", 1);
     /*test_single("two million eight hundred and sixty seven thousand five hundred and thirty two seconds from now", 1);*/
 
     /*test_loop("two hundred");*/
