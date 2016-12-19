@@ -46,7 +46,7 @@ omnomnum: $(OMNOMNUM_OBJ) main.o
 	$(OMNOMNUM_LD) $^ -o $@ $(FINAL_LIBS)
 	./omnomnum
 
-parser.c: parser.yy
+parser.c: parser.yy scanner.re
 	# produces parser.c
 	$(LEMON) -m parser.yy
 
@@ -59,7 +59,7 @@ parser.o: parser.h
 	# produces parser.o
 	$(OMNOMNUM_CC) -c parser.c
 
-scanner.c: scanner.re
+scanner.c: scanner.re parser.yy
 	$(RE2C) -o $@ scanner.re
 
 clean:
@@ -84,6 +84,3 @@ test/test_benchmark: $(OMNOMNUM_OBJ) test/test_benchmark.o
 
 benchmark: all test/test_benchmark
 	cd test && ./test_benchmark
-
-valgrind:
-	$(MAKE) OPTIMIZATION="-O0" MALLOC="libc"
