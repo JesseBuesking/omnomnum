@@ -33,6 +33,7 @@
 #include "dtoa.h"
 
 #define TOKEN_SEPARATOR 10000
+#define TOKEN_CHARACTERS 10001
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     /*if (A.is_frac) {*/

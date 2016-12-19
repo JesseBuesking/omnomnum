@@ -31,6 +31,7 @@
 #include "scanner.h"
 
 #define TOKEN_SEPARATOR 10000
+#define TOKEN_CHARACTERS 10001
 
 int omnomnum_scanner_start(ParserState *state, void *pParser, YYSTYPE *yylval, scanstate *ss) {
 fast_path:

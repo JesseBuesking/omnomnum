@@ -105,17 +105,7 @@
 // used with fractions, but rds is)
 // ------------------------------------TODO------------------------------------
 
-program ::= num_nonnum.
-program ::= nonnum_num.
-
-num_nonnum ::= numbers nonnum_num.
-num_nonnum ::= numbers.
-
-nonnum_num ::= nonnum num_nonnum.
-nonnum_num ::= nonnum.
-
-nonnum ::= nonnum CHARACTERS.
-nonnum ::= CHARACTERS.
+program ::= numbers.
 
 numbers ::= numbers number.
 numbers ::= number.
@@ -137,7 +127,7 @@ final_number(A) ::= less_than_quadrillion(B) HALVES(C). { A.begin = mini(B.begin
 final_number(A) ::= less_than_quadrillion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
 final_number(A) ::= less_than_quadrillionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
-final_number(A) ::= trillionths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+//final_number(A) ::= trillionths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
 
 /*A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }*/
 //final_number(A) ::= fraction(B). {
