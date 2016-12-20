@@ -100,11 +100,6 @@
 
 %start_symbol program
 
-// ------------------------------------TODO------------------------------------
-// look into using rd, and flagging if rds is used (rd is not typically
-// used with fractions, but rds is)
-// ------------------------------------TODO------------------------------------
-
 program ::= numbers.
 
 numbers ::= numbers number.

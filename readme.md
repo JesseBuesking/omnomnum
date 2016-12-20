@@ -31,53 +31,20 @@ To run the benchmarks:
 
 ## TODOS:
 
-- [x] Test for thread safety & make thread safe
-    - Not needed for embedding in ruby since it has a global lock.
-- [x] faster double to string
-- [x] faster int to string
-- [x] allow for null byte within the string
-- [x] maybe try adding is_dbl and doing int to string by default
-  - use dbl by default, but do long double -> long int cast, then printf
-- [ ] Clean up the Makefile / fix it so I don't have to call clean before.
-- [ ] Prevent parse error (falls back to reduce which works, but the grammar shouldn't be ambiguous).
+- [ ] Support fractions.
+- [ ] Clean up and organize a bit.
+- [ ] Clean up the Makefile.
+- [ ] Prevent parse error due to ambiguities (falls back to reduce which works,
+      but the grammar probably shouldn't be ambiguous).
 - [ ] Make sure numbers containing commas (and periods) work as well.
-- [ ] Reuse sds, but "grow"(shrink) to max size between if over DEFAULT_SIZE.
-- [ ] Fractions.
-- [ ] Clean up code. Better organization, cleaner files, etc.
-
-Performance related:
-- [ ] For faster parsing of strings with lots of numbers, sdscatprinf (sdscatprintf -> vsnprintf -> vfprintf -> \_\_printf_fp -> hack_digit) (faster dtoa implementation).
-- [ ] For faster parsing of strings with fewer numbers omnomnum_scanner_start and Parse (probably grammar changes).
-
+- [ ] Test for thread safety.
+    - Unnecessary for my current needs since I'm embedding in ruby and it has a
+      global lock.
+- [ ] Be even more memory conservative by reusing sds objects. (Grow (or shrink)
+      to max size between calls if over some default size so we don't hold
+      large amounts of memory indefinitely after bigger parses).
 
 ## Notes
-
-why doesn't final_number ::= one_to_999 work? I think resolving this might fix
-some other issues.
-
-999 999 999
-  nine hundred ninety nine million
-  nine hundred ninety nine thousand
-  nine hundred and ninety nine
-
-999 001 999
-  nine hundred ninety nine million
-  one thousand
-  nine hundred and ninety nine
-
-2000 - doesn't make sense
-  twenty hundred
-
-9900 - kinda makes sense
-  ninety nine hundred
-
-1999 - normal
-  nineteen hundred
-  ninety nine
-
-1999 - date wording
-  nineteen
-  ninety nine
 
 ### Multiple numbers
 
