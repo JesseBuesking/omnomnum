@@ -1,4 +1,5 @@
 # test straight parsing
+- ["one", "1", 3]
 - ["one hundred", "100", 3]
 - ["one thousand", "1000", 3]
 - ["one", "1", 3]
@@ -115,3 +116,5 @@
 # test raw number not followed by a modifier like hundred
 #   (leave it intact as it may be a "proper" number)
 - ["007", "007", 3]
+# misc
+- ["5/2 years", "5/2 years", 3]

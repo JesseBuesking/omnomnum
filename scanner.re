@@ -208,22 +208,6 @@ fast_path:
 
             return TOKEN_SEPARATOR;
         }
-        WHOLE_NUMBER {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
-
-            return TOKEN_WHOLE_NUMBER;
-        }
-        DECIMAL {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
-
-            return TOKEN_DECIMAL;
-        }
         THREE_PART_DATE {
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) {
@@ -255,6 +239,22 @@ fast_path:
 
             state->last_token = TOKEN_CHARACTERS;
             goto fast_path;
+        }
+        WHOLE_NUMBER {
+            // turn string version of number into double
+            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_WHOLE_NUMBER;
+        }
+        DECIMAL {
+            // turn string version of number into double
+            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
         }
 
         // MUST COME LAST
