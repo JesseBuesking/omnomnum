@@ -196,47 +196,47 @@ fast_path:
         'quarter' { return TOKEN_QUARTER; }
         'half' { return TOKEN_HALF; }
 
-        //'firsts' { return TOKEN_FIRSTS; }
+        'firsts' { return TOKEN_FIRSTS; }
+        // TODO: handle like SECOND above
         //'seconds' { return TOKEN_SECONDS; }
-        //'thirds' { return TOKEN_THIRDS; }
-        //'fourths' { return TOKEN_FOURTHS; }
-        //'fifths' { return TOKEN_FIFTHS; }
-        //'sixths' { return TOKEN_SIXTHS; }
-        //'sevenths' { return TOKEN_SEVENTHS; }
-        //'eighths' { return TOKEN_EIGHTHS; }
-        //'nineths' { return TOKEN_NINTHS; }
-        //'ninths' { return TOKEN_NINTHS; }
+        'thirds' { return TOKEN_THIRDS; }
+        'fourths' { return TOKEN_FOURTHS; }
+        'fifths' { return TOKEN_FIFTHS; }
+        'sixths' { return TOKEN_SIXTHS; }
+        'sevenths' { return TOKEN_SEVENTHS; }
+        'eighths' { return TOKEN_EIGHTHS; }
+        'nineths' { return TOKEN_NINTHS; }
+        'ninths' { return TOKEN_NINTHS; }
 
-        //'tenths' { return TOKEN_TENTHS; }
-        //'elevenths' { return TOKEN_ELEVENTHS; }
-        //'twelfths' { return TOKEN_TWELFTHS; }
-        //'thirteenths' { return TOKEN_THIRTEENTHS; }
-        //'fourteenths' { return TOKEN_FOURTEENTHS; }
-        //'fifteenths' { return TOKEN_FIFTEENTHS; }
-        //'sixteenths' { return TOKEN_SIXTEENTHS; }
-        //'seventeenths' { return TOKEN_SEVENTEENTHS; }
-        //'eighteenths' { return TOKEN_EIGHTEENTHS; }
-        //'nineteenths' { return TOKEN_NINETEENTHS; }
+        'tenths' { return TOKEN_TENTHS; }
+        'elevenths' { return TOKEN_ELEVENTHS; }
+        'twelfths' { return TOKEN_TWELFTHS; }
+        'thirteenths' { return TOKEN_THIRTEENTHS; }
+        'fourteenths' { return TOKEN_FOURTEENTHS; }
+        'fifteenths' { return TOKEN_FIFTEENTHS; }
+        'sixteenths' { return TOKEN_SIXTEENTHS; }
+        'seventeenths' { return TOKEN_SEVENTEENTHS; }
+        'eighteenths' { return TOKEN_EIGHTEENTHS; }
+        'nineteenths' { return TOKEN_NINETEENTHS; }
 
-        //'twentieths' { return TOKEN_TWENTIETHS; }
-        //'thirtieths' { return TOKEN_THIRTIETHS; }
-        //'fourtieths' { return TOKEN_FOURTIETHS; }
-        //'fiftieths' { return TOKEN_FIFTIETHS; }
-        //'sixtieths' { return TOKEN_SIXTIETHS; }
-        //'seventieths' { return TOKEN_SEVENTIETHS; }
-        //'eightieths' { return TOKEN_EIGHTIETHS; }
-        //'ninetieths' { return TOKEN_NINETIETHS; }
+        'twentieths' { return TOKEN_TWENTIETHS; }
+        'thirtieths' { return TOKEN_THIRTIETHS; }
+        'fourtieths' { return TOKEN_FOURTIETHS; }
+        'fiftieths' { return TOKEN_FIFTIETHS; }
+        'sixtieths' { return TOKEN_SIXTIETHS; }
+        'seventieths' { return TOKEN_SEVENTIETHS; }
+        'eightieths' { return TOKEN_EIGHTIETHS; }
+        'ninetieths' { return TOKEN_NINETIETHS; }
 
-        //'hundredths' { return TOKEN_HUNDREDTHS; }
-        //'thousandths' { return TOKEN_THOUSANDTHS; }
-        //'millionths' { return TOKEN_MILLIONTHS; }
-        //'billionths' { return TOKEN_BILLIONTHS; }
-        //'trillionths' { return TOKEN_TRILLIONTHS; }
+        'hundredths' { return TOKEN_HUNDREDTHS; }
+        'thousandths' { return TOKEN_THOUSANDTHS; }
+        'millionths' { return TOKEN_MILLIONTHS; }
+        'billionths' { return TOKEN_BILLIONTHS; }
+        'trillionths' { return TOKEN_TRILLIONTHS; }
 
-        //'quarters' { return TOKEN_QUARTERS; }
-        //'halves' { return TOKEN_HALVES; }
+        'quarters' { return TOKEN_QUARTERS; }
+        'halves' { return TOKEN_HALVES; }
 
-        //SEPARATOR { goto std; }
         SEPARATOR {
             if (!state->is_parsing) {
                 // not parsing and we've found a character. gobble it and continue

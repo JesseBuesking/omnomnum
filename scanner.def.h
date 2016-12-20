@@ -56,13 +56,127 @@ enum errors {
 typedef struct {
     double dbl;
     bool is_dbl;
-    enum suffixValues suffix;
-    //double frac_num;
-    //double frac_denom;
-    //unsigned int is_frac;
+
+    double frac_num;
+    double frac_denom;
+    bool is_frac;
+
     unsigned int begin;
     unsigned int end;
+    enum suffixValues suffix;
 } YYSTYPE;
+
+#ifndef COPY_YYSTYPE_BE
+#define COPY_YYSTYPE_BE(A, B) \
+    A.begin = B.begin; \
+    A.end = B.end;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_VALUE
+#define COPY_YYSTYPE_BE_VALUE(A, B, VALUE) \
+    COPY_YYSTYPE_BE(A, B); \
+    A.dbl = VALUE;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_VALUE_SUFF
+#define COPY_YYSTYPE_BE_VALUE_SUFF(A, B, VALUE, SUFFIX) \
+    COPY_YYSTYPE_BE_VALUE(A, B, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL
+#define COPY_YYSTYPE_DBL(A, B) \
+    A.dbl = B.dbl; \
+    A.is_dbl = B.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC
+#define COPY_YYSTYPE_FRAC(A, B) \
+    A.frac_num = B.frac_num; \
+    A.frac_denom = B.frac_denom; \
+    A.is_frac = B.is_frac;
+#endif
+
+#ifndef COPY_YYSTYPE_SUFF
+#define COPY_YYSTYPE_SUFF(A, B) \
+    A.suffix = B.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_DBL
+#define COPY_YYSTYPE_BE_DBL(A, B) \
+    COPY_YYSTYPE_DBL(A, B); \
+    COPY_YYSTYPE_BE(A, B);
+#endif
+
+#ifndef COPY_YYSTYPE_BE_DBL_SUFF
+#define COPY_YYSTYPE_BE_DBL_SUFF(A, B) \
+    COPY_YYSTYPE_BE_DBL(A, B); \
+    COPY_YYSTYPE_SUFF(A, B);
+#endif
+
+#ifndef COPY_YYSTYPE_BE2
+#define COPY_YYSTYPE_BE2(A, B, C) \
+    A.begin = B.begin; \
+    A.end = C.end;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL
+#define COPY_YYSTYPE_BE_MUL(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl * VALUE; \
+    A.is_dbl = B.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_SUFF
+#define COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, VALUE, SUFFIX) \
+    COPY_YYSTYPE_BE_MUL(A, B, C, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_ADD
+#define COPY_YYSTYPE_BE_ADD(A, B, C) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl + C.dbl; \
+    A.is_dbl = B.is_dbl || C.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_ADD_SUFF
+#define COPY_YYSTYPE_BE_ADD_SUFF(A, B, C) \
+    COPY_YYSTYPE_BE_ADD(A, B, C); \
+    A.suffix = C.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_ADD
+#define COPY_YYSTYPE_BE_MUL_ADD(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = (B.dbl * VALUE) + C.dbl; \
+    A.is_dbl = B.is_dbl || C.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_ADD_SUFF
+#define COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE_MUL_ADD(A, B, C, VALUE); \
+    A.suffix = C.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL_NUM
+#define COPY_YYSTYPE_DBL_NUM(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl * VALUE; \
+    A.is_dbl = true;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL_NUM_SUFF
+#define COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, VALUE, SUFFIX) \
+    COPY_YYSTYPE_DBL_NUM(A, B, C, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#define HUNDRED_F  100.0
+#define THOUSAND_F 1000.0
+#define MILLION_F  1000000.0
+#define BILLION_F  1000000000.0
+#define TRILLION_F 1000000000000.0
 
 typedef struct {
     YYSTYPE *values;

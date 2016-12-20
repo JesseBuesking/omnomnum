@@ -42,46 +42,6 @@
 #include "scanner.def.h"
 #include "sds.h"
 #include "dtoa.h"
-
-#define maxi(a, b) (a > b ? a : b)
-#define mini(a, b) (a < b ? a : b)
-}
-
-%include {
-  /*void copy_core(YYSTYPE *from, YYSTYPE *to) {*/
-    /*to->begin = from->begin;*/
-    /*to->end = from->end;*/
-    /*to->suffix = from->suffix;*/
-    /*to->dbl = from->dbl;*/
-  /*}*/
-
-  /*void add(YYSTYPE *first, double second, YYSTYPE *to, enum suffixValues suffix) {*/
-    /*to->begin = first->begin;*/
-    /*to->end = first->end;*/
-    /*to->suffix = suffix;*/
-    /*to->dbl = first->end + second;*/
-  /*}*/
-
-  /*void add(YYSTYPE *first, YYSTYPE *second, YYSTYPE *to, enum suffixValues suffix) {*/
-    /*to->begin = mini(first->begin, second->begin);*/
-    /*to->end = maxi(first->end, second->end);*/
-    /*to->suffix = suffix;*/
-    /*to->dbl = first->end + second->end;*/
-  /*}*/
-
-  /*void mul(YYSTYPE *first, double second, YYSTYPE *to, enum suffixValues suffix) {*/
-    /*to->begin = first->begin;*/
-    /*to->end = first->end;*/
-    /*to->suffix = suffix;*/
-    /*to->dbl = first->end * second;*/
-  /*}*/
-
-  /*void mul(YYSTYPE *first, YYSTYPE *second, YYSTYPE *to, enum suffixValues suffix) {*/
-    /*to->begin = mini(first->begin, second->begin);*/
-    /*to->end = maxi(first->end, second->end);*/
-    /*to->suffix = suffix;*/
-    /*to->dbl = first->end + second->end;*/
-  /*}*/
 }
 
 %syntax_error {
@@ -110,19 +70,20 @@ number ::= final_number(A). {
 }
 number ::= NEGATIVE(A) final_number(B). {
     B.dbl = -B.dbl;
-    B.begin = mini(A.begin, B.begin);
-    B.end = maxi(A.end, B.end);
+    B.begin = A.begin;
+    B.end = B.end;
     insertYYSTYPE(&state->yystypeList, B);
 }
 
-final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + 0.25; A.is_dbl = true; }
-final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl / 4.0; A.is_dbl = true; }
-final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + 0.5; A.is_dbl = true; }
-final_number(A) ::= less_than_quadrillion(B) HALVES(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl / 2.0; A.is_dbl = true; }
-final_number(A) ::= less_than_quadrillion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-final_number(A) ::= less_than_quadrillionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+// TODO: review this quarter and half logic
+final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { COPY_YYSTYPE_BE2(A, B, C); A.dbl = B.dbl + 0.25; A.is_dbl = true; }
+final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). { COPY_YYSTYPE_BE2(A, B, C); A.dbl = B.dbl / 4.0; A.is_dbl = true; }
+final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { COPY_YYSTYPE_BE2(A, B, C); A.dbl = B.dbl + 0.5; A.is_dbl = true; }
+final_number(A) ::= less_than_quadrillion(B) HALVES(C). { COPY_YYSTYPE_BE2(A, B, C); A.dbl = B.dbl / 2.0; A.is_dbl = true; }
 
-//final_number(A) ::= trillionths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+final_number(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+final_number(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+final_number(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
 /*A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }*/
 //final_number(A) ::= fraction(B). {
@@ -137,8 +98,8 @@ final_number(A) ::= less_than_quadrillionth(B). { A.begin = B.begin; A.end = B.e
 // should have this, but if it's not being used in a larger number, we should
 // keep it as is: it might be 007. if we dont keep it, we'll reduce it to 7,
 // when really we should keep it as is
-final_number(A) ::= NUMBER(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = true; }
-final_number(A) ::= ZERO(B). { A.begin = B.begin; A.end = B.end; A.dbl = 0.0; }
+final_number(A) ::= NUMBER(B). { COPY_YYSTYPE_BE(A, B); A.dbl = B.dbl; A.is_dbl = true; }
+final_number(A) ::= ZERO(B). { COPY_YYSTYPE_BE_VALUE(A, B, 0.0); }
 
 /*final_number(A) ::= less_than_quadrillion(B) AND fraction(C). {*/
     /*A.dbl = B.dbl / C.dbl;*/
@@ -161,293 +122,326 @@ final_number(A) ::= ZERO(B). { A.begin = B.begin; A.end = B.end; A.dbl = 0.0; }
 //}
 
 /* --------------------------------------
-sub quadrillion regular
+sub quadrillion ordinal
 -------------------------------------- */
 
-less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLION less_than_trillionth_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-less_than_quadrillionth(A) ::= less_than_trillionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLION less_than_trillionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, TRILLION_F); }
+less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLIONTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, TRILLION_F, TH); }
+less_than_quadrillionth(A) ::= less_than_trillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= TRILLIONTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000000.0; A.suffix = TH; }
-final_number(A) ::= NUMBER(B) TRILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.suffix = TH; A.is_dbl = true; }
+final_number(A) ::= TRILLIONTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, TRILLION_F, TH); }
+final_number(A) ::= NUMBER(B) TRILLIONTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, TRILLION_F, TH); }
 
-//trillionths(A) ::= less_than_trillion(B) TRILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.suffix = THS; }
-//trillionths(A) ::= NUMBER(B) TRILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.suffix = THS; }
-//trillionths(A) ::= TRILLIONTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000000.0; A.suffix = THS; }
-//trillionths(A) ::= billionths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }
+// ----------------------------
+
+less_than_quadrillionths(A) ::= less_than_thousand(B) TRILLION less_than_trillionths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, TRILLION_F); }
+less_than_quadrillionths(A) ::= less_than_thousand(B) TRILLIONTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, TRILLION_F, THS); }
+less_than_quadrillionths(A) ::= less_than_trillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= TRILLIONTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, TRILLION_F, THS); }
+final_number(A) ::= NUMBER(B) TRILLIONTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, TRILLION_F, THS); }
 
 /* --------------------------------------
 sub quadrillion regular
 -------------------------------------- */
 
-less_than_quadrillion(A) ::= less_than_thousand(B) TRILLION less_than_trillion_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_quadrillion(A) ::= less_than_thousand(B) TRILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.is_dbl = B.is_dbl; }
-less_than_quadrillion(A) ::= less_than_trillion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_quadrillion(A) ::= less_than_thousand(B) TRILLION less_than_trillion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, TRILLION_F); }
+less_than_quadrillion(A) ::= less_than_thousand(B) TRILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, TRILLION_F); }
+less_than_quadrillion(A) ::= less_than_trillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-final_number(A) ::= TRILLION(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000000.0; }
-final_number(A) ::= NUMBER(B) TRILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000000.0; A.is_dbl = true; }
+final_number(A) ::= TRILLION(B). { COPY_YYSTYPE_BE_VALUE(A, B, TRILLION_F); }
+final_number(A) ::= NUMBER(B) TRILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, TRILLION_F); }
 
 /* --------------------------------------
 sub trillion ordinal
 -------------------------------------- */
 
-less_than_trillionth_end_only(A) ::= less_than_trillionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-less_than_trillionth_end_only(A) ::= less_than_billionth_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_trillionth_end_only(A) ::= less_than_trillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_trillionth_end_only(A) ::= less_than_billionth_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-less_than_trillionth(A) ::= less_than_thousand(B) BILLION less_than_billionth_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_trillionth(A) ::= less_than_thousand(B) BILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-less_than_trillionth(A) ::= less_than_billionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_trillionth(A) ::= less_than_thousand(B) BILLION less_than_billionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, BILLION_F); }
+less_than_trillionth(A) ::= less_than_thousand(B) BILLIONTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, BILLION_F, TH); }
+less_than_trillionth(A) ::= less_than_billionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= BILLIONTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000.0; A.suffix = TH; }
-final_number(A) ::= NUMBER(B) BILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.suffix = TH; A.is_dbl = true; }
+final_number(A) ::= BILLIONTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, BILLION_F, TH); }
+final_number(A) ::= NUMBER(B) BILLIONTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, BILLION_F, TH); }
 
-//billionths(A) ::= less_than_billion(B) BILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.suffix = THS; }
-//billionths(A) ::= NUMBER(B) BILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.suffix = THS; }
-//billionths(A) ::= BILLIONTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000.0; A.suffix = THS; }
-//billionths(A) ::= millionths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }
+// ----------------------------
+
+less_than_trillionths_end_only(A) ::= less_than_trillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_trillionths_end_only(A) ::= less_than_billionths_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_trillionths(A) ::= less_than_thousand(B) BILLION less_than_billionths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, BILLION_F); }
+less_than_trillionths(A) ::= less_than_thousand(B) BILLIONTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, BILLION_F, THS); }
+less_than_trillionths(A) ::= less_than_billionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= BILLIONTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, BILLION_F, THS); }
+final_number(A) ::= NUMBER(B) BILLIONTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, BILLION_F, THS); }
 
 /* --------------------------------------
 sub trillion regular
 -------------------------------------- */
 
-less_than_trillion_end_only(A) ::= less_than_trillion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_trillion_end_only(A) ::= less_than_billion_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_trillion_end_only(A) ::= less_than_trillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_trillion_end_only(A) ::= less_than_billion_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-less_than_trillion(A) ::= less_than_thousand(B) BILLION less_than_billion_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_trillion(A) ::= less_than_thousand(B) BILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.is_dbl = B.is_dbl; }
-less_than_trillion(A) ::= less_than_billion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_trillion(A) ::= less_than_thousand(B) BILLION less_than_billion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, BILLION_F); }
+less_than_trillion(A) ::= less_than_thousand(B) BILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, BILLION_F); }
+less_than_trillion(A) ::= less_than_billion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-final_number(A) ::= BILLION(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000000.0; }
-final_number(A) ::= NUMBER(B) BILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000000.0; A.is_dbl = true; }
+final_number(A) ::= BILLION(B). { COPY_YYSTYPE_BE_VALUE(A, B, BILLION_F); }
+final_number(A) ::= NUMBER(B) BILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, BILLION_F); }
 
 /* --------------------------------------
 sub billion ordinal
 -------------------------------------- */
 
-less_than_billionth_end_only(A) ::= less_than_billionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-less_than_billionth_end_only(A) ::= less_than_millionth_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_billionth_end_only(A) ::= less_than_billionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_billionth_end_only(A) ::= less_than_millionth_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-less_than_billionth(A) ::= less_than_thousand(B) MILLION less_than_millionth_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_billionth(A) ::= less_than_thousand(B) MILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-less_than_billionth(A) ::= less_than_millionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_billionth(A) ::= less_than_thousand(B) MILLION less_than_millionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, MILLION_F); }
+less_than_billionth(A) ::= less_than_thousand(B) MILLIONTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, MILLION_F, TH); }
+less_than_billionth(A) ::= less_than_millionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= MILLIONTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000.0; A.suffix = TH; }
-final_number(A) ::= NUMBER(B) MILLIONTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.suffix = TH; A.is_dbl = true; }
+final_number(A) ::= MILLIONTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, MILLION_F, TH); }
+final_number(A) ::= NUMBER(B) MILLIONTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, MILLION_F, TH); }
 
-//millionths(A) ::= less_than_million(B) MILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.suffix = THS; }
-//millionths(A) ::= NUMBER(B) MILLIONTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.suffix = THS; }
-//millionths(A) ::= MILLIONTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000.0; A.suffix = THS; }
-//millionths(A) ::= thousandths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }
+// ----------------------------
+
+less_than_billionths_end_only(A) ::= less_than_billionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_billionths_end_only(A) ::= less_than_millionths_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_billionths(A) ::= less_than_thousand(B) MILLION less_than_millionths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, MILLION_F); }
+less_than_billionths(A) ::= less_than_thousand(B) MILLIONTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, MILLION_F, THS); }
+less_than_billionths(A) ::= less_than_millionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= MILLIONTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, MILLION_F, THS); }
+final_number(A) ::= NUMBER(B) MILLIONTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, MILLION_F, THS); }
 
 /* --------------------------------------
 sub billion regular
 -------------------------------------- */
 
-less_than_billion_end_only(A) ::= less_than_billion(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_billion_end_only(A) ::= less_than_million_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_billion_end_only(A) ::= less_than_billion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_billion_end_only(A) ::= less_than_million_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-less_than_billion(A) ::= less_than_thousand(B) MILLION less_than_million_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_billion(A) ::= less_than_thousand(B) MILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.is_dbl = B.is_dbl; }
-less_than_billion(A) ::= less_than_million(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_billion(A) ::= less_than_thousand(B) MILLION less_than_million_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, MILLION_F); }
+less_than_billion(A) ::= less_than_thousand(B) MILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, MILLION_F); }
+less_than_billion(A) ::= less_than_million(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-final_number(A) ::= MILLION(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000000.0; }
-final_number(A) ::= NUMBER(B) MILLION(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000000.0; A.is_dbl = true; }
+final_number(A) ::= MILLION(B). { COPY_YYSTYPE_BE_VALUE(A, B, MILLION_F); }
+final_number(A) ::= NUMBER(B) MILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, MILLION_F); }
 
 /* --------------------------------------
 sub million ordinal
 -------------------------------------- */
 
-less_than_millionth_end_only(A) ::= less_than_millionth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; A.suffix = B.suffix; }
-less_than_millionth_end_only(A) ::= less_than_thousandth_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; A.suffix = B.suffix; }
+less_than_millionth_end_only(A) ::= less_than_millionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_millionth_end_only(A) ::= less_than_thousandth_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-less_than_millionth(A) ::= less_than_thousand(B) THOUSAND less_than_thousandth_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_millionth(A) ::= less_than_thousand(B) THOUSANDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-less_than_millionth(A) ::= less_than_thousandth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_millionth(A) ::= less_than_thousand(B) THOUSAND less_than_thousandth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, THOUSAND_F); }
+less_than_millionth(A) ::= less_than_thousand(B) THOUSANDTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, THOUSAND_F, TH); }
+less_than_millionth(A) ::= less_than_thousandth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= THOUSANDTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000.0; A.suffix = TH; }
-final_number(A) ::= NUMBER(B) THOUSANDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.suffix = TH; A.is_dbl = true; }
+final_number(A) ::= THOUSANDTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, THOUSAND_F, TH); }
+final_number(A) ::= NUMBER(B) THOUSANDTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, THOUSAND_F, TH); }
 
-//thousandths(A) ::= less_than_thousand(B) THOUSANDTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.suffix = THS; }
-//thousandths(A) ::= NUMBER(B) THOUSANDTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.suffix = THS; }
-//thousandths(A) ::= THOUSANDTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000.0; A.suffix = THS; }
-//thousandths(A) ::= hundredths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }
+// ----------------------------
+
+less_than_millionths_end_only(A) ::= less_than_millionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_millionths_end_only(A) ::= less_than_thousandths_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_millionths(A) ::= less_than_thousand(B) THOUSAND less_than_thousandths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, THOUSAND_F); }
+less_than_millionths(A) ::= less_than_thousand(B) THOUSANDTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, THOUSAND_F, THS); }
+less_than_millionths(A) ::= less_than_thousandths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= THOUSANDTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, THOUSAND_F, THS); }
+final_number(A) ::= NUMBER(B) THOUSANDTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, THOUSAND_F, THS); }
 
 /* --------------------------------------
 sub million regular
 -------------------------------------- */
 
-less_than_million_end_only(A) ::= less_than_million(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_million_end_only(A) ::= less_than_thousand_end_only(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_million_end_only(A) ::= less_than_million(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_million_end_only(A) ::= less_than_thousand_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-less_than_million(A) ::= less_than_thousand(B) THOUSAND less_than_thousand_end_only(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 1000.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_million(A) ::= less_than_thousand(B) THOUSAND(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.is_dbl = B.is_dbl; }
-less_than_million(A) ::= less_than_thousand(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_million(A) ::= less_than_thousand(B) THOUSAND less_than_thousand_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, THOUSAND_F); }
+less_than_million(A) ::= less_than_thousand(B) THOUSAND(C). { COPY_YYSTYPE_BE_MUL(A, B, C, THOUSAND_F); }
+less_than_million(A) ::= less_than_thousand(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-final_number(A) ::= THOUSAND(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1000.0; }
-final_number(A) ::= NUMBER(B) THOUSAND(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 1000.0; A.is_dbl = true; }
+final_number(A) ::= THOUSAND(B). { COPY_YYSTYPE_BE_VALUE(A, B, THOUSAND_F); }
+final_number(A) ::= NUMBER(B) THOUSAND(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, THOUSAND_F); }
 
 /* --------------------------------------
 sub thousand ordinal
 -------------------------------------- */
 
-less_than_thousandth_end_only(A) ::= AND less_than_hundredth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-less_than_thousandth_end_only(A) ::= less_than_thousandth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_thousandth_end_only(A) ::= AND less_than_hundredth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_thousandth_end_only(A) ::= less_than_thousandth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-less_than_thousandth(A) ::= less_than_hundred(B) HUNDRED AND less_than_hundredth(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_thousandth(A) ::= less_than_hundred(B) HUNDRED less_than_hundredth(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; A.suffix = C.suffix; }
-less_than_thousandth(A) ::= less_than_hundred(B) HUNDREDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.is_dbl = B.is_dbl; A.suffix = TH; }
-less_than_thousandth(A) ::= less_than_hundredth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_thousandth(A) ::= less_than_hundred(B) HUNDRED AND less_than_hundredth(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, HUNDRED_F); }
+less_than_thousandth(A) ::= less_than_hundred(B) HUNDRED less_than_hundredth(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, HUNDRED_F); }
+less_than_thousandth(A) ::= less_than_hundred(B) HUNDREDTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, HUNDRED_F, TH); }
+less_than_thousandth(A) ::= less_than_hundredth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= HUNDREDTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; A.suffix = TH; }
-final_number(A) ::= NUMBER(B) HUNDREDTH(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.suffix = TH; A.is_dbl = true; }
+final_number(A) ::= HUNDREDTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, HUNDRED_F, TH); }
+final_number(A) ::= NUMBER(B) HUNDREDTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, HUNDRED_F, TH); }
 
-//hundredths(A) ::= less_than_hundred(B) HUNDREDTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.suffix = THS; }
-//hundredths(A) ::= NUMBER(B) HUNDREDTHS(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.suffix = THS; }
-//hundredths(A) ::= HUNDREDTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; A.suffix = THS; }
-//hundredths(A) ::= less_than_hundredths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; }
+// ----------------------------
+
+less_than_thousandths_end_only(A) ::= AND less_than_hundredths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_thousandths_end_only(A) ::= less_than_thousandths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_thousandths(A) ::= less_than_hundred(B) HUNDRED AND less_than_hundredths(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, HUNDRED_F); }
+less_than_thousandths(A) ::= less_than_hundred(B) HUNDRED less_than_hundredths(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, HUNDRED_F); }
+less_than_thousandths(A) ::= less_than_hundred(B) HUNDREDTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, HUNDRED_F, THS); }
+less_than_thousandths(A) ::= less_than_hundredths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= HUNDREDTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, HUNDRED_F, THS); }
+final_number(A) ::= NUMBER(B) HUNDREDTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, HUNDRED_F, THS); }
 
 /* --------------------------------------
 sub thousand regular
 -------------------------------------- */
 
-less_than_thousand_end_only(A) ::= AND less_than_hundred(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_thousand_end_only(A) ::= less_than_thousand(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_thousand_end_only(A) ::= AND less_than_hundred(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_thousand_end_only(A) ::= less_than_thousand(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-less_than_thousand(A) ::= less_than_hundred(B) HUNDRED AND less_than_hundred(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_thousand(A) ::= less_than_hundred(B) HUNDRED less_than_hundred(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = (B.dbl * 100.0) + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_thousand(A) ::= less_than_hundred(B) HUNDRED(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.is_dbl = B.is_dbl; }
-less_than_thousand(A) ::= less_than_hundred(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_thousand(A) ::= less_than_hundred(B) HUNDRED AND less_than_hundred(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, HUNDRED_F); }
+less_than_thousand(A) ::= less_than_hundred(B) HUNDRED less_than_hundred(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, HUNDRED_F); }
+less_than_thousand(A) ::= less_than_hundred(B) HUNDRED(C). { COPY_YYSTYPE_BE_MUL(A, B, C, HUNDRED_F); }
+less_than_thousand(A) ::= less_than_hundred(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
-final_number(A) ::= HUNDRED(B). { A.begin = B.begin; A.end = B.end; A.dbl = 100.0; }
-final_number(A) ::= NUMBER(B) HUNDRED(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl * 100.0; A.is_dbl = true; }
+final_number(A) ::= HUNDRED(B). { COPY_YYSTYPE_BE_VALUE(A, B, HUNDRED_F); }
+final_number(A) ::= NUMBER(B) HUNDRED(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, HUNDRED_F); }
 
 /* --------------------------------------
 sub hundred ordinal
 -------------------------------------- */
 
-less_than_hundredth(A) ::= tens(B) first_to_9th(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.suffix = C.suffix; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_hundredth(A) ::= tenth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-less_than_hundredth(A) ::= less_than_twentieth(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_hundredth(A) ::= tens(B) less_than_tenth(C). { COPY_YYSTYPE_BE_ADD_SUFF(A, B, C); }
+less_than_hundredth(A) ::= tenth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_hundredth(A) ::= less_than_twentieth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-//less_than_hundredths(A) ::= tens(B) firsts_to_9ths(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.suffix = C.suffix; A.is_dbl = B.is_dbl || C.is_dbl; }
-//less_than_hundredths(A) ::= tenths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-//less_than_hundredths(A) ::= less_than_twentieths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_hundredths(A) ::= tens(B) less_than_tenths(C). { COPY_YYSTYPE_BE_ADD_SUFF(A, B, C); }
+less_than_hundredths(A) ::= tenths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_hundredths(A) ::= less_than_twentieths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
 /* --------------------------------------
 sub hundred regular
 -------------------------------------- */
 
-less_than_hundred(A) ::= tens(B) less_than_ten(C). { A.begin = mini(B.begin, C.begin); A.end = maxi(B.end, C.end); A.dbl = B.dbl + C.dbl; A.is_dbl = B.is_dbl || C.is_dbl; }
-less_than_hundred(A) ::= tens(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_hundred(A) ::= less_than_twenty(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_hundred(A) ::= tens(B) less_than_ten(C). { COPY_YYSTYPE_BE_ADD(A, B, C); }
+less_than_hundred(A) ::= tens(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_hundred(A) ::= less_than_twenty(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
 /* --------------------------------------
 sub twenty ordinal
 -------------------------------------- */
 
-less_than_twentieth(A) ::= tenth_to_19th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-less_than_twentieth(A) ::= first_to_9th(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_twentieth(A) ::= tenth_to_19th(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_twentieth(A) ::= less_than_tenth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-//less_than_twentieths(A) ::= tenths_to_19ths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
-//less_than_twentieths(A) ::= firsts_to_9ths(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.suffix = B.suffix; A.is_dbl = B.is_dbl; }
+less_than_twentieths(A) ::= tenths_to_19ths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_twentieths(A) ::= less_than_tenths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
 /* --------------------------------------
 sub twenty regular
 -------------------------------------- */
 
-less_than_twenty(A) ::= ten_to_19(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
-less_than_twenty(A) ::= less_than_ten(B). { A.begin = B.begin; A.end = B.end; A.dbl = B.dbl; A.is_dbl = B.is_dbl; }
+less_than_twenty(A) ::= ten_to_19(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_twenty(A) ::= less_than_ten(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
 /* --------------------------------------
 basic terminals
 -------------------------------------- */
 
-less_than_ten(A) ::= ONE(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1.0; }
-less_than_ten(A) ::= TWO(B). { A.begin = B.begin; A.end = B.end; A.dbl = 2.0; }
-less_than_ten(A) ::= THREE(B). { A.begin = B.begin; A.end = B.end; A.dbl = 3.0; }
-less_than_ten(A) ::= FOUR(B). { A.begin = B.begin; A.end = B.end; A.dbl = 4.0; }
-less_than_ten(A) ::= FIVE(B). { A.begin = B.begin; A.end = B.end; A.dbl = 5.0; }
-less_than_ten(A) ::= SIX(B). { A.begin = B.begin; A.end = B.end; A.dbl = 6.0; }
-less_than_ten(A) ::= SEVEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 7.0; }
-less_than_ten(A) ::= EIGHT(B). { A.begin = B.begin; A.end = B.end; A.dbl = 8.0; }
-less_than_ten(A) ::= NINE(B). { A.begin = B.begin; A.end = B.end; A.dbl = 9.0; }
+less_than_ten(A) ::= ONE(B). { COPY_YYSTYPE_BE_VALUE(A, B, 1.0); }
+less_than_ten(A) ::= TWO(B). { COPY_YYSTYPE_BE_VALUE(A, B, 2.0); }
+less_than_ten(A) ::= THREE(B). { COPY_YYSTYPE_BE_VALUE(A, B, 3.0); }
+less_than_ten(A) ::= FOUR(B). { COPY_YYSTYPE_BE_VALUE(A, B, 4.0); }
+less_than_ten(A) ::= FIVE(B). { COPY_YYSTYPE_BE_VALUE(A, B, 5.0); }
+less_than_ten(A) ::= SIX(B). { COPY_YYSTYPE_BE_VALUE(A, B, 6.0); }
+less_than_ten(A) ::= SEVEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 7.0); }
+less_than_ten(A) ::= EIGHT(B). { COPY_YYSTYPE_BE_VALUE(A, B, 8.0); }
+less_than_ten(A) ::= NINE(B). { COPY_YYSTYPE_BE_VALUE(A, B, 9.0); }
 
-ten_to_19(A) ::= TEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 10.0; }
-ten_to_19(A) ::= ELEVEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 11.0; }
-ten_to_19(A) ::= TWELVE(B). { A.begin = B.begin; A.end = B.end; A.dbl = 12.0; }
-ten_to_19(A) ::= THIRTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 13.0; }
-ten_to_19(A) ::= FOURTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 14.0; }
-ten_to_19(A) ::= FIFTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 15.0; }
-ten_to_19(A) ::= SIXTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 16.0; }
-ten_to_19(A) ::= SEVENTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 17.0; }
-ten_to_19(A) ::= EIGHTEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 18.0; }
-ten_to_19(A) ::= NINETEEN(B). { A.begin = B.begin; A.end = B.end; A.dbl = 19.0; }
+ten_to_19(A) ::= TEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 10.0); }
+ten_to_19(A) ::= ELEVEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 11.0); }
+ten_to_19(A) ::= TWELVE(B). { COPY_YYSTYPE_BE_VALUE(A, B, 12.0); }
+ten_to_19(A) ::= THIRTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 13.0); }
+ten_to_19(A) ::= FOURTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 14.0); }
+ten_to_19(A) ::= FIFTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 15.0); }
+ten_to_19(A) ::= SIXTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 16.0); }
+ten_to_19(A) ::= SEVENTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 17.0); }
+ten_to_19(A) ::= EIGHTEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 18.0); }
+ten_to_19(A) ::= NINETEEN(B). { COPY_YYSTYPE_BE_VALUE(A, B, 19.0); }
 
-tens(A) ::= TWENTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 20.0; }
-tens(A) ::= THIRTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 30.0; }
-tens(A) ::= FORTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 40.0; }
-tens(A) ::= FIFTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 50.0; }
-tens(A) ::= SIXTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 60.0; }
-tens(A) ::= SEVENTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 70.0; }
-tens(A) ::= EIGHTY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 80.0; }
-tens(A) ::= NINETY(B). { A.begin = B.begin; A.end = B.end; A.dbl = 90.0; }
+tens(A) ::= TWENTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 20.0); }
+tens(A) ::= THIRTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 30.0); }
+tens(A) ::= FORTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 40.0); }
+tens(A) ::= FIFTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 50.0); }
+tens(A) ::= SIXTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 60.0); }
+tens(A) ::= SEVENTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 70.0); }
+tens(A) ::= EIGHTY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 80.0); }
+tens(A) ::= NINETY(B). { COPY_YYSTYPE_BE_VALUE(A, B, 90.0); }
 
-first_to_9th(A) ::= FIRST(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1.0; A.suffix = ST; }
-first_to_9th(A) ::= SECOND(B). { A.begin = B.begin; A.end = B.end; A.dbl = 2.0; A.suffix = ND; }
-first_to_9th(A) ::= THIRD(B). { A.begin = B.begin; A.end = B.end; A.dbl = 3.0; A.suffix = RD; }
-first_to_9th(A) ::= FOURTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 4.0; A.suffix = TH; }
-first_to_9th(A) ::= FIFTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 5.0; A.suffix = TH; }
-first_to_9th(A) ::= SIXTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 6.0; A.suffix = TH; }
-first_to_9th(A) ::= SEVENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 7.0; A.suffix = TH; }
-first_to_9th(A) ::= EIGHTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 8.0; A.suffix = TH; }
-first_to_9th(A) ::= NINTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 9.0; A.suffix = TH; }
+less_than_tenth(A) ::= FIRST(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 1.0, ST); }
+less_than_tenth(A) ::= SECOND(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 2.0, ND); }
+less_than_tenth(A) ::= THIRD(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 3.0, RD); }
+less_than_tenth(A) ::= FOURTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 4.0, TH); }
+less_than_tenth(A) ::= FIFTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 5.0, TH); }
+less_than_tenth(A) ::= SIXTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 6.0, TH); }
+less_than_tenth(A) ::= SEVENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 7.0, TH); }
+less_than_tenth(A) ::= EIGHTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 8.0, TH); }
+less_than_tenth(A) ::= NINTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 9.0, TH); }
 
-tenth_to_19th(A) ::= TENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 10.0; A.suffix = TH; }
-tenth_to_19th(A) ::= ELEVENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 11.0; A.suffix = TH; }
-tenth_to_19th(A) ::= TWELFTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 12.0; A.suffix = TH; }
-tenth_to_19th(A) ::= THIRTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 13.0; A.suffix = TH; }
-tenth_to_19th(A) ::= FOURTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 14.0; A.suffix = TH; }
-tenth_to_19th(A) ::= FIFTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 15.0; A.suffix = TH; }
-tenth_to_19th(A) ::= SIXTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 16.0; A.suffix = TH; }
-tenth_to_19th(A) ::= SEVENTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 17.0; A.suffix = TH; }
-tenth_to_19th(A) ::= EIGHTEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 18.0; A.suffix = TH; }
-tenth_to_19th(A) ::= NINETEENTH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 19.0; A.suffix = TH; }
+tenth_to_19th(A) ::= TENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 10.0, TH); }
+tenth_to_19th(A) ::= ELEVENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 11.0, TH); }
+tenth_to_19th(A) ::= TWELFTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 12.0, TH); }
+tenth_to_19th(A) ::= THIRTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 13.0, TH); }
+tenth_to_19th(A) ::= FOURTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 14.0, TH); }
+tenth_to_19th(A) ::= FIFTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 15.0, TH); }
+tenth_to_19th(A) ::= SIXTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 16.0, TH); }
+tenth_to_19th(A) ::= SEVENTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 17.0, TH); }
+tenth_to_19th(A) ::= EIGHTEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 18.0, TH); }
+tenth_to_19th(A) ::= NINETEENTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 19.0, TH); }
 
-tenth(A) ::= TWENTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 20.0; A.suffix = TH; }
-tenth(A) ::= THIRTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 30.0; A.suffix = TH; }
-tenth(A) ::= FOURTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 40.0; A.suffix = TH; }
-tenth(A) ::= FIFTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 50.0; A.suffix = TH; }
-tenth(A) ::= SIXTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 60.0; A.suffix = TH; }
-tenth(A) ::= SEVENTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 70.0; A.suffix = TH; }
-tenth(A) ::= EIGHTIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 80.0; A.suffix = TH; }
-tenth(A) ::= NINETIETH(B). { A.begin = B.begin; A.end = B.end; A.dbl = 90.0; A.suffix = TH; }
+tenth(A) ::= TWENTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 20.0, TH); }
+tenth(A) ::= THIRTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 30.0, TH); }
+tenth(A) ::= FOURTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 40.0, TH); }
+tenth(A) ::= FIFTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 50.0, TH); }
+tenth(A) ::= SIXTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 60.0, TH); }
+tenth(A) ::= SEVENTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 70.0, TH); }
+tenth(A) ::= EIGHTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 80.0, TH); }
+tenth(A) ::= NINETIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 90.0, TH); }
 
-//firsts_to_9ths(A) ::= FIRSTS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 1.0; A.suffix = STS; }
-//firsts_to_9ths(A) ::= SECONDS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 2.0; A.suffix = NDS; }
-//firsts_to_9ths(A) ::= THIRDS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 3.0; A.suffix = RDS; }
-//firsts_to_9ths(A) ::= FOURTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 4.0; A.suffix = THS; }
-//firsts_to_9ths(A) ::= FIFTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 5.0; A.suffix = THS; }
-//firsts_to_9ths(A) ::= SIXTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 6.0; A.suffix = THS; }
-//firsts_to_9ths(A) ::= SEVENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 7.0; A.suffix = THS; }
-//firsts_to_9ths(A) ::= EIGHTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 8.0; A.suffix = THS; }
-//firsts_to_9ths(A) ::= NINTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 9.0; A.suffix = THS; }
-//
-//tenths_to_19ths(A) ::= TENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 10.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= ELEVENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 11.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= TWELFTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 12.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= THIRTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 13.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= FOURTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 14.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= FIFTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 15.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= SIXTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 16.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= SEVENTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 17.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= EIGHTEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 18.0; A.suffix = THS; }
-//tenths_to_19ths(A) ::= NINETEENTHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 19.0; A.suffix = THS; }
-//
-//tenths(A) ::= TWENTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 20.0; A.suffix = THS; }
-//tenths(A) ::= THIRTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 30.0; A.suffix = THS; }
-//tenths(A) ::= FOURTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 40.0; A.suffix = THS; }
-//tenths(A) ::= FIFTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 50.0; A.suffix = THS; }
-//tenths(A) ::= SIXTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 60.0; A.suffix = THS; }
-//tenths(A) ::= SEVENTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 70.0; A.suffix = THS; }
-//tenths(A) ::= EIGHTIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 80.0; A.suffix = THS; }
-//tenths(A) ::= NINETIETHS(B). { A.begin = B.begin; A.end = B.end; A.dbl = 90.0; A.suffix = THS; }
+less_than_tenths(A) ::= FIRSTS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 1.0, STS); }
+//less_than_tenths(A) ::= SECONDS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 2.0, NDS); }
+less_than_tenths(A) ::= THIRDS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 3.0, RDS); }
+less_than_tenths(A) ::= FOURTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 4.0, THS); }
+less_than_tenths(A) ::= FIFTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 5.0, THS); }
+less_than_tenths(A) ::= SIXTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 6.0, THS); }
+less_than_tenths(A) ::= SEVENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 7.0, THS); }
+less_than_tenths(A) ::= EIGHTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 8.0, THS); }
+less_than_tenths(A) ::= NINTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 9.0, THS); }
+
+tenths_to_19ths(A) ::= TENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 10.0, THS); }
+tenths_to_19ths(A) ::= ELEVENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 11.0, THS); }
+tenths_to_19ths(A) ::= TWELFTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 12.0, THS); }
+tenths_to_19ths(A) ::= THIRTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 13.0, THS); }
+tenths_to_19ths(A) ::= FOURTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 14.0, THS); }
+tenths_to_19ths(A) ::= FIFTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 15.0, THS); }
+tenths_to_19ths(A) ::= SIXTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 16.0, THS); }
+tenths_to_19ths(A) ::= SEVENTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 17.0, THS); }
+tenths_to_19ths(A) ::= EIGHTEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 18.0, THS); }
+tenths_to_19ths(A) ::= NINETEENTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 19.0, THS); }
+
+tenths(A) ::= TWENTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 20.0, THS); }
+tenths(A) ::= THIRTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 30.0, THS); }
+tenths(A) ::= FOURTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 40.0, THS); }
+tenths(A) ::= FIFTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 50.0, THS); }
+tenths(A) ::= SIXTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 60.0, THS); }
+tenths(A) ::= SEVENTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 70.0, THS); }
+tenths(A) ::= EIGHTIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 80.0, THS); }
+tenths(A) ::= NINETIETHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 90.0, THS); }
