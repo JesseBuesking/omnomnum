@@ -36,12 +36,14 @@
 #define TOKEN_CHARACTERS 10001
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
-    /*if (A.is_frac) {*/
-      /*dtoa(s, A.frac_num, precision);*/
-      /*//s = sdscat(s, "/");*/
-      /*//dtoa(s, A.frac_denom, precision);*/
-    /*} else */
-    if (A.is_dbl) {
+    if (A.is_frac) {
+      dtoa(s, A.frac_num, precision);
+      *s = sdscat(*s, "/");
+      sds tmp = sdsempty();
+      dtoa(&tmp, A.frac_denom, precision);
+      *s = sdscatsds(*s, tmp);
+      sdsfree(tmp);
+    } else if (A.is_dbl) {
       dtoa(s, A.dbl, precision);
     } else {
       char buffer[256] = { '\0' };
@@ -108,6 +110,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     state->last_token = -1;
 
     for(;;) {
+        RESET_YYSTYPE(yylval);
         scanner_value = omnomnum_scanner_start(state, pParser, &yylval, &ss);
 
 #if debug

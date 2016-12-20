@@ -42,58 +42,20 @@ fast_path:
         ALL_OTHERS      = [^]; // not a separator
         // see http://re2c.org/examples/example_07.html for ideas of other valid
         // types of numbers
-        NUMBER          = ([0-9]* "." [0-9]+) | ([0-9]+);
+        WHOLE_NUMBER    = [0-9]+;
+        DECIMAL         = [0-9]* "." [0-9]+;
         THREE_PART_DATE = [0-9]{2,4} "/" [0-9]{2,4} "/" [0-9]{2,4};
         TWO_PART_DATE   = [0-9]+ "/" [0-9]+;
 
-        THREE_PART_DATE {
-            if (state->is_parsing) {
-                if (state->last_token != TOKEN_SEPARATOR) {
-                    // number followed by character... e.g. "oneself"
-                } else {
-                    // finish whatever we had and reset
-                    Parse(pParser, 0, *yylval, state);
-                }
-
-                ParseReset(pParser);
-                state->is_parsing = false;
-            }
-
-            state->last_token = TOKEN_CHARACTERS;
-            goto fast_path;
-        }
-        TWO_PART_DATE {
-            if (state->is_parsing) {
-                if (state->last_token != TOKEN_SEPARATOR) {
-                    // number followed by character... e.g. "oneself"
-                } else {
-                    // finish whatever we had and reset
-                    Parse(pParser, 0, *yylval, state);
-                }
-
-                ParseReset(pParser);
-                state->is_parsing = false;
-            }
-
-            state->last_token = TOKEN_CHARACTERS;
-            goto fast_path;
-        }
-        NUMBER {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
-
-            return TOKEN_NUMBER;
-        }
-
+        'a' { return TOKEN_A; }
+        'an' { return TOKEN_AN; }
         'and' { return TOKEN_AND; }
         'and a' { return TOKEN_AND_A; }
 
         'negative' { return TOKEN_NEGATIVE; }
 
         'zero' { return TOKEN_ZERO; }
-        'one' { return TOKEN_ONE; }
+        '1' | 'one' { return TOKEN_ONE; }
         'two' { return TOKEN_TWO; }
         'three' { return TOKEN_THREE; }
         'four' { return TOKEN_FOUR; }
@@ -246,7 +208,56 @@ fast_path:
 
             return TOKEN_SEPARATOR;
         }
+        WHOLE_NUMBER {
+            // turn string version of number into double
+            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
 
+            return TOKEN_WHOLE_NUMBER;
+        }
+        DECIMAL {
+            // turn string version of number into double
+            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        THREE_PART_DATE {
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, *yylval, state);
+                }
+
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+        }
+        TWO_PART_DATE {
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                    // number followed by character... e.g. "oneself"
+                } else {
+                    // finish whatever we had and reset
+                    Parse(pParser, 0, *yylval, state);
+                }
+
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+        }
+
+        // MUST COME LAST
         ALL_OTHERS {
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) {

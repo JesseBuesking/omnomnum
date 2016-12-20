@@ -66,6 +66,13 @@ typedef struct {
     enum suffixValues suffix;
 } YYSTYPE;
 
+#ifndef RESET_YYSTYPE
+#define RESET_YYSTYPE(A) \
+    A.is_dbl = false; \
+    A.is_frac = false; \
+    A.suffix = NO_SUFFIX;
+#endif
+
 #ifndef COPY_YYSTYPE_BE
 #define COPY_YYSTYPE_BE(A, B) \
     A.begin = B.begin; \
@@ -91,10 +98,10 @@ typedef struct {
 #endif
 
 #ifndef COPY_YYSTYPE_FRAC
-#define COPY_YYSTYPE_FRAC(A, B) \
-    A.frac_num = B.frac_num; \
-    A.frac_denom = B.frac_denom; \
-    A.is_frac = B.is_frac;
+#define COPY_YYSTYPE_FRAC(A, B, C) \
+    A.frac_num = B.dbl; \
+    A.frac_denom = C.dbl; \
+    A.is_frac = true;
 #endif
 
 #ifndef COPY_YYSTYPE_SUFF
@@ -170,6 +177,22 @@ typedef struct {
 #define COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, VALUE, SUFFIX) \
     COPY_YYSTYPE_DBL_NUM(A, B, C, VALUE); \
     A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC_SET
+#define COPY_YYSTYPE_FRAC_SET(A, B, C, NUMERATOR, DENOMINATOR) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.frac_num = NUMERATOR; \
+    A.frac_denom = DENOMINATOR; \
+    A.is_frac = true;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC_SET_MULT
+#define COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, NUMERATOR, DENOMINATOR) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.frac_num = (B.dbl * DENOMINATOR) + NUMERATOR; \
+    A.frac_denom = DENOMINATOR; \
+    A.is_frac = true;
 #endif
 
 #define HUNDRED_F  100.0

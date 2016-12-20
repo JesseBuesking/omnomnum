@@ -31,12 +31,14 @@ To run the benchmarks:
 
 ## TODOS:
 
+- [ ] Make sure numbers containing commas (and periods) work as well.
 - [ ] Support fractions.
+    - Not sure if it's possible to have both fractional support and multi-number
+      (e.g. "one two three four") support.
 - [ ] Clean up and organize a bit.
 - [ ] Clean up the Makefile.
 - [ ] Prevent parse error due to ambiguities (falls back to reduce which works,
       but the grammar probably shouldn't be ambiguous).
-- [ ] Make sure numbers containing commas (and periods) work as well.
 - [ ] Test for thread safety.
     - Unnecessary for my current needs since I'm embedding in ruby and it has a
       global lock.
