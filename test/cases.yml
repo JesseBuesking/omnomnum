@@ -116,5 +116,3 @@
 # test raw number not followed by a modifier like hundred
 #   (leave it intact as it may be a "proper" number)
 - ["007", "007", 3]
-# misc
-- ["5/2 years", "5/2 years", 3]
