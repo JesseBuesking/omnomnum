@@ -30,6 +30,7 @@ OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o gri
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
+test/remove_char_inplace.yaml: ;
 
 branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o branchlut/branchlut.o
@@ -72,6 +73,15 @@ test/test_omnomnum.o: parser.h scan.h omnomnum.h scanner.h test/test_omnomnum.c
 
 test/test_omnomnum: $(OMNOMNUM_OBJ) $(GTEST_DIR)/make/gtest_main.a test/test_omnomnum.o
 	$(CXX) -std=c++11 -L/usr/local/include -o $@ -I$(GTEST_DIR)/include -I. $^ -pthread -lyaml-cpp
+
+test/test_util.o: util.h test/test_util.c
+	$(CXX) -std=c++11 -L/usr/local/include -I$(GTEST_DIR)/include -c test/test_util.c -o $@ -lyaml-cpp
+
+test/test_util: util.o $(GTEST_DIR)/make/gtest_main.a test/test_util.o
+	$(CXX) -std=c++11 -L/usr/local/include -o $@ -I$(GTEST_DIR)/include -I. $^ -pthread -lyaml-cpp
+
+test_util: test/test_util test/remove_char_inplace.yaml
+	cd test && ./test_util
 
 test: all test/test_omnomnum test/cases.yaml
 	cd test && ./test_omnomnum

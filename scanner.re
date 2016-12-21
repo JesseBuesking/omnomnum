@@ -47,6 +47,10 @@ fast_path:
         THREE_PART_DATE = [0-9]{2,4} "/" [0-9]{2,4} "/" [0-9]{2,4};
         TWO_PART_DATE   = [0-9]+ "/" [0-9]+;
 
+        // Decimal marks https://en.wikipedia.org/wiki/Decimal_mark
+        // english unofficial
+        //DECIMAL_EN_UN   = [0-9]{1,3} (,[0-9]{3})* "." [0-9]+;
+
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
         'and' { return TOKEN_AND; }
@@ -248,6 +252,11 @@ fast_path:
 
             return TOKEN_WHOLE_NUMBER;
         }
+        //DECIMAL_EN_UN {
+        // Copy the token supplied, then call remove_char_inplace to strip
+        // out the commas. Then use the logic from DECIMAL to create a double
+        // from the resulting string.
+        //}
         DECIMAL {
             // turn string version of number into double
             sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
