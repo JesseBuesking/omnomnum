@@ -49,16 +49,18 @@ fast_path:
 
         // Decimal marks https://en.wikipedia.org/wiki/Decimal_mark
         // english unofficial
-        DECIMAL_EN_UN   = [0-9]{1,3} ("," [0-9]{3})+ ("." [0-9]+)*;
+        DECIMAL_EN_UN   = "-"* [0-9]{1,3} ("," [0-9]{3})+ ("." [0-9]+)*;
+
         // TODO: figure out word boundaries so that the decimal part can be
-        // optional, otherwise this will start matching too much
-        DECIMAL_SI      = [0-9]{1,3} (" " [0-9]{3})+ "." [0-9]+;
-        DECIMAL_SI_FR   = [0-9]{1,3} (" " [0-9]{3})+ "," [0-9]+;
-        DECIMAL_IRE     = [0-9]{1,3} ("," [0-9]{3})+ ("·" [0-9]+)*;
-        DECIMAL_ARG     = [0-9]{1,3} ("." [0-9]{3})+ ("," [0-9]+)*;
-        DECIMAL_IND     = [0-9]{1,2} ("," [0-9]{2})* ("," [0-9]{3}) ("." [0-9]+)*;
-        DECIMAL_SWI     = [0-9]{1,3} ("'" [0-9]{3})+ ("." [0-9]+)*;
-        DECIMAL_CHI     = [0-9]{1,4} ("," [0-9]{4})+ ("." [0-9]+)*;
+        // optional, otherwise these two will start matching too much
+        DECIMAL_SI      = "-"* [0-9]{1,3} (" " [0-9]{3})+ "." [0-9]+;
+        DECIMAL_SI_FR   = "-"* [0-9]{1,3} (" " [0-9]{3})+ "," [0-9]+;
+
+        DECIMAL_IRE     = "-"* [0-9]{1,3} ("," [0-9]{3})+ ("·" [0-9]+)*;
+        DECIMAL_ARG     = "-"* [0-9]{1,3} ("." [0-9]{3})+ ("," [0-9]+)*;
+        DECIMAL_IND     = "-"* [0-9]{1,2} ("," [0-9]{2})* ("," [0-9]{3}) ("." [0-9]+)*;
+        DECIMAL_SWI     = "-"* [0-9]{1,3} ("'" [0-9]{3})+ ("." [0-9]+)*;
+        DECIMAL_CHI     = "-"* [0-9]{1,4} ("," [0-9]{4})+ ("." [0-9]+)*;
 
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
@@ -334,11 +336,8 @@ fast_path:
             strncpy(tmp, ss->token, token_len);
             tmp[token_len] = '\0';
 
-            printf("%s\n", tmp);
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '.');
-            printf("%s\n", tmp);
             replace_char_inplace(tmp, len, ',', '.');
-            printf("%s\n", tmp);
 
             // turn string version of number into double
             sds string_value = sdsnewlen(tmp, len);

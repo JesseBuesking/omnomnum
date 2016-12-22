@@ -31,7 +31,7 @@ To run the benchmarks:
 
 ## TODOS:
 
-- [ ] Numbers should allow for a leading negative (-) sign.
+- [ ] A few of the numbers with spaces require the decimal part. Prob shouldn't.
 - [ ] Decimal numbers should work standalone (currently they can't appear at
       the very end of a string...).
 - [ ] Try to support fractions.
