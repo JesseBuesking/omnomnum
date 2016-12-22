@@ -42,9 +42,10 @@ TEST_P(Util, remove_char_inplace) {
     const char* expect = GetParam().expect.c_str();
     char remove = GetParam().remove;
 
-    remove_char_inplace(modify, strlen(modify), remove);
+    size_t modify_len = remove_char_inplace(modify, strlen(modify), remove);
 
     ASSERT_TRUE(strcmp(expect, modify) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << modify << "\"\n";
+    ASSERT_TRUE(strlen(modify) == modify_len) << "expected \"" << strlen(input) << "\" given \"" << modify << "\", actual \"" << modify_len << "\"\n";
 }
 
 std::vector<TestCase> ReadTestCasesFromDisk(std::string filename) {
