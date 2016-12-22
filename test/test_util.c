@@ -77,3 +77,22 @@ void printlen(char *value, int len) {
     }
     printf("\n");
 }
+
+TEST(Util, ReplaceCharInplace) {
+    char input[] = "foo-bar-baz-";
+    const char expect[] = "foo bar baz ";
+
+    replace_char_inplace(input, strlen(input), '-', ' ');
+
+    ASSERT_TRUE(strcmp(expect, input) == 0);
+}
+
+TEST(Util, ReplaceTwoByteCharInplace) {
+    char input[] = "foo·bar·baz·";
+    const char expect[] = "foo bar baz ";
+
+    size_t new_len = replace_two_byte_char_inplace((unsigned char*)input, strlen(input), (unsigned char*)"·", ' ');
+
+    ASSERT_TRUE(strcmp(expect, input) == 0);
+    ASSERT_TRUE(strlen(expect) == new_len);
+}

@@ -31,8 +31,10 @@ To run the benchmarks:
 
 ## TODOS:
 
-- [ ] Make sure numbers containing commas (and periods) work as well.
-- [ ] Support fractions.
+- [ ] Numbers should allow for a leading negative (-) sign.
+- [ ] Decimal numbers should work standalone (currently they can't appear at
+      the very end of a string...).
+- [ ] Try to support fractions.
     - Not sure if it's possible to have both fractional support and multi-number
       (e.g. "one two three four") support.
 - [ ] Clean up and organize a bit.

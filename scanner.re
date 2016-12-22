@@ -49,7 +49,14 @@ fast_path:
 
         // Decimal marks https://en.wikipedia.org/wiki/Decimal_mark
         // english unofficial
-        //DECIMAL_EN_UN   = [0-9]{1,3} (,[0-9]{3})* "." [0-9]+;
+        DECIMAL_EN_UN   = [0-9]{1,3} ("," [0-9]{3})+ ("." [0-9]+)*;
+        DECIMAL_SI      = [0-9]{1,3} (" " [0-9]{3})+ ("." [0-9]+)*;
+        DECIMAL_SI_FR   = [0-9]{1,3} (" " [0-9]{3})+ ("," [0-9]+)*;
+        DECIMAL_IRE     = [0-9]{1,3} ("," [0-9]{3})+ ("·" [0-9]+)*;
+        DECIMAL_ARG     = [0-9]{1,3} ("." [0-9]{3})+ ("," [0-9]+)*;
+        DECIMAL_IND     = [0-9]{1,2} ("," [0-9]{2})* ("," [0-9]{3}) ("." [0-9]+)*;
+        DECIMAL_SWI     = [0-9]{1,3} ("'" [0-9]{3})+ ("." [0-9]+)*;
+        DECIMAL_CHI     = [0-9]{1,4} ("," [0-9]{4})+ ("." [0-9]+)*;
 
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
@@ -244,6 +251,156 @@ fast_path:
             state->last_token = TOKEN_CHARACTERS;
             goto fast_path;
         }
+        DECIMAL_EN_UN {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_SI {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_SI_FR {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
+            replace_char_inplace(tmp, len, ',', '.');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_IRE {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
+            len = replace_two_byte_char_inplace((unsigned char*)tmp, len, (unsigned char*)"·", '.');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_ARG {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            printf("%s\n", tmp);
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '.');
+            printf("%s\n", tmp);
+            replace_char_inplace(tmp, len, ',', '.');
+            printf("%s\n", tmp);
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_IND {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_SWI {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '\'');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
+        DECIMAL_CHI {
+            // create duplicate of string (to be modified inplace)
+            size_t token_len = ss->cursor - ss->token;
+            char* tmp = (char*)malloc(token_len + 1);
+            strncpy(tmp, ss->token, token_len);
+            tmp[token_len] = '\0';
+
+            size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
+
+            // turn string version of number into double
+            sds string_value = sdsnewlen(tmp, len);
+            free(tmp);
+
+            sscanf(string_value, "%lf", &(*yylval).dbl);
+            sdsfree(string_value);
+
+            return TOKEN_DECIMAL;
+        }
         WHOLE_NUMBER {
             // turn string version of number into double
             sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
@@ -252,11 +409,6 @@ fast_path:
 
             return TOKEN_WHOLE_NUMBER;
         }
-        //DECIMAL_EN_UN {
-        // Copy the token supplied, then call remove_char_inplace to strip
-        // out the commas. Then use the logic from DECIMAL to create a double
-        // from the resulting string.
-        //}
         DECIMAL {
             // turn string version of number into double
             sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);

@@ -37,6 +37,7 @@
 #include "scanner.def.h"
 #include "parser.h"
 #include "scan.h"
+#include "util.h"
 
 int omnomnum_scanner_start(ParserState *state, void *pParser, YYSTYPE *yylval, scanstate *ss);
 

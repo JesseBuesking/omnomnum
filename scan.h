@@ -37,7 +37,7 @@
 #include "scanner.def.h"
 
 // for re2c...
-#define YYCTYPE     char
+#define YYCTYPE     unsigned char
 #define YYCURSOR    (ss->cursor)
 #define YYLIMIT     (ss->limit)
 #define YYMARKER    (ss->marker)
@@ -47,6 +47,7 @@
  * does nothing.
  */
 #define YYFILL(n) if (ss->cursor >= ss->limit) return 0;
+#define YYDEBUG(state, current) printf("state: '%d', current: '0x%02X'\n", state, (unsigned char)current);
 
 // forward declaration
 struct scanstate;
