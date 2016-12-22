@@ -132,3 +132,4 @@
 # test raw number not followed by a modifier like hundred
 #   (leave it intact as it may be a "proper" number)
 - ["007", "007", 3]
+- ["Thu Aug 10 2006", "Thu Aug 10 2006", 3]
