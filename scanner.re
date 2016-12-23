@@ -37,9 +37,11 @@ int omnomnum_scanner_start(ParserState *state, void *pParser, YYSTYPE *yylval, s
 fast_path:
     ss->token = ss->cursor;
     /*!re2c
+        re2c:yyfill:enable = 0;
         SEPARATOR       = [ \r\n\t\f\-]+;
-        //ALL_OTHERS    = [^ \r\n\t\f\-\x00]+; // not a separator
+        //ALL_OTHERS    = [^ \r\n\t\f\-]+; // not a separator
         ALL_OTHERS      = [^]; // not a separator
+        NULLBYTE        = "\x00";
         // see http://re2c.org/examples/example_07.html for ideas of other valid
         // types of numbers
         WHOLE_NUMBER    = [0-9]+;
@@ -417,6 +419,15 @@ fast_path:
             sdsfree(string_value);
 
             return TOKEN_DECIMAL;
+        }
+        NULLBYTE {
+            if (ss->cursor >= ss->limit) {
+                // at the end of the string, so return
+                return 0;
+            }
+
+            // just at a null byte in the middle of the string, so continue
+            goto fast_path;
         }
 
         // MUST COME LAST

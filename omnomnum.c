@@ -119,10 +119,18 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         sdsfree(value);
 #endif
 
+        // failsafe to make sure we stay within the bounds
+        if (ss.cursor > ss.limit) {
+            // at the end of the string? end the loop.
+            break;
+        }
+
         if (scanner_value <= 0) {
             if (scanner_value < 0) {
                 printf("Scanner returned an error: %d\n", scanner_value);
             }
+
+            // equal to 0 (end of input)
             break;
         }
 

@@ -32,8 +32,6 @@ To run the benchmarks:
 ## TODOS:
 
 - [ ] A few of the numbers with spaces require the decimal part. Prob shouldn't.
-- [ ] Decimal numbers should work standalone (currently they can't appear at
-      the very end of a string...).
 - [ ] Consider supporting scientific and other notations as well.
 - [ ] Try to support fractions.
     - Not sure if it's possible to have both fractional support and multi-number
