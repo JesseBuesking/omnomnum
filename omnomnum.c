@@ -96,7 +96,7 @@ void freeOmNomNum(void) {
     sdsfree(numberHolder);
 }
 
-void normalize(const char *data, size_t data_len, ParserState *state) {
+YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) {
     YYSTYPE yylval;
     scanstate ss;
     scanstate_init(&ss, data, data_len);
@@ -160,28 +160,36 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
 
     sortYYSTYPElist(&l);
 
+    return l;
+}
+
+void normalize(const char *data, size_t data_len, ParserState *state) {
+    YYSTYPEList l = find_numbers(data, data_len, state);
+
     if (l.used == 0) {
         state->result = sdsnew(data);
     } else {
         state->result = sdsempty();
-        // must use sdsnewlen, otherwise null bytes in the middle of the string
-        // will terminate the string early
-        sds original = sdsnewlen(data, data_len);
 
         unsigned int lastpos = 0;
         unsigned int i = 0;
 
         for (i = 0; i < l.used; ++i) {
             YYSTYPE y = l.values[i];
+
 #if debug
             printf("begin: %d, end: %d, value: %lf, suffix: %d\n", y.begin, y.end, y.dbl, y.suffix);
 #endif
 
             if (lastpos < y.begin) {
-                sds tmp = sdsdup(original);
-                sdsrange(tmp, lastpos, y.begin - 1);
-                state->result = sdscatsds(state->result, tmp);
-                sdsfree(tmp);
+                // Copy the part of the string leading up to the number to
+                // the final string.
+                state->result = sdscatlen(
+                    state->result,
+                    data + lastpos,
+                    y.begin - lastpos
+                );
+                sdsclear(numberHolder);
             }
             lastpos = y.end;
 
@@ -197,10 +205,11 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
         }
 
-        sds tmp = sdsdup(original);
-        sdsrange(tmp, l.values[l.used-1].end, -1);
-        state->result = sdscatsds(state->result, tmp);
-        sdsfree(tmp);
-        sdsfree(original);
+        // Copy what's left of the string to the final string.
+        state->result = sdscatlen(
+            state->result,
+            data + l.values[l.used-1].end,
+            data_len - l.values[l.used-1].end
+        );
     }
 }
