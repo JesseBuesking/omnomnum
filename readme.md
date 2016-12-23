@@ -32,6 +32,7 @@ To run the benchmarks:
 ## TODOS:
 
 - [ ] Test memory performance on desktop.
+- [ ] Look into gperf on switch in omnomnum.c
 - [ ] A few of the numbers with spaces require the decimal part. Prob shouldn't.
 - [ ] Consider supporting scientific and other notations as well.
 - [ ] Try to support fractions.
