@@ -26,7 +26,7 @@ FINAL_LIBS=-lm
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
 
-OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
+OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;

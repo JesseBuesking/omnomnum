@@ -28,12 +28,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DTOA_H
-#define DTOA_H
+#include "sds.h"
+#include "branchlut/branchlut.h"
 
-#include "grisu2/grisu2.h"
+char buffer[256];
 
-void dtoa(sds *s, double d, int precision);
-void morphNumericString(sds *s, int n);
-
-#endif // DTOA_H
+// Fast algorithm for converting 64bit unsigned integers into strings.
+void itoa(sds *s, uint64_t l) {
+    int len = i64toa_branchlut(l, buffer);
+    *s = sdscatlen(*s, buffer, len);
+}

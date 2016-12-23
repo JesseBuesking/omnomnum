@@ -8,6 +8,14 @@ sds license https://github.com/antirez/sds/blob/master/LICENSE
 
 ===
 
+branchlut is from https://github.com/miloyip/itoa-benchmark
+
+===
+
+grisu2 is from https://github.com/miloyip/dtoa-benchmark
+
+===
+
 OmNomNum 0.0.1 -- Gobbles up numbers in strings.
 
 Copyright (c) 2016, Jesse Buesking <jessebuesking at gmail dot com>

@@ -16,7 +16,8 @@ const char gDigitsLut[200] = {
     '9','0','9','1','9','2','9','3','9','4','9','5','9','6','9','7','9','8','9','9'
 };
 
-void u32toa_branchlut(uint32_t value, char* buffer) {
+int u32toa_branchlut(uint32_t value, char* buffer) {
+    char* start = buffer;
     if (value < 10000) {
         const uint32_t d1 = (value / 100) << 1;
         const uint32_t d2 = (value % 100) << 1;
@@ -86,19 +87,24 @@ void u32toa_branchlut(uint32_t value, char* buffer) {
         *buffer++ = gDigitsLut[d4 + 1];
     }
     *buffer++ = '\0';
+    return (int)(buffer - start);
 }
 
-void i32toa_branchlut(int32_t value, char* buffer) {
+int i32toa_branchlut(int32_t value, char* buffer) {
     uint32_t u = (uint32_t) (value);
     if (value < 0) {
         *buffer++ = '-';
         u = ~u + 1;
+
+        // Adding 1 to account for the negative sign.
+        return u32toa_branchlut(u, buffer) + 1;
     }
 
-    u32toa_branchlut(u, buffer);
+    return u32toa_branchlut(u, buffer);
 }
 
-void u64toa_branchlut(uint64_t value, char* buffer) {
+int u64toa_branchlut(uint64_t value, char* buffer) {
+    char* start = buffer;
     if (value < 100000000) {
         uint32_t v = (uint32_t) (value);
         if (v < 10000) {
@@ -253,14 +259,18 @@ void u64toa_branchlut(uint64_t value, char* buffer) {
     }
 
     *buffer = '\0';
+    return (int)(buffer - start);
 }
 
-void i64toa_branchlut(int64_t value, char* buffer) {
+int i64toa_branchlut(int64_t value, char* buffer) {
     uint64_t u = (uint64_t) (value);
     if (value < 0) {
         *buffer++ = '-';
         u = ~u + 1;
+
+        // Adding 1 to account for the negative sign.
+        return u64toa_branchlut(u, buffer) + 1;
     }
 
-    u64toa_branchlut(u, buffer);
+    return u64toa_branchlut(u, buffer);
 }

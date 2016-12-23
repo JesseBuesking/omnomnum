@@ -105,8 +105,6 @@
 # multiple numbers
 - ["one two three four five", "1 2 3 4 5", 3]
 # forms of numbers https://en.wikipedia.org/wiki/Decimal_mark#Examples_of_use
-# TODO: get these working standalone (doesn't currently work if there's nothing
-# after the number, since the scanner just returns 0
 # english-unofficial
 - ["1,000,000.00", "1000000", 2]
 # english-si

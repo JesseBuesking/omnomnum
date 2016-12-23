@@ -28,12 +28,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DTOA_H
-#define DTOA_H
+#ifndef ITOA_H
+#define ITOA_H
 
-#include "grisu2/grisu2.h"
+#include "sds.h"
+#include "branchlut/branchlut.h"
 
-void dtoa(sds *s, double d, int precision);
-void morphNumericString(sds *s, int n);
+// Fast algorithm for converting 64bit unsigned integers into strings.
+void itoa(sds *s, uint64_t l);
 
-#endif // DTOA_H
+#endif

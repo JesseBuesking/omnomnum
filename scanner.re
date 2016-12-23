@@ -181,8 +181,28 @@ fast_path:
         'half' { return TOKEN_HALF; }
 
         'firsts' { return TOKEN_FIRSTS; }
-        // TODO: handle like SECOND above
-        //'seconds' { return TOKEN_SECONDS; }
+        'seconds' {
+            if (!state->parse_second) {
+                // dont' parse "second" by default. easiest way to do this is to
+                // treat it as a character token
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                        // number followed by character... e.g. "oneself"
+                    } else {
+                        // finish whatever we had and reset
+                        Parse(pParser, 0, *yylval, state);
+                    }
+
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+            } else {
+                return TOKEN_SECONDS;
+            }
+        }
         'thirds' { return TOKEN_THIRDS; }
         'fourths' { return TOKEN_FOURTHS; }
         'fifths' { return TOKEN_FIFTHS; }

@@ -31,6 +31,7 @@
 #include "omnomnum.h"
 #include "scanner.def.h"
 #include "dtoa.h"
+#include "itoa.h"
 
 #define TOKEN_SEPARATOR 10000
 #define TOKEN_CHARACTERS 10001
@@ -46,9 +47,7 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
     } else if (A.is_dbl) {
       dtoa(s, A.dbl, precision);
     } else {
-      char buffer[256] = { '\0' };
-      i64toa_branchlut((uint64_t)A.dbl, buffer);
-      *s = sdscat(*s, buffer);
+      itoa(s, (uint64_t)A.dbl);
     }
 
     switch (A.suffix) {
@@ -158,7 +157,12 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
     printf("numbers: %zu\n", l.used);
 #endif
 
-    sortYYSTYPElist(&l);
+    // I don't think this is necessary. The original thought was that if ever
+    // RTL languages were supported, we'd need to reorder the items added.
+    // However, I *think* the parser will always parse LTR, which means this
+    // would do nothing. Since, for now, LTR english is the target language
+    // supported, I'm disabling this.
+    /*sortYYSTYPElist(&l);*/
 
     return l;
 }
@@ -193,7 +197,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
             lastpos = y.end;
 
-            yystypeToString(&numberHolder, y, 3);
+            yystypeToString(&numberHolder, y, state->precision);
             state->result = sdscatsds(state->result, numberHolder);
 
             sdsclear(numberHolder);

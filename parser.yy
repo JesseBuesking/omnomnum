@@ -42,6 +42,134 @@
 #include "scanner.def.h"
 #include "sds.h"
 #include "dtoa.h"
+
+#ifndef COPY_YYSTYPE_BE
+#define COPY_YYSTYPE_BE(A, B) \
+    A.begin = B.begin; \
+    A.end = B.end;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_VALUE
+#define COPY_YYSTYPE_BE_VALUE(A, B, VALUE) \
+    COPY_YYSTYPE_BE(A, B); \
+    A.dbl = VALUE;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_VALUE_SUFF
+#define COPY_YYSTYPE_BE_VALUE_SUFF(A, B, VALUE, SUFFIX) \
+    COPY_YYSTYPE_BE_VALUE(A, B, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL
+#define COPY_YYSTYPE_DBL(A, B) \
+    A.dbl = B.dbl; \
+    A.is_dbl = B.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC
+#define COPY_YYSTYPE_FRAC(A, B, C) \
+    A.frac_num = B.dbl; \
+    A.frac_denom = C.dbl; \
+    A.is_frac = true;
+#endif
+
+#ifndef COPY_YYSTYPE_SUFF
+#define COPY_YYSTYPE_SUFF(A, B) \
+    A.suffix = B.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_DBL
+#define COPY_YYSTYPE_BE_DBL(A, B) \
+    COPY_YYSTYPE_DBL(A, B); \
+    COPY_YYSTYPE_BE(A, B);
+#endif
+
+#ifndef COPY_YYSTYPE_BE_DBL_SUFF
+#define COPY_YYSTYPE_BE_DBL_SUFF(A, B) \
+    COPY_YYSTYPE_BE_DBL(A, B); \
+    COPY_YYSTYPE_SUFF(A, B);
+#endif
+
+#ifndef COPY_YYSTYPE_BE2
+#define COPY_YYSTYPE_BE2(A, B, C) \
+    A.begin = B.begin; \
+    A.end = C.end;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL
+#define COPY_YYSTYPE_BE_MUL(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl * VALUE; \
+    A.is_dbl = B.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_SUFF
+#define COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, VALUE, SUFFIX) \
+    COPY_YYSTYPE_BE_MUL(A, B, C, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_ADD
+#define COPY_YYSTYPE_BE_ADD(A, B, C) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl + C.dbl; \
+    A.is_dbl = B.is_dbl || C.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_ADD_SUFF
+#define COPY_YYSTYPE_BE_ADD_SUFF(A, B, C) \
+    COPY_YYSTYPE_BE_ADD(A, B, C); \
+    A.suffix = C.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_ADD
+#define COPY_YYSTYPE_BE_MUL_ADD(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = (B.dbl * VALUE) + C.dbl; \
+    A.is_dbl = B.is_dbl || C.is_dbl;
+#endif
+
+#ifndef COPY_YYSTYPE_BE_MUL_ADD_SUFF
+#define COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE_MUL_ADD(A, B, C, VALUE); \
+    A.suffix = C.suffix;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL_NUM
+#define COPY_YYSTYPE_DBL_NUM(A, B, C, VALUE) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.dbl = B.dbl * VALUE; \
+    A.is_dbl = true;
+#endif
+
+#ifndef COPY_YYSTYPE_DBL_NUM_SUFF
+#define COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, VALUE, SUFFIX) \
+    COPY_YYSTYPE_DBL_NUM(A, B, C, VALUE); \
+    A.suffix = SUFFIX;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC_SET
+#define COPY_YYSTYPE_FRAC_SET(A, B, C, NUMERATOR, DENOMINATOR) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.frac_num = NUMERATOR; \
+    A.frac_denom = DENOMINATOR; \
+    A.is_frac = true;
+#endif
+
+#ifndef COPY_YYSTYPE_FRAC_SET_MULT
+#define COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, NUMERATOR, DENOMINATOR) \
+    COPY_YYSTYPE_BE2(A, B, C); \
+    A.frac_num = (B.dbl * DENOMINATOR) + NUMERATOR; \
+    A.frac_denom = DENOMINATOR; \
+    A.is_frac = true;
+#endif
+
+#define HUNDRED_F  100.0
+#define THOUSAND_F 1000.0
+#define MILLION_F  1000000.0
+#define BILLION_F  1000000000.0
+#define TRILLION_F 1000000000000.0
 }
 
 %syntax_error {
@@ -416,7 +544,7 @@ tenth(A) ::= EIGHTIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 80.0, TH); }
 tenth(A) ::= NINETIETH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 90.0, TH); }
 
 less_than_tenths(A) ::= FIRSTS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 1.0, STS); }
-//less_than_tenths(A) ::= SECONDS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 2.0, NDS); }
+less_than_tenths(A) ::= SECONDS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 2.0, NDS); }
 less_than_tenths(A) ::= THIRDS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 3.0, RDS); }
 less_than_tenths(A) ::= FOURTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 4.0, THS); }
 less_than_tenths(A) ::= FIFTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, 5.0, THS); }

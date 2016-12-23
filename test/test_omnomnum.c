@@ -74,6 +74,36 @@ TEST(MorphStringTest, HandlesTrailingZeros) {
     ASSERT_TRUE(strcmp("12", s) == 0) << "12 != " << s << "\n";
 }
 
+TEST(OmNomNum, ParseSecond) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_second = true;
+
+    const char* input = "second place";
+    const char* expect = "2nd place";
+
+    initOmNomNum();
+    normalize(input, strlen(input), &state);
+    freeOmNomNum();
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+}
+
+TEST(OmNomNum, ParseSeconds) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_second = true;
+
+    const char* input = "I'd like seconds";
+    const char* expect = "I'd like 2nds";
+
+    initOmNomNum();
+    normalize(input, strlen(input), &state);
+    freeOmNomNum();
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+}
+
 void printlen(char *value, int len) {
     int i;
     for (i = 0; i < len; i++) {

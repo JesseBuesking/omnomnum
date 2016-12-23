@@ -35,12 +35,13 @@
 #include "scan.h"
 #include "sds.h"
 #include "parser.h"
-#include "branchlut/branchlut.h"
-#include "grisu2/grisu2.h"
+#include "dtoa.h"
+#include "itoa.h"
 
 void initOmNomNum(void);
 void freeOmNomNum(void);
 
+YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state);
 void normalize(const char *data, size_t data_len, ParserState *state);
 
 #endif // OMNOMNUM_H

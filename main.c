@@ -29,15 +29,17 @@
  */
 
 #include "omnomnum.h"
-#include "branchlut/branchlut.h"
+#include <stdbool.h>
 
-void test_single(const char *data, int verbose) {
+void test_single(const char *data, bool verbose, bool parse_second, int precision) {
     ParserState state;
     initParserState(&state);
+    state.parse_second = parse_second;
+    state.precision = precision;
 
-    if (verbose > 0) printf("Input:  '%s'\n", data);
+    if (verbose) printf("Input:  '%s'\n", data);
     normalize(data, strlen(data), &state);
-    if (verbose > 0) printf("Output: '%s'\n", state.result);
+    if (verbose) printf("Output: '%s'\n", state.result);
     resetParserState(&state);
 
     freeParserState(&state);
@@ -63,26 +65,15 @@ int main() {
 
     initOmNomNum();
 
-    long long int value = 100200300400500600;
-    char buffer[256] = { '\0' };
-    sprintf(buffer, "%ld", value);
-    printf("%s\n", buffer);
+    /*test_single("123.45678 dollars", true, true, 10);*/
 
-    char buffer2[256] = { '\0' };
-    i64toa_branchlut(value, buffer2);
-    printf("%s\n", buffer2);
-
-    double dbl = 123456789.123456789;
-
-    printf("%lf\n", dbl);
-    printf("%ld\n", (uint64_t)dbl);
-
-    /*test_single("one two three four five", 1);*/
-    /*test_single("first day month two", 1);*/
-    //test_single("ten", 1);
-    /*test_single("1,000,000.00", 1);*/
-    /*test_single("two million eight hundred and sixty seven thousand five hundred and thirty two seconds from now", 1);*/
-    /*test_single("two hundred hello world one hundred hello world", 1);*/
+    /*test_single("one two three four five", true, false, 3);*/
+    /*test_single("first day month two", true, false, 3);*/
+    /*test_single("ten", true, false, 3);*/
+    /*test_single("1,000,000.00", true, false, 3);*/
+    /*test_single("two million eight hundred and sixty seven thousand five hundred and thirty two seconds from now", true, false, 3);*/
+    /*test_single("two hundred hello world one hundred hello world", true, false, 3);*/
+    /*test_single("one trillion one hundred", true, false, 3);*/
 
     /*test_loop("two hundred");*/
     test_loop("two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello");
