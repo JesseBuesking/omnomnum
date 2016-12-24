@@ -36,6 +36,19 @@
 #define TOKEN_SEPARATOR 10000
 #define TOKEN_CHARACTERS 10001
 
+typedef void (*Handler)(sds *s);    /* A pointer to a handler function */
+void func0 (sds *s) {}
+void func1 (sds *s) { *s = sdscat(*s, "st"); }
+void func2 (sds *s) { *s = sdscat(*s, "sts"); }
+void func3 (sds *s) { *s = sdscat(*s, "nd"); }
+void func4 (sds *s) { *s = sdscat(*s, "nds"); }
+void func5 (sds *s) { *s = sdscat(*s, "rd"); }
+void func6 (sds *s) { *s = sdscat(*s, "rds"); }
+void func7 (sds *s) { *s = sdscat(*s, "th"); }
+void func8 (sds *s) { *s = sdscat(*s, "ths"); }
+
+Handler jump_table[9] = {func0, func1, func2, func3, func4, func5, func6, func7, func8};
+
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
       dtoa(s, A.frac_num, precision);
@@ -50,34 +63,36 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
       itoa(s, (uint64_t)A.dbl);
     }
 
-    switch (A.suffix) {
-        case NO_SUFFIX:
-            break;
-        case ST:
-            *s = sdscat(*s, "st");
-            break;
-        case STS:
-            *s = sdscat(*s, "sts");
-            break;
-        case ND:
-            *s = sdscat(*s, "nd");
-            break;
-        case NDS:
-            *s = sdscat(*s, "nds");
-            break;
-        case RD:
-            *s = sdscat(*s, "rd");
-            break;
-        case RDS:
-            *s = sdscat(*s, "rds");
-            break;
-        case TH:
-            *s = sdscat(*s, "th");
-            break;
-        case THS:
-            *s = sdscat(*s, "ths");
-            break;
-    }
+    jump_table[A.suffix](s);
+
+    /*switch (A.suffix) {*/
+        /*case NO_SUFFIX:*/
+            /*break;*/
+        /*case ST:*/
+            /**s = sdscat(*s, "st");*/
+            /*break;*/
+        /*case STS:*/
+            /**s = sdscat(*s, "sts");*/
+            /*break;*/
+        /*case ND:*/
+            /**s = sdscat(*s, "nd");*/
+            /*break;*/
+        /*case NDS:*/
+            /**s = sdscat(*s, "nds");*/
+            /*break;*/
+        /*case RD:*/
+            /**s = sdscat(*s, "rd");*/
+            /*break;*/
+        /*case RDS:*/
+            /**s = sdscat(*s, "rds");*/
+            /*break;*/
+        /*case TH:*/
+            /**s = sdscat(*s, "th");*/
+            /*break;*/
+        /*case THS:*/
+            /**s = sdscat(*s, "ths");*/
+            /*break;*/
+    /*}*/
 }
 
 void *pParser;
