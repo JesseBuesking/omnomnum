@@ -51,60 +51,33 @@ Handler jump_table[9] = {func0, func1, func2, func3, func4, func5, func6, func7,
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
-      dtoa(s, A.frac_num, precision);
-      *s = sdscat(*s, "/");
-      sds tmp = sdsempty();
-      dtoa(&tmp, A.frac_denom, precision);
-      *s = sdscatsds(*s, tmp);
-      sdsfree(tmp);
+        dtoa(s, A.frac_num, precision);
+        *s = sdscat(*s, "/");
+        sds tmp = sdsempty();
+        dtoa(&tmp, A.frac_denom, precision);
+        *s = sdscatsds(*s, tmp);
+        sdsfree(tmp);
     } else if (A.is_dbl) {
-      dtoa(s, A.dbl, precision);
+        dtoa(s, A.dbl, precision);
     } else {
-      itoa(s, (uint64_t)A.dbl);
+        itoa(s, (uint64_t)A.dbl);
     }
 
     jump_table[A.suffix](s);
-
-    /*switch (A.suffix) {*/
-        /*case NO_SUFFIX:*/
-            /*break;*/
-        /*case ST:*/
-            /**s = sdscat(*s, "st");*/
-            /*break;*/
-        /*case STS:*/
-            /**s = sdscat(*s, "sts");*/
-            /*break;*/
-        /*case ND:*/
-            /**s = sdscat(*s, "nd");*/
-            /*break;*/
-        /*case NDS:*/
-            /**s = sdscat(*s, "nds");*/
-            /*break;*/
-        /*case RD:*/
-            /**s = sdscat(*s, "rd");*/
-            /*break;*/
-        /*case RDS:*/
-            /**s = sdscat(*s, "rds");*/
-            /*break;*/
-        /*case TH:*/
-            /**s = sdscat(*s, "th");*/
-            /*break;*/
-        /*case THS:*/
-            /**s = sdscat(*s, "ths");*/
-            /*break;*/
-    /*}*/
 }
 
 void *pParser;
 sds numberHolder;
 
 void initOmNomNum(void) {
-    numberHolder = sdsempty();
+    /*if (pParser == NULL) {*/
     pParser = ParseAlloc(malloc);
+    /*}*/
+    numberHolder = sdsempty();
 }
 
 void freeOmNomNum(void) {
-    if (pParser!=NULL) {
+    if (pParser != NULL) {
         ParseFree(pParser, free);
     }
     sdsfree(numberHolder);
@@ -204,10 +177,10 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                 // Copy the part of the string leading up to the number to
                 // the final string.
                 state->result = sdscatlen(
-                    state->result,
-                    data + lastpos,
-                    y.begin - lastpos
-                );
+                        state->result,
+                        data + lastpos,
+                        y.begin - lastpos
+                        );
                 sdsclear(numberHolder);
             }
             lastpos = y.end;
@@ -226,9 +199,9 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
 
         // Copy what's left of the string to the final string.
         state->result = sdscatlen(
-            state->result,
-            data + l.values[l.used-1].end,
-            data_len - l.values[l.used-1].end
-        );
+                state->result,
+                data + l.values[l.used-1].end,
+                data_len - l.values[l.used-1].end
+                );
     }
 }

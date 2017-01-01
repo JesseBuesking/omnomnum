@@ -25,6 +25,7 @@ FINAL_LIBS=-lm
 
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
 OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
+OMNOMNUM_CXX=$(CXX) $(WARN) $(OPT) $(DEBUG)
 
 OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
@@ -45,7 +46,7 @@ all: omnomnum
 
 omnomnum: $(OMNOMNUM_OBJ) main.o
 	$(OMNOMNUM_LD) $^ -o $@ $(FINAL_LIBS)
-	./omnomnum
+	#./omnomnum
 
 parser.c: parser.yy scanner.re
 	# produces parser.c
@@ -70,10 +71,10 @@ clean:
 .PHONY: all clean
 
 test/test_omnomnum.o: parser.h scan.h omnomnum.h scanner.h test/test_omnomnum.c
-	$(CXX) -std=c++11 -L/usr/local/include -I$(GTEST_DIR)/include -c test/test_omnomnum.c -o $@ -lyaml-cpp
+	$(OMNOMNUM_CXX) -std=c++11 -L/usr/local/include -I$(GTEST_DIR)/include -c test/test_omnomnum.c -o $@ -lyaml-cpp
 
 test/test_omnomnum: $(OMNOMNUM_OBJ) $(GTEST_DIR)/make/gtest_main.a test/test_omnomnum.o
-	$(CXX) -std=c++11 -L/usr/local/include -o $@ -I$(GTEST_DIR)/include -I. $^ -pthread -lyaml-cpp
+	$(OMNOMNUM_CXX) -std=c++11 -L/usr/local/include -o $@ -I$(GTEST_DIR)/include -I. $^ -pthread -lyaml-cpp
 
 test/test_util.o: util.h test/test_util.c
 	$(CXX) -std=c++11 -L/usr/local/include -I$(GTEST_DIR)/include -c test/test_util.c -o $@ -lyaml-cpp

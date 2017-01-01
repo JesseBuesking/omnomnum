@@ -46,7 +46,9 @@
 #ifndef COPY_YYSTYPE_BE
 #define COPY_YYSTYPE_BE(A, B) \
     A.begin = B.begin; \
-    A.end = B.end;
+    A.end = B.end; \
+    A.is_frac = B.is_frac; \
+    A.is_dbl = B.is_dbl;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_VALUE
@@ -81,8 +83,8 @@
 
 #ifndef COPY_YYSTYPE_BE_DBL
 #define COPY_YYSTYPE_BE_DBL(A, B) \
-    COPY_YYSTYPE_DBL(A, B); \
-    COPY_YYSTYPE_BE(A, B);
+    COPY_YYSTYPE_BE(A, B); \
+    COPY_YYSTYPE_DBL(A, B);
 #endif
 
 #ifndef COPY_YYSTYPE_BE_DBL_SUFF
@@ -94,7 +96,9 @@
 #ifndef COPY_YYSTYPE_BE2
 #define COPY_YYSTYPE_BE2(A, B, C) \
     A.begin = B.begin; \
-    A.end = C.end;
+    A.end = C.end; \
+    A.is_frac = B.is_frac | C.is_frac; \
+    A.is_dbl = B.is_dbl | C.is_dbl;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_MUL
@@ -194,7 +198,7 @@ numbers ::= numbers number.
 numbers ::= number.
 
 number ::= final_number(A). {
-    insertYYSTYPE(&state->yystypeList, A);
+    insertYYSTYPE(&(state->yystypeList), A);
 }
 number ::= NEGATIVE(A) final_number(B). {
     B.dbl = -B.dbl;

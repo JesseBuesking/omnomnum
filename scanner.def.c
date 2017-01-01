@@ -94,4 +94,5 @@ void resetParserState(ParserState *state) {
 
 void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
+    sdsfree(state->result);
 }
