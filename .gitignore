@@ -1,0 +1,12 @@
+parser.out
+omnomnum
+test_omnomnum
+test_benchmark
+test_util
+
+tags
+
+*.swp
+*.o
+
+*.gch
