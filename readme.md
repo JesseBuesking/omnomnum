@@ -2,6 +2,13 @@
 
 Implements most of the logic from [numerizer](https://github.com/jduff/numerizer) in c using [re2c](http://re2c.org/) and [lemon](http://www.hwaci.com/sw/lemon/).
 
+## Differences between Numerizer and OmNomNum
+
+- OmNomNum preserves whitespace, Numerizer does not.
+- OmNomNum supports an optional `parse_second` parameter, Numerizer does not.
+- OmNomNum can support most currency formats, Numerizer does not.
+- Numerizer supports fractions, OmNomNum does not (yet?).
+
 ## Prereqs
 
 To run the tests:

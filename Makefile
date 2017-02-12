@@ -5,27 +5,26 @@ RE2C=re2c
 # ran `gcc makeheaders.c -o makeheaders`
 MAKEHEADERS=~/repositories/makeheaders/makeheaders
 
-$(CC)=gcc
-$(CXX)=g++
-
 GTEST_DIR=$(HOME)/repositories/googletest/googletest
 NAME=omnomnum
 
-OPTIMIZATION?=-O3
-
-STD=-std=c99 -pedantic
 WARN=-Wall -W -Wno-missing-field-initializers
-OPT=$(OPTIMIZATION) -msse4.2
 
-FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG)
-FINAL_LDFLAGS=$(LDFLAGS) $(DEBUG)
+all: CXXFLAGS += -DNDEBUG -O3 -msse4.2 -std=c++11 -pedantic
+all: CCFLAGS += -DNDEBUG -O3 -msse4.2 -std=c99 -pedantic
+all: omnomnum
+
+debug: CXXFLAGS += -DDEBUG -g -ggdb -Dprint_errors -O1 -std=c++11 -pedantic
+debug: CCFLAGS += -DDEBUG -g -ggdb -Dprint_errors -O1 -std=c99 -pedantic
+debug: omnomnum
+
+FINAL_CFLAGS=$(STD) $(WARN) $(CCFLAGS)
+FINAL_CXXFLAGS=$(WARN) $(CXXFLAGS)
+FINAL_LDFLAGS=$(STD) $(WARN) $(LDFLAGS)
 FINAL_LIBS=-lm
-#DEBUG=-g -ggdb -Dprint_errors
-#DEBUG=-g -ggdb -Dprint_errors -Ddebug
 
 OMNOMNUM_CC=$(CC) $(FINAL_CFLAGS)
-OMNOMNUM_LD=$(CC) $(FINAL_LDFLAGS)
-OMNOMNUM_CXX=$(CXX) $(WARN) $(OPT) $(DEBUG)
+OMNOMNUM_CXX=$(CXX) $(FINAL_CXXFLAGS)
 
 OMNOMNUM_OBJ=parser.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
@@ -42,10 +41,8 @@ grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
 %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $<
 
-all: omnomnum
-
 omnomnum: $(OMNOMNUM_OBJ) main.o
-	$(OMNOMNUM_LD) $^ -o $@ $(FINAL_LIBS)
+	$(OMNOMNUM_CC) $^ -o $@ $(FINAL_LIBS)
 	#./omnomnum
 
 parser.c: parser.yy scanner.re
@@ -89,10 +86,10 @@ test: all test/test_omnomnum test/cases.yaml
 	cd test && ./test_omnomnum
 
 test/test_benchmark.o: parser.h scan.h omnomnum.h scanner.h test/test_benchmark.c
-	$(CXX) -O3 -msse4.2 -std=c++11 -L/usr/local/include -c test/test_benchmark.c -o $@ -lyaml-cpp
+	$(CXX) -std=c++11 -L/usr/local/include -c test/test_benchmark.c -o $@ -lyaml-cpp
 
 test/test_benchmark: $(OMNOMNUM_OBJ) test/test_benchmark.o
-	$(CXX) -O3 -msse4.2 -std=c++11 -L/usr/local/include -o $@ -I. $^ -pthread -lyaml-cpp -lbenchmark
+	$(CXX) -std=c++11 -L/usr/local/include -o $@ -I. $^ -pthread -lyaml-cpp -lbenchmark
 
 benchmark: all test/test_benchmark
 	cd test && ./test_benchmark

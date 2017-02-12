@@ -1,4 +1,4 @@
-/* OmNomNum 0.0.1 -- Gobbles up numbers in strings.
+/* OmNomNum 0.0.2 -- Gobbles up numbers in strings.
  *
  * Copyright (c) 2017, Jesse Buesking <jessebuesking at gmail dot com>
  * All rights reserved.
