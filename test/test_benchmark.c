@@ -19,7 +19,7 @@ void BM_fast_double(benchmark::State& state) {
         morphNumericString(&buffer, 3);
     }
 }
-/*BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_double)->UseRealTime()->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_normal_int(benchmark::State& state) {
     long int value = 100200300400500600;
@@ -28,7 +28,7 @@ void BM_normal_int(benchmark::State& state) {
         sprintf(buffer, "%ld", value);
     }
 }
-/*BENCHMARK(BM_normal_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_normal_int)->UseRealTime()->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_int(benchmark::State& state) {
     long long int value = 100200300400500600;
@@ -37,7 +37,7 @@ void BM_fast_int(benchmark::State& state) {
         i64toa_branchlut(value, buffer2);
     }
 }
-/*BENCHMARK(BM_fast_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_int)->UseRealTime()->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_dbl_to_int(benchmark::State& state) {
     double value = 123456789.123456;
@@ -46,7 +46,7 @@ void BM_fast_dbl_to_int(benchmark::State& state) {
         i64toa_branchlut((uint64_t)value, buffer2);
     }
 }
-/*BENCHMARK(BM_fast_dbl_to_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_dbl_to_int)->UseRealTime()->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_simple(benchmark::State& state) {
     ParserState pstate;
@@ -62,7 +62,7 @@ void BM_simple(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_simple)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+BENCHMARK(BM_simple)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_long_string(benchmark::State& state) {
     ParserState pstate;
@@ -78,7 +78,7 @@ void BM_long_string(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_long_string)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+BENCHMARK(BM_long_string)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_many_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -94,7 +94,7 @@ void BM_many_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_many_numbers)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+BENCHMARK(BM_many_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 int main(int argc, char** argv)
 {

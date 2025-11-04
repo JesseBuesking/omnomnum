@@ -49,7 +49,8 @@
     A.end = B.end; \
     A.is_frac = B.is_frac; \
     A.is_dbl = B.is_dbl; \
-    A.leave_alone = B.leave_alone;
+    A.leave_alone = B.leave_alone; \
+    A.suffix = NO_SUFFIX;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_VALUE
@@ -100,7 +101,8 @@
     A.end = C.end; \
     A.is_frac = B.is_frac | C.is_frac; \
     A.is_dbl = B.is_dbl | C.is_dbl; \
-    A.leave_alone = B.leave_alone | C.leave_alone;
+    A.leave_alone = B.leave_alone | C.leave_alone; \
+    A.suffix = NO_SUFFIX;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_MUL
@@ -220,7 +222,9 @@ number ::= final_number(A). {
     }
 }
 number ::= NEGATIVE(A) final_number(B). {
+    /* Propagate negativity to value and fractions */
     B.dbl = -B.dbl;
+    if (B.is_frac) { B.frac_num = -B.frac_num; }
     B.begin = A.begin;
     B.end = B.end;
     insertYYSTYPE(&state->yystypeList, B);
@@ -238,6 +242,7 @@ final_number(A) ::= ONE(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0); 
 final_number(A) ::= A(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0); }
 
 final_number(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+final_number(A) ::= FRACTION(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = true; }
 final_number(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 final_number(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
@@ -246,15 +251,15 @@ final_number(A) ::= less_than_quadrillion(B) AND fraction(C). { COPY_YYSTYPE_FRA
 //final_number(A) ::= less_than_quadrillion(B) AND_A fraction(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom); }
 final_number(A) ::= fraction(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = B.is_frac; }
 
-// TODO: both of these needs AND in order for multiple numbers to work
-//fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionths(C). {
-//    COPY_YYSTYPE_BE2(A, B, C);
-//    COPY_YYSTYPE_FRAC(A, B, C);
-//}
-//fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionth(C). {
-//    COPY_YYSTYPE_BE2(A, B, C);
-//    COPY_YYSTYPE_FRAC(A, B, C);
-//}
+// General fraction forms like "three eighths", "one eighth"
+fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionths(C). {
+    COPY_YYSTYPE_BE2(A, B, C);
+    COPY_YYSTYPE_FRAC(A, B, C);
+}
+fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionth(C). {
+    COPY_YYSTYPE_BE2(A, B, C);
+    COPY_YYSTYPE_FRAC(A, B, C);
+}
 
 fraction(A) ::= A(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }
 fraction(A) ::= AN(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }

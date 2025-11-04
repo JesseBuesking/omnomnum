@@ -81,12 +81,16 @@ void sortYYSTYPElist(YYSTYPEList *l) {
 void initParserState(ParserState *state) {
     state->error = NO_ERROR;
     state->parse_second = false;
+    state->precision = 6;
+    state->result = NULL;
+    state->is_parsing = false;
+    state->last_token = -1;
     initYYSTYPEList(&(state->yystypeList), 4);
 }
 
 void resetParserState(ParserState *state) {
     state->precision = 6;
-    sdsfree(state->result);
+    if (state->result) { sdsfree(state->result); state->result = NULL; }
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;

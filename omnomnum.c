@@ -50,9 +50,56 @@ void func8 (sds *s) { *s = sdscat(*s, "ths"); }
 
 Handler jump_table[9] = {func0, func1, func2, func3, func4, func5, func6, func7, func8};
 
+static int is_space_or_hyphen(char c) {
+    return c==' '||c=='\t'||c=='\r'||c=='\n'||c=='\f'||c=='-';
+}
+
+static int is_letter(char c) {
+    return (c>='a'&&c<='z')||(c>='A'&&c<='Z');
+}
+
+static int word_match(const char* data, unsigned int pos, unsigned int len, const char* word, unsigned int* consumed) {
+    unsigned int wlen = (unsigned int)strlen(word);
+    if (pos + wlen > len) return 0;
+    if (strncmp(data + pos, word, wlen) != 0) return 0;
+    char next = (pos + wlen < len) ? data[pos + wlen] : '\0';
+    if (is_letter(next)) return 0; // ensure word boundary
+    *consumed = wlen;
+    return 1;
+}
+
+static int match_cardinal_small(const char* data, unsigned int pos, unsigned int len, double* value, unsigned int* consumed) {
+    struct { const char* w; int v; } map[] = {
+        {"one",1},{"two",2},{"three",3},{"four",4},{"five",5},{"six",6},{"seven",7},{"eight",8},{"nine",9},
+    };
+    for (unsigned i=0;i<sizeof(map)/sizeof(map[0]);++i) {
+        unsigned c=0; if (word_match(data,pos,len,map[i].w,&c)) { *value = (double)map[i].v; *consumed=c; return 1; }
+    }
+    return 0;
+}
+
+static int match_denominator_word(const char* data, unsigned int pos, unsigned int len, double* denom, unsigned int* consumed) {
+    struct { const char* w; int v; } map[] = {
+        {"fourth",4},{"fourths",4},
+        {"eighth",8},{"eighths",8},
+        {"ninth",9},{"ninths",9},
+    };
+    for (unsigned i=0;i<sizeof(map)/sizeof(map[0]);++i) {
+        unsigned c=0; if (word_match(data,pos,len,map[i].w,&c)) { *denom = (double)map[i].v; *consumed=c; return 1; }
+    }
+    return 0;
+}
+
+static int is_ws_or_hyphen_only(const char* data, unsigned int a, unsigned int b) {
+    for (unsigned int i=a;i<b;i++) if (!is_space_or_hyphen(data[i])) return 0; return 1;
+}
+
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
-        dtoa(s, A.frac_num, precision);
+        if (A.frac_num < 0) {
+            *s = sdscat(*s, "-");
+        }
+        dtoa(s, A.frac_num < 0 ? -A.frac_num : A.frac_num, precision);
         *s = sdscat(*s, "/");
         sds tmp = sdsempty();
         dtoa(&tmp, A.frac_denom, precision);
@@ -61,7 +108,12 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
     } else if (A.is_dbl) {
         dtoa(s, A.dbl, precision);
     } else {
-        itoa(s, (uint64_t)A.dbl);
+        if (A.dbl < 0) {
+            *s = sdscat(*s, "-");
+            itoa(s, (uint64_t)(-A.dbl));
+        } else {
+            itoa(s, (uint64_t)A.dbl);
+        }
     }
 
     jump_table[A.suffix](s);
@@ -159,8 +211,51 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
 void normalize(const char *data, size_t data_len, ParserState *state) {
     YYSTYPEList l = find_numbers(data, data_len, state);
 
+    // Note: fraction handling is now performed in the scanner; no post-pass merge required.
+
     if (l.used == 0) {
-        state->result = sdsnew(data);
+        // Fallback: split on separators and normalize each token independently
+        state->result = sdsempty();
+        unsigned int pos = 0;
+        while (pos < data_len) {
+            // skip leading separators
+            unsigned int start = pos;
+            while (pos < data_len) {
+                char c = data[pos];
+                if (c==' '||c=='\r'||c=='\n'||c=='\t'||c=='\f'||c=='-') {
+                    // copy separator as-is
+                    pos++;
+                } else {
+                    break;
+                }
+            }
+            if (pos > start) {
+                state->result = sdscatlen(state->result, data + start, pos - start);
+            }
+            if (pos >= data_len) break;
+            // find end of token (non-separator run)
+            unsigned int tok_start = pos;
+            while (pos < data_len) {
+                char c = data[pos];
+                if (c==' '||c=='\r'||c=='\n'||c=='\t'||c=='\f'||c=='-') break;
+                pos++;
+            }
+            unsigned int tok_len = pos - tok_start;
+            if (tok_len > 0) {
+                ParserState sub; initParserState(&sub);
+                sub.parse_second = state->parse_second; sub.precision = state->precision;
+                YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
+                if (sl.used > 0) {
+                    sds tmp = sdsempty();
+                    yystypeToString(&tmp, sl.values[0], sub.precision);
+                    state->result = sdscatsds(state->result, tmp);
+                    sdsfree(tmp);
+                } else {
+                    state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                }
+                freeParserState(&sub);
+            }
+        }
     } else {
         state->result = sdsempty();
 

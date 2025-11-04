@@ -29,6 +29,41 @@
  */
 
 #include "scanner.h"
+#include <string.h>
+
+static int map_card_small(const char* s, size_t n, double* out) {
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    return 0;
+}
+
+static int map_denom_word(const char* s, size_t n, double* den) {
+    if ((n==4 && !strncmp(s,"half",4)) || (n==6 && !strncmp(s,"halves",6))) { *den=2; return 1; }
+    if (n==7 && !strncmp(s,"quarter",7)) { *den=4; return 1; }
+    if (n==8 && !strncmp(s,"quarters",8)) { *den=4; return 1; }
+    if (n==5 && !strncmp(s,"third",5)) { *den=3; return 1; }
+    if (n==6 && !strncmp(s,"thirds",6)) { *den=3; return 1; }
+    if (n==6 && !strncmp(s,"fourth",6)) { *den=4; return 1; }
+    if (n==7 && !strncmp(s,"fourths",7)) { *den=4; return 1; }
+    if (n==5 && !strncmp(s,"fifth",5)) { *den=5; return 1; }
+    if (n==6 && !strncmp(s,"fifths",6)) { *den=5; return 1; }
+    if (n==5 && !strncmp(s,"sixth",5)) { *den=6; return 1; }
+    if (n==6 && !strncmp(s,"sixths",6)) { *den=6; return 1; }
+    if (n==7 && !strncmp(s,"seventh",7)) { *den=7; return 1; }
+    if (n==8 && !strncmp(s,"sevenths",8)) { *den=7; return 1; }
+    if (n==6 && !strncmp(s,"eighth",6)) { *den=8; return 1; }
+    if (n==7 && !strncmp(s,"eighths",7)) { *den=8; return 1; }
+    if (n==5 && !strncmp(s,"ninth",5)) { *den=9; return 1; }
+    if (n==6 && !strncmp(s,"ninths",6)) { *den=9; return 1; }
+    return 0;
+}
 
 #define TOKEN_SEPARATOR 10000
 #define TOKEN_CHARACTERS 10001
@@ -71,6 +106,89 @@ fast_path:
         DECIMAL_IND     = S* D{1,2} ("," D{2})* ("," D{3}) ("." D+)+;
         DECIMAL_SWI     = S* D{1,3} ("'" D{3})+ ("." D+)+;
         DECIMAL_CHI     = S* D{1,4} ("," D{4})+ ("." D+)+;
+
+        // FRACTIONS (word-based and mixed numeric) must come before base tokens
+        // Mixed numeric: <int> WS <int>/<int>
+        D+ WS+ D+ "/" D+ {
+            // determine numbers by scanning substring
+            const char* s = ss->token;
+            const char* e = ss->cursor;
+            // parse whole
+            const char* p = s;
+            double whole=0; while (p<e && *p>='0' && *p<='9') { whole = whole*10 + (*p - '0'); p++; }
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double num=0; while (p<e && *p>='0' && *p<='9') { num = num*10 + (*p - '0'); p++; }
+            if (p<e && *p=='/') p++;
+            double den=0; while (p<e && *p>='0' && *p<='9') { den = den*10 + (*p - '0'); p++; }
+            #ifdef SCANNER_FRACTIONS
+            (*yylval).is_frac = true; (*yylval).frac_num = whole*den + num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                } else {
+                    Parse(pParser, 0, *yylval, state);
+                }
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+            #endif
+        }
+
+        // Mixed word: <card> WS 'and' WS <card> WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // find 'and'
+            const char* andp = strstr(s, "and");
+            if (andp) {
+                // left card
+                const char* ws1 = s; while (ws1<andp && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+                double x=0; (void)map_card_small(s, (size_t)(ws1 - s), &x);
+                const char* p = andp + 3; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                const char* ws2 = p; while (ws2<e && (*ws2!=' '&&*ws2!='\t'&&*ws2!='\r'&&*ws2!='\n'&&*ws2!='\f'&&*ws2!='-')) ws2++;
+                double y=0; (void)map_card_small(p, (size_t)(ws2 - p), &y);
+                while (ws2<e && (*ws2==' '||*ws2=='\t'||*ws2=='\r'||*ws2=='\n'||*ws2=='\f'||*ws2=='-')) ws2++;
+                double den=0; (void)map_denom_word(ws2, (size_t)(e - ws2), &den);
+                #ifdef SCANNER_FRACTIONS
+                (*yylval).is_frac = true; (*yylval).frac_num = x*den + y; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                #else
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+                #endif
+            }
+        }
+
+        // Simple word: <card> WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
+            double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
+            while (ws<e && (*ws==' '||*ws=='\t'||*ws=='\r'||*ws=='\n'||*ws=='\f'||*ws=='-')) ws++;
+            double den=0; (void)map_denom_word(ws, (size_t)(e - ws), &den);
+            #ifdef SCANNER_FRACTIONS
+            (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                } else {
+                    Parse(pParser, 0, *yylval, state);
+                }
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS;
+            goto fast_path;
+            #endif
+        }
 
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
