@@ -91,17 +91,89 @@ build_and_run() {
   (
     cd "$dir"
     make clean >/dev/null 2>&1 || true
+    FREEZE=${FREEZE_CODEGEN:-0}
+    MAKE_FREEZE_VARS=""
+    if [[ "$FREEZE" == "1" ]]; then
+      echo "[gb_refs] FREEZE_CODEGEN=1: restoring generated files and touching to avoid regen"
+      if git ls-files --error-unmatch parser.c >/dev/null 2>&1; then git checkout -- parser.c || true; fi
+      if git ls-files --error-unmatch parser.h >/dev/null 2>&1; then git checkout -- parser.h || true; fi
+      if git ls-files --error-unmatch scanner.c >/dev/null 2>&1; then git checkout -- scanner.c || true; fi
+      touch -c parser.c scanner.c parser.h 2>/dev/null || true
+      MAKE_FREEZE_VARS="LEMON=/usr/bin/false RE2C=/usr/bin/false"
+    fi
+
+    ensure_objs() {
+      mkdir -p grisu2 branchlut || true
+      # Move misplaced objects if present
+      if [[ ! -f grisu2/grisu2.o && -f grisu2.o ]]; then mv -f grisu2.o grisu2/grisu2.o || true; fi
+      if [[ ! -f branchlut/branchlut.o && -f branchlut.o ]]; then mv -f branchlut.o branchlut/branchlut.o || true; fi
+      # Compile directly if still missing (avoid arch-specific flags)
+      if [[ ! -f grisu2/grisu2.o && -f grisu2/grisu2.c ]]; then
+        echo "[gb_refs] Compiling grisu2/grisu2.o directly"
+        cc -O3 -std=c99 -Wall -W -Wno-missing-field-initializers -I. -c grisu2/grisu2.c -o grisu2/grisu2.o || true
+      fi
+      if [[ ! -f branchlut/branchlut.o && -f branchlut/branchlut.c ]]; then
+        echo "[gb_refs] Compiling branchlut/branchlut.o directly"
+        cc -O3 -std=c99 -Wall -W -Wno-missing-field-initializers -I. -c branchlut/branchlut.c -o branchlut/branchlut.o || true
+      fi
+      ls -l grisu2/grisu2.o branchlut/branchlut.o 2>/dev/null || true
+    }
+
+    # Build core objects first to populate dependency outputs in older refs
+    make -j1 all $MAKE_FREEZE_VARS BENCH_PREFIX="$BENCH_PREFIX_ENV" CCFLAGS="${CCFLAGS:-}" CXXFLAGS="${CXXFLAGS:-}" SCANNER_FRACTIONS="${SCANNER_FRACTIONS:-}" >/dev/null 2>&1 || true
+    ensure_objs
+
     if make -n test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" >/dev/null 2>&1; then
-      make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"
+      # Try build, repair objects on failure, then retry. If still failing, manual compile+link
+      if ! make test/test_benchmark $MAKE_FREEZE_VARS BENCH_PREFIX="$BENCH_PREFIX_ENV" CCFLAGS="${CCFLAGS:-}" CXXFLAGS="${CXXFLAGS:-}" SCANNER_FRACTIONS="${SCANNER_FRACTIONS:-}"; then
+        echo "[gb_refs] Link failed; repairing objects and retrying ..."
+        ensure_objs
+        if ! make -B test/test_benchmark $MAKE_FREEZE_VARS BENCH_PREFIX="$BENCH_PREFIX_ENV" CCFLAGS="${CCFLAGS:-}" CXXFLAGS="${CXXFLAGS:-}" SCANNER_FRACTIONS="${SCANNER_FRACTIONS:-}"; then
+          echo "[gb_refs] Make link still failing; attempting manual build/link"
+          # Build core .o files explicitly
+          make -k parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o $MAKE_FREEZE_VARS BENCH_PREFIX="$BENCH_PREFIX_ENV" CCFLAGS="${CCFLAGS:-}" CXXFLAGS="${CXXFLAGS:-}" SCANNER_FRACTIONS="${SCANNER_FRACTIONS:-}" || true
+          ensure_objs
+          # Compile benchmark object if missing
+          if [[ ! -f test/test_benchmark.o && -f test/test_benchmark.c ]]; then
+            c++ -std=c++17 -I"$BENCH_PREFIX_ENV"/include -I. \
+              -DGIT_SHA=\"$(git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)\" \
+              -DGIT_DESC=\"$(git describe --always --dirty --tags 2>/dev/null || git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)\" \
+              -DBUILD_TIME=\"$(date -u +%FT%TZ)\" \
+              -DTREE_DIRTY_STR=\"$(test -n "$(git status --porcelain 2>/dev/null)" && echo 1 || echo 0)\" \
+              -c test/test_benchmark.c -o test/test_benchmark.o
+          fi
+          # Gather objects for link (use both top-level and subdir)
+          objs=$(ls -1 *.o grisu2/*.o branchlut/*.o 2>/dev/null | tr '\n' ' ')
+          echo "[gb_refs] Linking with objs: $objs"
+          c++ -std=c++17 -o test/test_benchmark -I. $objs -pthread -L"$BENCH_PREFIX_ENV"/lib -lbenchmark
+        fi
+      fi
       echo "[gb_refs] Running $label test_benchmark -> $json"
-      ./test/test_benchmark \
-        --benchmark_min_time=2s \
+      if ! ./test/test_benchmark \
+        --benchmark_min_time=0.5s \
         --benchmark_repetitions=3 \
         --benchmark_out="$json" \
-        --benchmark_out_format=json
+        --benchmark_out_format=json; then
+        echo "[gb_refs] Run failed for $json"
+      fi
+      # If write produced no data (sandbox), write to /tmp and copy back
+      if [[ ! -s "$json" ]]; then
+        local tmpjson
+        tmpjson="/tmp/$(basename "$json")"
+        echo "[gb_refs] Falling back to /tmp: $tmpjson"
+        ./test/test_benchmark \
+          --benchmark_min_time=0.5s \
+          --benchmark_repetitions=3 \
+          --benchmark_out="$tmpjson" \
+          --benchmark_out_format=json
+        if [[ -s "$tmpjson" ]]; then
+          cp -f "$tmpjson" "$json" 2>/dev/null || true
+          echo "[gb_refs] Copied $tmpjson -> $json"
+        fi
+      fi
     else
       echo "[gb_refs] Target test/test_benchmark not found; using 'make benchmark' fallback"
-      make benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"
+      make benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CCFLAGS="${CCFLAGS:-}" CXXFLAGS="${CXXFLAGS:-}" SCANNER_FRACTIONS="${SCANNER_FRACTIONS:-}"
       if [[ -f test/benchmark.json ]]; then
         cp -f test/benchmark.json "$json"
       else

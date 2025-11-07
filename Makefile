@@ -51,14 +51,14 @@ test/cases.yaml: ;
 test/remove_char_inplace.yaml: ;
 
 branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
-	$(OMNOMNUM_CC) -c $< -o branchlut/branchlut.o
+	$(OMNOMNUM_CC) -c $< -o $@
 
 grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
-	$(OMNOMNUM_CC) -c $< -o grisu2/grisu2.o
+	$(OMNOMNUM_CC) -c $< -o $@
 
 # Only use the generic C compile rule for core objects, not tests
 $(OMNOMNUM_OBJ): %.o: %.c $(DEPS)
-	$(OMNOMNUM_CC) -c $<
+	$(OMNOMNUM_CC) -c $< -o $@
 
 omnomnum: $(OMNOMNUM_OBJ) main.o
 	$(OMNOMNUM_CC) $^ -o $@ $(FINAL_LIBS)
