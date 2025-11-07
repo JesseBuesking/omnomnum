@@ -193,6 +193,7 @@
 #define MILLION_F  1000000.0
 #define BILLION_F  1000000000.0
 #define TRILLION_F 1000000000000.0
+#define QUADRILLION_F 1000000000000000.0
 }
 
 %syntax_error {
@@ -232,6 +233,8 @@ number ::= NEGATIVE(A) final_number(B). {
 
 final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
 final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }
+final_number(A) ::= less_than_quadrillion(B) AND A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
+final_number(A) ::= less_than_quadrillion(B) AND A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }
 
 final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 4.0); }
 final_number(A) ::= ONE(B) QUARTER(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0); }
@@ -271,6 +274,53 @@ final_number(A) ::= ZERO_WHOLE_NUMBER(B). { COPY_YYSTYPE_BE(A, B); A.dbl = B.dbl
 final_number(A) ::= WHOLE_NUMBER(B). { COPY_YYSTYPE_BE(A, B); A.dbl = B.dbl; }
 final_number(A) ::= DECIMAL(B). { COPY_YYSTYPE_BE(A, B); A.dbl = B.dbl; A.is_dbl = true; }
 final_number(A) ::= ZERO(B). { COPY_YYSTYPE_BE_VALUE(A, B, 0.0); }
+
+/* --------------------------------------
+sub quintillion ordinal
+-------------------------------------- */
+
+less_than_quintillionth_end_only(A) ::= less_than_quintillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_quintillionth_end_only(A) ::= less_than_quadrillionth_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_quintillionth(A) ::= QUADRILLION(B) less_than_quadrillionth_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillionth(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, QUADRILLION_F); }
+less_than_quintillionth(A) ::= less_than_thousand(B) QUADRILLIONTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, QUADRILLION_F, TH); }
+less_than_quintillionth(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= QUADRILLIONTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, QUADRILLION_F, TH); }
+final_number(A) ::= DECIMAL(B) QUADRILLIONTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, QUADRILLION_F, TH); }
+
+// ----------------------------
+
+less_than_quintillionths_end_only(A) ::= less_than_quintillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_quintillionths_end_only(A) ::= less_than_quadrillionths_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_quintillionths(A) ::= QUADRILLION(B) less_than_quadrillionths_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillionths(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillionths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, QUADRILLION_F); }
+less_than_quintillionths(A) ::= less_than_thousand(B) QUADRILLIONTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, QUADRILLION_F, THS); }
+less_than_quintillionths(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= QUADRILLIONTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, QUADRILLION_F, THS); }
+final_number(A) ::= DECIMAL(B) QUADRILLIONTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, QUADRILLION_F, THS); }
+
+/* --------------------------------------
+sub quintillion regular
+-------------------------------------- */
+
+less_than_quintillion_end_only(A) ::= less_than_quintillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_quintillion_end_only(A) ::= less_than_quadrillion_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+
+less_than_quintillion(A) ::= QUADRILLION(B) less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_thousand(B) QUADRILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+
+// Direct final forms using QUADRILLION to avoid ambiguity with fractions
+final_number(A) ::= QUADRILLION(B) less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, QUADRILLION_F); }
+final_number(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, QUADRILLION_F); }
+final_number(A) ::= less_than_thousand(B) QUADRILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, QUADRILLION_F); }
+/* Prefer combined forms; avoid early reduction on bare QUADRILLION forms */
+final_number(A) ::= DECIMAL(B) QUADRILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, QUADRILLION_F); }
 
 /* --------------------------------------
 sub quadrillion ordinal

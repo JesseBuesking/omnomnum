@@ -51,3 +51,29 @@ Notes
 - Current state: scanner-driven fractions implemented; post-pass removed; tests pass (114/114). Google Benchmark targets produce JSON (before/after), with `SCANNER_FRACTIONS` providing apples-to-apples comparisons.
 - Environment caveat: On some macOS sandboxes, the Google Benchmark binary may require running outside the sandbox; the `bench_local` fallback remains available.
 
+
+## 11) Minus (Word) Sign Support
+- Problem: The word "minus" is currently treated as plain text; only the word "negative" or a leading '-' acts as a sign. This creates inconsistent behavior across inputs like "minus five" (unchanged) vs "negative five" (→ -5).
+- Proposal: Treat the word "minus" as a sign (same as `NEGATIVE`) when it precedes a `final_number` without intervening non-separator characters.
+- Scope:
+  - Scanner: add a `TOKEN_MINUS` for the word "minus".
+  - Parser: add rule `number ::= MINUS final_number` mirroring `NEGATIVE` logic (propagate negativity to values and fractions).
+  - Edge handling: ensure we don't capture subtraction semantics (we don't parse arithmetic), and preserve "minus" when not followed by a number (e.g., named phrases or hyphenated words).
+- Acceptance:
+  - "minus five" → "-5"; "minus 1 1/2" → "-3/2"; "minus one point five" → "-1.5".
+  - "minus sign" or "minus-two" inside words remains unchanged.
+
+## 12) Percent Unit Semantics
+- Problem: "percent" and "%" are currently preserved as-is, even when numbers are normalized (e.g., "two and a half percent" → "5/2 percent"). Desired behavior may vary: keep as a unit, convert to symbol, or normalize as a decimal [0,1].
+- Options:
+  1) Unit-preserving (status quo): continue leaving "percent"/"%" unchanged after number normalization.
+  2) Symbol canonicalization: normalize the word form to the symbol (e.g., "percent" → "%"), preserving spacing rules.
+  3) Decimal-of-one conversion (opt-in): convert n percent → n/100 (e.g., "50 percent" → "0.5"). Combine with fraction support (e.g., "1/2 percent" → "0.005").
+- Scope:
+  - Introduce `ParserState` flags: `normalize_percent_symbol`, `percent_as_decimal`.
+  - Add a light post-pass when a number is immediately followed by "percent" or "%".
+  - Locale spacing: prefer no space before "%" (e.g., "50%").
+- Acceptance:
+  - With defaults: behavior matches current outputs.
+  - With `normalize_percent_symbol=true`: "50 percent" → "50%"; "one point five percent" → "1.5%".
+  - With `percent_as_decimal=true`: "50%" → "0.5"; "two and a half percent" → "0.025" (or as fraction if configured).

@@ -15,6 +15,10 @@ NAME=omnomnum
 
 WARN=-Wall -W -Wno-missing-field-initializers
 
+# Enable scanner-side fraction recognition by default
+CCFLAGS += -DSCANNER_FRACTIONS=1
+CXXFLAGS += -DSCANNER_FRACTIONS=1
+
 all: CXXFLAGS += -DNDEBUG -O3 -msse4.2 -std=c++11 -pedantic
 all: CCFLAGS += -DNDEBUG -O3 -msse4.2 -std=c99 -pedantic
 all: omnomnum

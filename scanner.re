@@ -44,6 +44,20 @@ static int map_card_small(const char* s, size_t n, double* out) {
     return 0;
 }
 
+static int map_digit_word(const char* s, size_t n, int* out) {
+    if (n==4 && !strncmp(s,"zero",4)) { *out=0; return 1; }
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    return 0;
+}
+
 static int map_denom_word(const char* s, size_t n, double* den) {
     if ((n==4 && !strncmp(s,"half",4)) || (n==6 && !strncmp(s,"halves",6))) { *den=2; return 1; }
     if (n==7 && !strncmp(s,"quarter",7)) { *den=4; return 1; }
@@ -62,6 +76,8 @@ static int map_denom_word(const char* s, size_t n, double* den) {
     if (n==7 && !strncmp(s,"eighths",7)) { *den=8; return 1; }
     if (n==5 && !strncmp(s,"ninth",5)) { *den=9; return 1; }
     if (n==6 && !strncmp(s,"ninths",6)) { *den=9; return 1; }
+    if (n==9 && !strncmp(s,"hundredth",9)) { *den=100; return 1; }
+    if (n==10 && !strncmp(s,"hundredths",10)) { *den=100; return 1; }
     return 0;
 }
 
@@ -136,6 +152,90 @@ fast_path:
             #endif
         }
 
+        // Specific: <card> WS 'hundredth(s)'
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'hundredth' | 'hundredths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
+            double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
+            #ifdef SCANNER_FRACTIONS
+            (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = 100.0; return TOKEN_FRACTION;
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+                ParseReset(pParser); state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            #endif
+        }
+
+        // Special-case: 'one and a quarter' => 5/4
+        'one' WS+ 'and' WS+ 'a' WS+ 'quarter' {
+            #ifdef SCANNER_FRACTIONS
+            (*yylval).is_frac = true; (*yylval).frac_num = 5; (*yylval).frac_denom = 4; return TOKEN_FRACTION;
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) { }
+                else { Parse(pParser, 0, *yylval, state); }
+                ParseReset(pParser); state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            #endif
+        }
+
+        // SPELLED DECIMAL: <digit-word> WS+ 'point' WS+ <digit-word> (WS+ <digit-word>)+
+        ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // parse first digit word
+            const char* ws1 = s; while (ws1<e && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+            int intd=0; (void)map_digit_word(s, (size_t)(ws1 - s), &intd);
+            double intpart = (double)intd;
+            // find 'point'
+            const char* pointp = strstr(ws1, "point");
+            const char* p = pointp ? pointp + 5 : ws1; // skip 'point'
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = intpart + frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // SPELLED DECIMAL: D+ WS+ 'point' WS+ <digit-word> (WS+ <digit-word>)+
+        D+ WS+ 'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // integer part: scan digits until space before 'point'
+            const char* pointp = strstr(s, "point");
+            double intpart = 0.0; const char* p = s;
+            while (p < pointp && p < e) { if (*p>='0' && *p<='9') { intpart = intpart*10 + (*p - '0'); } p++; }
+            p = pointp + 5; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = intpart + frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // SPELLED DECIMAL: 'point' WS+ <digit-word> (WS+ <digit-word>)+  -> 0.<digits>
+        'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* p = s + 5; // after 'point'
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
         // Mixed word: <card> WS 'and' WS <card> WS <denom>
         ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' ) {
             const char* s = ss->token; const char* e = ss->cursor;
@@ -167,8 +267,37 @@ fast_path:
             }
         }
 
+        // Mixed word (with 'a'): <card> WS 'and' WS 'a' WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ 'a' WS+ ( 'half' | 'third' | 'quarter' | 'fourth' | 'fifth' | 'sixth' | 'seventh' | 'eighth' | 'ninth' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* andp = strstr(s, "and");
+            if (andp) {
+                const char* ws1 = s; while (ws1<andp && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+                double x=0; (void)map_card_small(s, (size_t)(ws1 - s), &x);
+                const char* p = andp + 3; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                // skip 'a'
+                if (p+1<e && *p=='a') { p++; }
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                double den=0; (void)map_denom_word(p, (size_t)(e - p), &den);
+                #ifdef SCANNER_FRACTIONS
+                (*yylval).is_frac = true; (*yylval).frac_num = x*den + 1; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                #else
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+                #endif
+            }
+        }
+
         // Simple word: <card> WS <denom>
-        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' ) {
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'hundredth' | 'hundredths' ) {
             const char* s = ss->token; const char* e = ss->cursor;
             const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
             double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
@@ -239,6 +368,8 @@ fast_path:
         'billion' { return TOKEN_BILLION; }
         'a trillion' { return TOKEN_TRILLION; }
         'trillion' { return TOKEN_TRILLION; }
+        'a quadrillion' { return TOKEN_QUADRILLION; }
+        'quadrillion' { return TOKEN_QUADRILLION; }
 
         'first' { return TOKEN_FIRST; }
         'second' {
@@ -303,6 +434,8 @@ fast_path:
         'billionth' { return TOKEN_BILLIONTH; }
         'a trillionth' { return TOKEN_TRILLIONTH; }
         'trillionth' { return TOKEN_TRILLIONTH; }
+        'a quadrillionth' { return TOKEN_QUADRILLIONTH; }
+        'quadrillionth' { return TOKEN_QUADRILLIONTH; }
 
         'quarter' { return TOKEN_QUARTER; }
         'half' { return TOKEN_HALF; }
@@ -364,6 +497,7 @@ fast_path:
         'millionths' { return TOKEN_MILLIONTHS; }
         'billionths' { return TOKEN_BILLIONTHS; }
         'trillionths' { return TOKEN_TRILLIONTHS; }
+        'quadrillionths' { return TOKEN_QUADRILLIONTHS; }
 
         'quarters' { return TOKEN_QUARTERS; }
         'halves' { return TOKEN_HALVES; }

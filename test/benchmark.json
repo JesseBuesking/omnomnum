@@ -1,0 +1,38 @@
+{
+  "context": {
+    "date": "2025-11-07T01:35:04-05:00",
+    "host_name": "Jesses-MacBook-Air-2.local",
+    "executable": "./test_benchmark",
+    "num_cpus": 8,
+    "mhz_per_cpu": 24,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 65536,
+        "num_sharing": 0
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 131072,
+        "num_sharing": 0
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 4194304,
+        "num_sharing": 1
+      }
+    ],
+    "load_avg": [2.38721,2.25,2.13135],
+    "library_version": "v1.9.4",
+    "library_build_type": "release",
+    "json_schema_version": 1,
+    "build_time": "2025-11-07T06:35:00Z",
+    "git_desc": "c90bb9c-dirty",
+    "git_sha": "c90bb9cce940",
+    "tree_dirty": "1"
+  },
+  "benchmarks": [
