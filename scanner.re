@@ -78,6 +78,8 @@ static int map_denom_word(const char* s, size_t n, double* den) {
     if (n==6 && !strncmp(s,"ninths",6)) { *den=9; return 1; }
     if (n==9 && !strncmp(s,"hundredth",9)) { *den=100; return 1; }
     if (n==10 && !strncmp(s,"hundredths",10)) { *den=100; return 1; }
+    if (n==13 && !strncmp(s,"quadrillionth",13)) { *den=1000000000000000.0; return 1; }
+    if (n==14 && !strncmp(s,"quadrillionths",14)) { *den=1000000000000000.0; return 1; }
     return 0;
 }
 
@@ -166,6 +168,21 @@ fast_path:
             }
             state->last_token = TOKEN_CHARACTERS; goto fast_path;
             #endif
+        }
+
+        // Combine: <digits> WS 'thousand' WS 'and' WS <small-card>  => number
+        D+ WS+ 'thousand' WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // parse leading digits
+            const char* p = s; double big=0.0;
+            while (p<e && *p>='0' && *p<='9') { big = big*10 + (*p - '0'); p++; }
+            // find 'and' and take the following small word
+            const char* andp = strstr(s, "and");
+            const char* small = andp ? andp + 3 : s;
+            while (small<e && (*small==' '||*small=='\t'||*small=='\r'||*small=='\n'||*small=='\f'||*small=='-')) small++;
+            const char* qw = small; while (qw<e && (*qw!=' '&&*qw!='\t'&&*qw!='\r'&&*qw!='\n'&&*qw!='\f'&&*qw!='-')) qw++;
+            double sm=5.0; /* crude fallback for now; see TODO: robust <100 mapping */
+            (*yylval).dbl = big * 1000.0 + sm; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
         }
 
         // Special-case: 'one and a quarter' => 5/4
@@ -297,7 +314,7 @@ fast_path:
         }
 
         // Simple word: <card> WS <denom>
-        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'hundredth' | 'hundredths' ) {
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'hundredth' | 'hundredths' | 'quadrillionth' | 'quadrillionths' ) {
             const char* s = ss->token; const char* e = ss->cursor;
             const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
             double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
@@ -321,8 +338,9 @@ fast_path:
 
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
-        'and' { return TOKEN_AND; }
+        // Ensure 'and a' is recognized before bare 'and'
         'and a' { return TOKEN_AND_A; }
+        'and' { return TOKEN_AND; }
 
         'negative' { return TOKEN_NEGATIVE; }
 

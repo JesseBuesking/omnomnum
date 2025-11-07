@@ -244,6 +244,11 @@ final_number(A) ::= less_than_quadrillion(B) HALVES(C). { COPY_YYSTYPE_FRAC_SET(
 final_number(A) ::= ONE(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);  }
 final_number(A) ::= A(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0); }
 
+// explicit hundredth(s) as fractions
+final_number(A) ::= ONE(B) HUNDREDTH(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0); }
+final_number(A) ::= A(B) HUNDREDTH(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0); }
+final_number(A) ::= less_than_hundred(B) HUNDREDTHS(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 100.0); }
+
 final_number(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 final_number(A) ::= FRACTION(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = true; }
 final_number(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
@@ -325,6 +330,10 @@ final_number(A) ::= DECIMAL(B) QUADRILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, Q
 /* --------------------------------------
 sub quadrillion ordinal
 -------------------------------------- */
+
+// allow tails after quadrillion in a top-level context
+less_than_quadrillion_end_only(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_quadrillion_end_only(A) ::= less_than_trillion_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
 less_than_quadrillionth(A) ::= TRILLION(B) less_than_trillionth_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, TRILLION_F); }
 less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLION less_than_trillionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, TRILLION_F); }
@@ -488,6 +497,9 @@ less_than_million(A) ::= less_than_thousand(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 final_number(A) ::= THOUSAND(B). { COPY_YYSTYPE_BE_VALUE(A, B, THOUSAND_F); }
 final_number(A) ::= DECIMAL(B) THOUSAND(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, THOUSAND_F); }
 final_number(A) ::= WHOLE_NUMBER(B) THOUSAND(C). { COPY_YYSTYPE_BE_MUL(A, B, C, THOUSAND_F); }
+// Handle trailing 'and <less than hundred>' explicitly to avoid early reduction
+final_number(A) ::= less_than_thousand(B) THOUSAND AND less_than_hundred(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, THOUSAND_F); }
+final_number(A) ::= THOUSAND(B) AND less_than_hundred(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, THOUSAND_F); }
 
 /* --------------------------------------
 sub thousand ordinal

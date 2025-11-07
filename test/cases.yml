@@ -193,7 +193,7 @@
 - ["one quadrillion", "1000000000000000", 3]
 - ["two quadrillion three trillion four billion five million six thousand seven hundred eighty nine", "2003004005006789", 3]
 - ["quadrillionth", "1000000000000000th", 3]
-- ["three quadrillionths", "3000000000000000ths", 3]
+- ["three quadrillionths", "3/1000000000000000", 3]
 
 # Spelled decimal point
 - ["one point five", "1.5", 6]

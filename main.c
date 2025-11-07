@@ -66,6 +66,10 @@ int main() {
     initOmNomNum();
 
     test_single("0.002", true, false, 3);
+    test_single("one and a quarter", true, false, 6);
+    test_single("100 thousand and five", true, false, 6);
+    test_single("two hundredths", true, false, 6);
+    test_single("two quadrillion three trillion four billion five million six thousand seven hundred eighty nine", true, false, 6);
 
     /*test_loop("two hundred");*/
     /*test_loop("two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello");*/
