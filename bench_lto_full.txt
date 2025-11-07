@@ -1,3 +1,0 @@
-BM_simple: 0.031391 sec total (0.628 us/iter)
-BM_long_string: 0.013988 sec total (2.798 us/iter)
-BM_many_numbers: 0.394740 sec total (78.948 us/iter)
