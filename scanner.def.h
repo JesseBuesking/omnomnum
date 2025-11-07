@@ -88,6 +88,7 @@ typedef struct {
     enum errors error;
     YYSTYPEList yystypeList;
     bool parse_second;
+    bool parse_fractions; // runtime toggle for fraction parsing
     bool is_parsing;
     int last_token;
     // Per-request context (reentrancy + caching)

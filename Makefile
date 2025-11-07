@@ -19,8 +19,27 @@ WARN=-Wall -W -Wno-missing-field-initializers
 CCFLAGS += -DSCANNER_FRACTIONS=1
 CXXFLAGS += -DSCANNER_FRACTIONS=1
 
-all: CXXFLAGS += -DNDEBUG -O3 -msse4.2 -std=c++11 -pedantic
-all: CCFLAGS += -DNDEBUG -O3 -msse4.2 -std=c99 -pedantic
+# Optional LTO (set USE_LTO=thin or USE_LTO=full/1)
+ifeq ($(USE_LTO),thin)
+  LTO_FLAGS := -flto=thin
+else ifneq (,$(filter $(USE_LTO),1 full yes TRUE true))
+  LTO_FLAGS := -flto
+else
+  LTO_FLAGS :=
+endif
+CCFLAGS += $(LTO_FLAGS)
+CXXFLAGS += $(LTO_FLAGS)
+LDFLAGS += $(LTO_FLAGS)
+
+# Architecture-conditional flags (avoid x86-only flags on arm64)
+ARCH:=$(shell uname -m)
+ARCH_FLAGS:=
+ifneq (,$(filter x86_64 i386 i686 amd64,$(ARCH)))
+ARCH_FLAGS += -msse4.2
+endif
+
+all: CXXFLAGS += -DNDEBUG -O3 $(ARCH_FLAGS) -std=c++11 -pedantic
+all: CCFLAGS += -DNDEBUG -O3 $(ARCH_FLAGS) -std=c99 -pedantic
 all: omnomnum
 
 debug: CXXFLAGS += -DDEBUG -g -ggdb -Dprint_errors -O1 -std=c++11 -pedantic
@@ -44,11 +63,17 @@ GIT_DESC:=$(shell git describe --always --dirty --tags 2>/dev/null || git rev-pa
 BUILD_TIME:=$(shell date -u +%FT%TZ)
 GIT_DIRTY:=$(shell test -n "$$(git status --porcelain 2>/dev/null)" && echo 1 || echo 0)
 
-OMNOMNUM_OBJ=parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
+CORE_OBJS=parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o
+OMNOMNUM_OBJ=$(CORE_OBJS) parser.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
 test/remove_char_inplace.yaml: ;
+
+
+# Only use the generic C compile rule for core objects, not tests
+$(CORE_OBJS): %.o: %.c $(DEPS)
+	$(OMNOMNUM_CC) -c $< -o $@
 
 branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
@@ -56,13 +81,11 @@ branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
 grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
 
-# Only use the generic C compile rule for core objects, not tests
-$(OMNOMNUM_OBJ): %.o: %.c $(DEPS)
-	$(OMNOMNUM_CC) -c $< -o $@
-
 omnomnum: $(OMNOMNUM_OBJ) main.o
 	$(OMNOMNUM_CC) $^ -o $@ $(FINAL_LIBS)
 	#./omnomnum
+	@# Optionally strip symbols in optimized builds (ignore if strip unsupported)
+	@if command -v strip >/dev/null 2>&1; then strip -x $@ 2>/dev/null || true; fi
 
 parser.c: parser.yy scanner.re
 	# produces parser.c (ignore non-zero exit due to conflicts)
@@ -125,7 +148,7 @@ test/test_omnomnum.o: parser.h scan.h omnomnum.h scanner.h test/test_omnomnum.c
 	$(OMNOMNUM_CXX) $(CXX17FLAGS) -I$(GTEST_PREFIX)/include -I$(YAML_PREFIX)/include -c test/test_omnomnum.c -o $@
 
 test/test_omnomnum: $(OMNOMNUM_OBJ) test/test_omnomnum.o
-	$(OMNOMNUM_CXX) $(CXX17FLAGS) -o $@ -I$(GTEST_PREFIX)/include -I. $^ -pthread -L$(GTEST_PREFIX)/lib -lgtest -lgtest_main -L$(YAML_PREFIX)/lib -lyaml-cpp
+	$(OMNOMNUM_CXX) $(CXX17FLAGS) $(FINAL_LDFLAGS) -o $@ -I$(GTEST_PREFIX)/include -I. $^ -pthread -L$(GTEST_PREFIX)/lib -lgtest -lgtest_main -L$(YAML_PREFIX)/lib -lyaml-cpp
 
 test/test_util.o: util.h test/test_util.c
 	$(CXX) $(CXX17FLAGS) -I$(GTEST_PREFIX)/include -I$(YAML_PREFIX)/include -c test/test_util.c -o $@
@@ -148,11 +171,11 @@ test/test_benchmark.o: parser.h scan.h omnomnum.h scanner.h test/test_benchmark.
 		-c test/test_benchmark.c -o $@
 
 test/test_benchmark: $(OMNOMNUM_OBJ) test/test_benchmark.o
-	$(CXX) $(CXX17FLAGS) -o $@ -I. $^ -pthread -L$(BENCH_PREFIX)/lib -lbenchmark
+	$(CXX) $(CXX17FLAGS) $(FINAL_LDFLAGS) -o $@ -I. $^ -pthread -L$(BENCH_PREFIX)/lib -lbenchmark
 
 # Lightweight local benchmark (fallback when google-benchmark cannot run)
 bench_local: $(OMNOMNUM_OBJ) bench_local.o
-	$(OMNOMNUM_CC) -O3 -o $@ -I. $^ $(FINAL_LIBS)
+	$(OMNOMNUM_CC) -O3 $(FINAL_LDFLAGS) -o $@ -I. $^ $(FINAL_LIBS)
 
 bench_local.o: bench_local.c $(DEPS)
 	$(OMNOMNUM_CC) -O3 -c bench_local.c -o $@
@@ -187,3 +210,6 @@ bench-local-after:
 	./bench_local
 
 # (Removed internal and gprof profiling helpers)
+
+# Convenience alias
+release: all

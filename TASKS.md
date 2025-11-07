@@ -3,14 +3,18 @@
 This is a concrete, prioritized task list to continue improving correctness, performance, and DX. Each item includes scope and acceptance criteria to keep work tight and verifiable.
 
 ## 1) Parser Re-entrancy and Thread Safety
+- Status: Completed
 - Replace global `pParser` and `numberHolder` with fields owned by a request/context (e.g., in `ParserState` or a new `OmNomCtx`).
 - Allocate parser with `ParseAlloc` per call; free with `ParseFree` after use.
 - Acceptance: parallel calls to `normalize()` on different threads produce correct results and do not race or corrupt output.
+Implementation Notes: `ParserState` now owns `pParser` and a scratch `numberHolder`; parser is allocated on first use and reset per run (see `scanner.def.h`, `scanner.def.c`, and `omnomnum.c`).
 
 ## 2) Runtime Toggle: Fraction Parsing
+- Status: Implemented (core), CLI/tests exposure pending
 - Add `parse_fractions` to `ParserState` and honor it in the scanner (guard fraction token emission at runtime in addition to `SCANNER_FRACTIONS`).
 - Expose in CLI/main and tests.
 - Acceptance: With `parse_fractions=false`, inputs like `"one eighth"` and `"1 1/2"` remain unchanged; with true, they normalize as fractions.
+Implementation Notes: Added `ParserState.parse_fractions` (default true). All fraction-emitting scanner rules are gated by this flag when `SCANNER_FRACTIONS` is enabled. CLI flag and dedicated tests can be added next.
 
 ## 3) Harden Fraction Word Matching
 - Enforce word boundaries for mixed-word fractions (ensure `and` is a standalone word).
@@ -22,8 +26,10 @@ This is a concrete, prioritized task list to continue improving correctness, per
 - Acceptance: Benchmarks show equal or improved timings for DECIMAL_* cases; no change in correctness.
 
 ## 5) Remove/Condition `-msse4.2`
+- Status: Completed
 - Drop or gate `-msse4.2` by architecture; eliminate warnings.
 - Acceptance: No compiler warnings about unused flags; performance unchanged.
+Implementation Notes: Makefile gates `-msse4.2` behind x86 architectures only.
 
 ## 6) Stabilize `parser.h` Generation
 - Either: keep a known-good `parser.h` under version control and remove in-Makefile generation; or enhance generator to mirror Lemon’s template robustly.

@@ -139,7 +139,20 @@ fast_path:
             if (p<e && *p=='/') p++;
             double den=0; while (p<e && *p>='0' && *p<='9') { den = den*10 + (*p - '0'); p++; }
             #ifdef SCANNER_FRACTIONS
-            (*yylval).is_frac = true; (*yylval).frac_num = whole*den + num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = whole*den + num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+            }
             #else
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) {
@@ -160,7 +173,15 @@ fast_path:
             const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
             double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
             #ifdef SCANNER_FRACTIONS
-            (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = 100.0; return TOKEN_FRACTION;
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = 100.0; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+                    ParseReset(pParser); state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            }
             #else
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
@@ -188,7 +209,16 @@ fast_path:
         // Special-case: 'one and a quarter' => 5/4
         'one' WS+ 'and' WS+ 'a' WS+ 'quarter' {
             #ifdef SCANNER_FRACTIONS
-            (*yylval).is_frac = true; (*yylval).frac_num = 5; (*yylval).frac_denom = 4; return TOKEN_FRACTION;
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = 5; (*yylval).frac_denom = 4; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) { }
+                    else { Parse(pParser, 0, *yylval, state); }
+                    ParseReset(pParser); state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            }
             #else
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) { }
@@ -268,7 +298,20 @@ fast_path:
                 while (ws2<e && (*ws2==' '||*ws2=='\t'||*ws2=='\r'||*ws2=='\n'||*ws2=='\f'||*ws2=='-')) ws2++;
                 double den=0; (void)map_denom_word(ws2, (size_t)(e - ws2), &den);
                 #ifdef SCANNER_FRACTIONS
-                (*yylval).is_frac = true; (*yylval).frac_num = x*den + y; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                if (state->parse_fractions) {
+                    (*yylval).is_frac = true; (*yylval).frac_num = x*den + y; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                } else {
+                    if (state->is_parsing) {
+                        if (state->last_token != TOKEN_SEPARATOR) {
+                        } else {
+                            Parse(pParser, 0, *yylval, state);
+                        }
+                        ParseReset(pParser);
+                        state->is_parsing = false;
+                    }
+                    state->last_token = TOKEN_CHARACTERS;
+                    goto fast_path;
+                }
                 #else
                 if (state->is_parsing) {
                     if (state->last_token != TOKEN_SEPARATOR) {
@@ -297,7 +340,20 @@ fast_path:
                 while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
                 double den=0; (void)map_denom_word(p, (size_t)(e - p), &den);
                 #ifdef SCANNER_FRACTIONS
-                (*yylval).is_frac = true; (*yylval).frac_num = x*den + 1; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                if (state->parse_fractions) {
+                    (*yylval).is_frac = true; (*yylval).frac_num = x*den + 1; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                } else {
+                    if (state->is_parsing) {
+                        if (state->last_token != TOKEN_SEPARATOR) {
+                        } else {
+                            Parse(pParser, 0, *yylval, state);
+                        }
+                        ParseReset(pParser);
+                        state->is_parsing = false;
+                    }
+                    state->last_token = TOKEN_CHARACTERS;
+                    goto fast_path;
+                }
                 #else
                 if (state->is_parsing) {
                     if (state->last_token != TOKEN_SEPARATOR) {
@@ -321,7 +377,20 @@ fast_path:
             while (ws<e && (*ws==' '||*ws=='\t'||*ws=='\r'||*ws=='\n'||*ws=='\f'||*ws=='-')) ws++;
             double den=0; (void)map_denom_word(ws, (size_t)(e - ws), &den);
             #ifdef SCANNER_FRACTIONS
-            (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+            }
             #else
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) {
