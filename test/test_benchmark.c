@@ -9,6 +9,32 @@ extern "C" {
 
 #include <benchmark/benchmark.h>
 
+#if defined(__cplusplus)
+#include <string>
+#endif
+
+#ifndef GIT_SHA
+#define GIT_SHA "unknown"
+#endif
+#ifndef GIT_DESC
+#define GIT_DESC "unknown"
+#endif
+#ifndef BUILD_TIME
+#define BUILD_TIME "unknown"
+#endif
+#ifndef TREE_DIRTY_STR
+#define TREE_DIRTY_STR "unknown"
+#endif
+
+static void add_bench_context() {
+#if defined(__cplusplus)
+    benchmark::AddCustomContext("git_sha", std::string(GIT_SHA));
+    benchmark::AddCustomContext("git_desc", std::string(GIT_DESC));
+    benchmark::AddCustomContext("build_time", std::string(BUILD_TIME));
+    benchmark::AddCustomContext("tree_dirty", std::string(TREE_DIRTY_STR));
+#endif
+}
+
 const int REPETITIONS = 10;
 
 void BM_fast_double(benchmark::State& state) {
@@ -101,6 +127,7 @@ int main(int argc, char** argv)
     initOmNomNum();
 
    ::benchmark::Initialize(&argc, argv);
+   add_bench_context();
    ::benchmark::RunSpecifiedBenchmarks();
 
     freeOmNomNum();

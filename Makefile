@@ -34,6 +34,12 @@ OMNOMNUM_CXX=$(CXX) $(FINAL_CXXFLAGS)
 # Use at least C++17 for GoogleTest >= 1.14
 CXX17FLAGS=-std=c++17
 
+# Build metadata for stamping benchmark binaries
+GIT_SHA:=$(shell git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)
+GIT_DESC:=$(shell git describe --always --dirty --tags 2>/dev/null || git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)
+BUILD_TIME:=$(shell date -u +%FT%TZ)
+GIT_DIRTY:=$(shell test -n "$$(git status --porcelain 2>/dev/null)" && echo 1 || echo 0)
+
 OMNOMNUM_OBJ=parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
@@ -46,7 +52,8 @@ branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
 grisu2/grisu2.o: grisu2/grisu2.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o grisu2/grisu2.o
 
-%.o: %.c $(DEPS)
+# Only use the generic C compile rule for core objects, not tests
+$(OMNOMNUM_OBJ): %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $<
 
 omnomnum: $(OMNOMNUM_OBJ) main.o
@@ -129,7 +136,12 @@ test: all test/test_omnomnum test/cases.yaml
 	cd test && ./test_omnomnum
 
 test/test_benchmark.o: parser.h scan.h omnomnum.h scanner.h test/test_benchmark.c
-	$(CXX) $(CXX17FLAGS) -I$(BENCH_PREFIX)/include -c test/test_benchmark.c -o $@
+	$(CXX) $(CXX17FLAGS) -I$(BENCH_PREFIX)/include \
+		-DGIT_SHA=\"$(GIT_SHA)\" \
+		-DGIT_DESC=\"$(GIT_DESC)\" \
+		-DBUILD_TIME=\"$(BUILD_TIME)\" \
+		-DTREE_DIRTY_STR=\"$(GIT_DIRTY)\" \
+		-c test/test_benchmark.c -o $@
 
 test/test_benchmark: $(OMNOMNUM_OBJ) test/test_benchmark.o
 	$(CXX) $(CXX17FLAGS) -o $@ -I. $^ -pthread -L$(BENCH_PREFIX)/lib -lbenchmark
@@ -143,7 +155,7 @@ bench_local.o: bench_local.c $(DEPS)
 
 # Default benchmark target runs Google Benchmark binary
 benchmark: all test/test_benchmark
-	cd test && ./test_benchmark --benchmark_min_time=5s --benchmark_repetitions=3 --benchmark_out=benchmark.json --benchmark_out_format=json
+	cd test && ./test_benchmark --benchmark_min_time=2s --benchmark_repetitions=3 --benchmark_out=benchmark.json --benchmark_out_format=json
 
 .PHONY: bench-before bench-after bench-local-before bench-local-after
 
@@ -151,13 +163,13 @@ benchmark: all test/test_benchmark
 bench-before:
 	$(MAKE) clean
 	$(MAKE) test/test_benchmark CCFLAGS="$(CCFLAGS) -DSCANNER_FRACTIONS=0" CXXFLAGS="$(CXXFLAGS) -DSCANNER_FRACTIONS=0"
-	cd test && ./test_benchmark --benchmark_min_time=5s --benchmark_repetitions=3 --benchmark_out=before.json --benchmark_out_format=json
+	cd test && ./test_benchmark --benchmark_min_time=2s --benchmark_repetitions=3 --benchmark_out=before.json --benchmark_out_format=json
 
 # Build and run Google Benchmark with current code (post-pass enabled)
 bench-after:
 	$(MAKE) clean
 	$(MAKE) test/test_benchmark CCFLAGS="$(CCFLAGS) -DSCANNER_FRACTIONS=1" CXXFLAGS="$(CXXFLAGS) -DSCANNER_FRACTIONS=1"
-	cd test && ./test_benchmark --benchmark_min_time=5s --benchmark_repetitions=3 --benchmark_out=after.json --benchmark_out_format=json
+	cd test && ./test_benchmark --benchmark_min_time=2s --benchmark_repetitions=3 --benchmark_out=after.json --benchmark_out_format=json
 
 # Fallback micro-benchmarks (no Google Benchmark, works in restricted envs)
 bench-local-before:
@@ -169,3 +181,5 @@ bench-local-after:
 	$(MAKE) clean
 	$(MAKE) bench_local
 	./bench_local
+
+# (Removed internal and gprof profiling helpers)

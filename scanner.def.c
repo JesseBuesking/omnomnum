@@ -29,6 +29,8 @@
  */
 
 #include "scanner.def.h"
+// For ParseFree declaration and ParseReset wrapper
+#include "parser.h"
 // pull in definitions for malloc and free
 #include <stdlib.h>
 
@@ -78,6 +80,13 @@ void sortYYSTYPElist(YYSTYPEList *l) {
     qsort(l->values, l->used, sizeof(YYSTYPE), compare);
 }
 
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need) {
+    if (l->size < need) {
+        l->size = need;
+        l->values = (YYSTYPE *)realloc(l->values, l->size * sizeof(YYSTYPE));
+    }
+}
+
 void initParserState(ParserState *state) {
     state->error = NO_ERROR;
     state->parse_second = false;
@@ -85,6 +94,8 @@ void initParserState(ParserState *state) {
     state->result = NULL;
     state->is_parsing = false;
     state->last_token = -1;
+    state->pParser = NULL;
+    state->numberHolder = sdsempty();
     initYYSTYPEList(&(state->yystypeList), 4);
 }
 
@@ -94,8 +105,12 @@ void resetParserState(ParserState *state) {
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;
+    // Keep the cached parser and scratch buffer; just clear the buffer
+    if (state->numberHolder) sdsclear(state->numberHolder);
 }
 
 void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
+    if (state->numberHolder) { sdsfree(state->numberHolder); state->numberHolder = NULL; }
+    if (state->pParser) { ParseFree(state->pParser, free); state->pParser = NULL; }
 }

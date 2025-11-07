@@ -31,4 +31,3 @@ int main() {
     freeOmNomNum();
     return 0;
 }
-

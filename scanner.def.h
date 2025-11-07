@@ -90,6 +90,9 @@ typedef struct {
     bool parse_second;
     bool is_parsing;
     int last_token;
+    // Per-request context (reentrancy + caching)
+    void *pParser;      // Lemon parser instance cached per ParserState
+    sds numberHolder;   // Scratch buffer for number rendering
 } ParserState;
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
@@ -97,6 +100,7 @@ void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
 void resetYYSTYPElist(YYSTYPEList *l);
 void freeYYSTYPElist(YYSTYPEList *l);
 void sortYYSTYPElist(YYSTYPEList *l);
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need);
 
 void initParserState(ParserState *state);
 void resetParserState(ParserState *state);

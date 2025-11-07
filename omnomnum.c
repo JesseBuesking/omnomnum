@@ -32,6 +32,7 @@
 #include "scanner.def.h"
 #include "dtoa.h"
 #include "itoa.h"
+/* time.h was only used for internal profiling (removed) */
 
 #define TOKEN_SEPARATOR 10000
 #define TOKEN_CHARACTERS 10001
@@ -119,30 +120,36 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
     jump_table[A.suffix](s);
 }
 
-void *pParser;
-sds numberHolder;
-
 void initOmNomNum(void) {
-    /*if (pParser == NULL) {*/
-    pParser = ParseAlloc(malloc);
-    /*}*/
-    numberHolder = sdsempty();
+    /* No global state to initialize; kept for API compatibility. */
 }
 
 void freeOmNomNum(void) {
-    if (pParser != NULL) {
-        ParseFree(pParser, free);
-    }
-    sdsfree(numberHolder);
+    /* No global state to free; kept for API compatibility. */
 }
 
+/* Internal profiling removed. */
+
 YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) {
+    /* profiling removed */
     YYSTYPE yylval;
     scanstate ss;
     scanstate_init(&ss, data, data_len);
 
     int scanner_value = -1;
     state->is_parsing = false;
+    /* Ensure a parser exists for this request; reuse across calls */
+    if (state->pParser == NULL) {
+        state->pParser = ParseAlloc(malloc);
+    }
+    /* Reset parser to a clean state for this run */
+    ParseReset(state->pParser);
+
+    /* Pre-reserve an estimated capacity for number results to reduce reallocs */
+    size_t estimate = data_len > 0 ? (data_len / 6) : 8; /* heuristic tokens/6 chars */
+    if (estimate < 8) estimate = 8;
+    if (estimate > 4096) estimate = 4096;
+    ensureYYSTYPECapacity(&state->yystypeList, estimate);
 
 #if debug
     ParseTrace(stderr, (char*)"[Parser] >> ");
@@ -151,7 +158,7 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
 
     for(;;) {
         RESET_YYSTYPE(yylval);
-        scanner_value = omnomnum_scanner_start(state, pParser, &yylval, &ss);
+        scanner_value = omnomnum_scanner_start(state, state->pParser, &yylval, &ss);
 
 #if debug
         sds value = sdsnewlen(ss.token, ss.cursor - ss.token);
@@ -180,7 +187,7 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
             yylval.end = ss.cursor - data;
 
             // parse stuff
-            Parse(pParser, scanner_value, yylval, state);
+            Parse(state->pParser, scanner_value, yylval, state);
             state->is_parsing = true;
         }
 
@@ -188,11 +195,12 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
     }
 
     if (state->is_parsing) {
-        Parse(pParser, 0, yylval, state);
-        ParseReset(pParser);
+        Parse(state->pParser, 0, yylval, state);
+        ParseReset(state->pParser);
     }
 
     YYSTYPEList l = state->yystypeList;
+    /* profiling removed */
 
 #if debug
     printf("numbers: %zu\n", l.used);
@@ -209,6 +217,7 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
 }
 
 void normalize(const char *data, size_t data_len, ParserState *state) {
+    /* profiling removed */
     YYSTYPEList l = find_numbers(data, data_len, state);
 
     // Note: fraction handling is now performed in the scanner; no post-pass merge required.
@@ -216,6 +225,8 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
     if (l.used == 0) {
         // Fallback: split on separators and normalize each token independently
         state->result = sdsempty();
+        /* Pre-reserve to reduce reallocations during append */
+        state->result = sdsMakeRoomFor(state->result, (size_t)data_len + 32);
         unsigned int pos = 0;
         while (pos < data_len) {
             // skip leading separators
@@ -277,20 +288,11 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                         data + lastpos,
                         y.begin - lastpos
                         );
-                sdsclear(numberHolder);
             }
             lastpos = y.end;
 
-            yystypeToString(&numberHolder, y, state->precision);
-            state->result = sdscatsds(state->result, numberHolder);
-
-            sdsclear(numberHolder);
-
-            // in case the last string was exceptionally large, free up memory
-            // TODO test this out
-            if (sdslen(numberHolder) > 1) {
-                sdsRemoveFreeSpace(numberHolder);
-            }
+            // Directly render into the result buffer to avoid an extra copy
+            yystypeToString(&state->result, y, state->precision);
         }
 
         // Copy what's left of the string to the final string.
@@ -300,4 +302,5 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                 data_len - l.values[l.used-1].end
                 );
     }
+    /* profiling removed */
 }
