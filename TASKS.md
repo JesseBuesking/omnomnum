@@ -17,9 +17,11 @@ Implementation Notes: `ParserState` now owns `pParser` and a scratch `numberHold
 Implementation Notes: Added `ParserState.parse_fractions` (default true). All fraction-emitting scanner rules are gated by this flag when `SCANNER_FRACTIONS` is enabled. CLI now exposes `--no-parse-fractions` flag, and dedicated tests have been added (test/test_omnomnum.c:129-199) for both enabled and disabled modes.
 
 ## 3) Harden Fraction Word Matching
+- Status: Completed
 - Enforce word boundaries for mixed-word fractions (ensure `and` is a standalone word).
 - Expand denominator vocabulary (tenth(s), eleventh(s), twelfth(s), …) and add tests.
 - Acceptance: New test cases for expanded denominators pass; no false positives inside larger words.
+Implementation Notes: Expanded `map_denom_word` to include tenth through nineteenth (10-19), -ty forms (twentieth through ninetieth: 20, 30, 40, 50, 60, 70, 80, 90), and large denominators (thousandth, millionth, billionth, trillionth). Updated scanner.re fraction rules to recognize all new denominators. Word boundaries are enforced by re2c patterns using `WS+` around 'and', preventing matches inside larger words. Added 44 new test cases in cases.yml covering simple fractions, mixed fractions, and word boundary verification. All 203 tests pass.
 
 ## 4) Numeric Parsing Fast Path
 - Replace `sscanf`/temporary `sds` conversions in scanner numeric rules with `strtod` or a fast, bounded parser to avoid allocations.

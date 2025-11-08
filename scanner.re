@@ -76,8 +76,57 @@ static int map_denom_word(const char* s, size_t n, double* den) {
     if (n==7 && !strncmp(s,"eighths",7)) { *den=8; return 1; }
     if (n==5 && !strncmp(s,"ninth",5)) { *den=9; return 1; }
     if (n==6 && !strncmp(s,"ninths",6)) { *den=9; return 1; }
+    // tenth through nineteenth
+    if (n==5 && !strncmp(s,"tenth",5)) { *den=10; return 1; }
+    if (n==6 && !strncmp(s,"tenths",6)) { *den=10; return 1; }
+    if (n==8 && !strncmp(s,"eleventh",8)) { *den=11; return 1; }
+    if (n==9 && !strncmp(s,"elevenths",9)) { *den=11; return 1; }
+    if (n==7 && !strncmp(s,"twelfth",7)) { *den=12; return 1; }
+    if (n==8 && !strncmp(s,"twelfths",8)) { *den=12; return 1; }
+    if (n==10 && !strncmp(s,"thirteenth",10)) { *den=13; return 1; }
+    if (n==11 && !strncmp(s,"thirteenths",11)) { *den=13; return 1; }
+    if (n==10 && !strncmp(s,"fourteenth",10)) { *den=14; return 1; }
+    if (n==11 && !strncmp(s,"fourteenths",11)) { *den=14; return 1; }
+    if (n==9 && !strncmp(s,"fifteenth",9)) { *den=15; return 1; }
+    if (n==10 && !strncmp(s,"fifteenths",10)) { *den=15; return 1; }
+    if (n==9 && !strncmp(s,"sixteenth",9)) { *den=16; return 1; }
+    if (n==10 && !strncmp(s,"sixteenths",10)) { *den=16; return 1; }
+    if (n==11 && !strncmp(s,"seventeenth",11)) { *den=17; return 1; }
+    if (n==12 && !strncmp(s,"seventeenths",12)) { *den=17; return 1; }
+    if (n==10 && !strncmp(s,"eighteenth",10)) { *den=18; return 1; }
+    if (n==11 && !strncmp(s,"eighteenths",11)) { *den=18; return 1; }
+    if (n==10 && !strncmp(s,"nineteenth",10)) { *den=19; return 1; }
+    if (n==11 && !strncmp(s,"nineteenths",11)) { *den=19; return 1; }
+    // -ty forms
+    if (n==9 && !strncmp(s,"twentieth",9)) { *den=20; return 1; }
+    if (n==10 && !strncmp(s,"twentieths",10)) { *den=20; return 1; }
+    if (n==9 && !strncmp(s,"thirtieth",9)) { *den=30; return 1; }
+    if (n==10 && !strncmp(s,"thirtieths",10)) { *den=30; return 1; }
+    if (n==8 && !strncmp(s,"fortieth",8)) { *den=40; return 1; }
+    if (n==9 && !strncmp(s,"fortieths",9)) { *den=40; return 1; }
+    if (n==9 && !strncmp(s,"fourtieth",9)) { *den=40; return 1; }
+    if (n==10 && !strncmp(s,"fourtieths",10)) { *den=40; return 1; }
+    if (n==8 && !strncmp(s,"fiftieth",8)) { *den=50; return 1; }
+    if (n==9 && !strncmp(s,"fiftieths",9)) { *den=50; return 1; }
+    if (n==8 && !strncmp(s,"sixtieth",8)) { *den=60; return 1; }
+    if (n==9 && !strncmp(s,"sixtieths",9)) { *den=60; return 1; }
+    if (n==10 && !strncmp(s,"seventieth",10)) { *den=70; return 1; }
+    if (n==11 && !strncmp(s,"seventieths",11)) { *den=70; return 1; }
+    if (n==9 && !strncmp(s,"eightieth",9)) { *den=80; return 1; }
+    if (n==10 && !strncmp(s,"eightieths",10)) { *den=80; return 1; }
+    if (n==9 && !strncmp(s,"ninetieth",9)) { *den=90; return 1; }
+    if (n==10 && !strncmp(s,"ninetieths",10)) { *den=90; return 1; }
+    // large denominators
     if (n==9 && !strncmp(s,"hundredth",9)) { *den=100; return 1; }
     if (n==10 && !strncmp(s,"hundredths",10)) { *den=100; return 1; }
+    if (n==10 && !strncmp(s,"thousandth",10)) { *den=1000; return 1; }
+    if (n==11 && !strncmp(s,"thousandths",11)) { *den=1000; return 1; }
+    if (n==9 && !strncmp(s,"millionth",9)) { *den=1000000; return 1; }
+    if (n==10 && !strncmp(s,"millionths",10)) { *den=1000000; return 1; }
+    if (n==9 && !strncmp(s,"billionth",9)) { *den=1000000000; return 1; }
+    if (n==10 && !strncmp(s,"billionths",10)) { *den=1000000000; return 1; }
+    if (n==10 && !strncmp(s,"trillionth",10)) { *den=1000000000000.0; return 1; }
+    if (n==11 && !strncmp(s,"trillionths",11)) { *den=1000000000000.0; return 1; }
     if (n==13 && !strncmp(s,"quadrillionth",13)) { *den=1000000000000000.0; return 1; }
     if (n==14 && !strncmp(s,"quadrillionths",14)) { *den=1000000000000000.0; return 1; }
     return 0;
@@ -284,7 +333,7 @@ fast_path:
         }
 
         // Mixed word: <card> WS 'and' WS <card> WS <denom>
-        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' ) {
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'tenth' | 'tenths' | 'eleventh' | 'elevenths' | 'twelfth' | 'twelfths' | 'thirteenth' | 'thirteenths' | 'fourteenth' | 'fourteenths' | 'fifteenth' | 'fifteenths' | 'sixteenth' | 'sixteenths' | 'seventeenth' | 'seventeenths' | 'eighteenth' | 'eighteenths' | 'nineteenth' | 'nineteenths' | 'twentieth' | 'twentieths' | 'thirtieth' | 'thirtieths' | 'fortieth' | 'fortieths' | 'fourtieth' | 'fourtieths' | 'fiftieth' | 'fiftieths' | 'sixtieth' | 'sixtieths' | 'seventieth' | 'seventieths' | 'eightieth' | 'eightieths' | 'ninetieth' | 'ninetieths' | 'hundredth' | 'hundredths' | 'thousandth' | 'thousandths' | 'millionth' | 'millionths' | 'billionth' | 'billionths' | 'trillionth' | 'trillionths' | 'quadrillionth' | 'quadrillionths' ) {
             const char* s = ss->token; const char* e = ss->cursor;
             // find 'and'
             const char* andp = strstr(s, "and");
@@ -328,7 +377,7 @@ fast_path:
         }
 
         // Mixed word (with 'a'): <card> WS 'and' WS 'a' WS <denom>
-        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ 'a' WS+ ( 'half' | 'third' | 'quarter' | 'fourth' | 'fifth' | 'sixth' | 'seventh' | 'eighth' | 'ninth' ) {
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ 'a' WS+ ( 'half' | 'third' | 'quarter' | 'fourth' | 'fifth' | 'sixth' | 'seventh' | 'eighth' | 'ninth' | 'tenth' | 'eleventh' | 'twelfth' | 'thirteenth' | 'fourteenth' | 'fifteenth' | 'sixteenth' | 'seventeenth' | 'eighteenth' | 'nineteenth' | 'twentieth' | 'thirtieth' | 'fortieth' | 'fourtieth' | 'fiftieth' | 'sixtieth' | 'seventieth' | 'eightieth' | 'ninetieth' | 'hundredth' | 'thousandth' | 'millionth' | 'billionth' | 'trillionth' | 'quadrillionth' ) {
             const char* s = ss->token; const char* e = ss->cursor;
             const char* andp = strstr(s, "and");
             if (andp) {
@@ -370,7 +419,7 @@ fast_path:
         }
 
         // Simple word: <card> WS <denom>
-        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'hundredth' | 'hundredths' | 'quadrillionth' | 'quadrillionths' ) {
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'tenth' | 'tenths' | 'eleventh' | 'elevenths' | 'twelfth' | 'twelfths' | 'thirteenth' | 'thirteenths' | 'fourteenth' | 'fourteenths' | 'fifteenth' | 'fifteenths' | 'sixteenth' | 'sixteenths' | 'seventeenth' | 'seventeenths' | 'eighteenth' | 'eighteenths' | 'nineteenth' | 'nineteenths' | 'twentieth' | 'twentieths' | 'thirtieth' | 'thirtieths' | 'fortieth' | 'fortieths' | 'fourtieth' | 'fourtieths' | 'fiftieth' | 'fiftieths' | 'sixtieth' | 'sixtieths' | 'seventieth' | 'seventieths' | 'eightieth' | 'eightieths' | 'ninetieth' | 'ninetieths' | 'hundredth' | 'hundredths' | 'thousandth' | 'thousandths' | 'millionth' | 'millionths' | 'billionth' | 'billionths' | 'trillionth' | 'trillionths' | 'quadrillionth' | 'quadrillionths' ) {
             const char* s = ss->token; const char* e = ss->cursor;
             const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
             double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
