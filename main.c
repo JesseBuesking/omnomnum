@@ -30,6 +30,9 @@
 
 #include "omnomnum.h"
 #include <stdbool.h>
+#include <string.h>
+#include <errno.h>
+#include <stdlib.h>
 
 void test_single(const char *data, bool verbose, bool parse_second, int precision) {
     ParserState state;
@@ -58,25 +61,130 @@ void test_loop(const char *data) {
     freeParserState(&state);
 }
 
-int main() {
-    /* I use main just for running examples through valgrind, hence you'll
-     * probably see some lines of code commented out...
-     */
+void print_usage(const char *prog_name) {
+    fprintf(stderr, "Usage: %s [OPTIONS] [FILE...]\n", prog_name);
+    fprintf(stderr, "\n");
+    fprintf(stderr, "Normalizes numbers in text. Reads from stdin if no files specified.\n");
+    fprintf(stderr, "\n");
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr, "  --precision N          Set decimal precision (default: 6)\n");
+    fprintf(stderr, "  --parse-second         Parse 'second' as ordinal '2nd'\n");
+    fprintf(stderr, "  --no-parse-fractions   Disable fraction parsing (keep fractions as-is)\n");
+    fprintf(stderr, "  -h, --help             Show this help message\n");
+    fprintf(stderr, "\n");
+    fprintf(stderr, "Examples:\n");
+    fprintf(stderr, "  echo 'one and a half' | %s\n", prog_name);
+    fprintf(stderr, "  %s --no-parse-fractions input.txt\n", prog_name);
+    fprintf(stderr, "  %s --precision 3 --parse-second < input.txt\n", prog_name);
+}
 
+void process_input(FILE *fp, ParserState *state) {
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    // Save user-configured settings that should persist across lines
+    int saved_precision = state->precision;
+    bool saved_parse_second = state->parse_second;
+    bool saved_parse_fractions = state->parse_fractions;
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        normalize(line, read, state);
+        printf("%s", state->result);
+        if (read > 0 && line[read-1] != '\n') {
+            printf("\n");
+        }
+        resetParserState(state);
+        // Restore user settings after reset
+        state->precision = saved_precision;
+        state->parse_second = saved_parse_second;
+        state->parse_fractions = saved_parse_fractions;
+    }
+
+    if (line) {
+        free(line);
+    }
+}
+
+int main(int argc, char *argv[]) {
+    ParserState state;
+    initParserState(&state);
     initOmNomNum();
 
-    test_single("0.002", true, false, 3);
-    test_single("one and a quarter", true, false, 6);
-    test_single("100 thousand and five", true, false, 6);
-    test_single("two hundredths", true, false, 6);
-    test_single("two quadrillion three trillion four billion five million six thousand seven hundred eighty nine", true, false, 6);
+    int precision = 6;
+    bool parse_second = false;
+    bool parse_fractions = true;
+    int file_count = 0;
 
-    /*test_loop("two hundred");*/
-    /*test_loop("two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello two hundred hello");*/
-    /*test_loop("two hundred hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world");*/
+    // Parse command-line arguments
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            print_usage(argv[0]);
+            freeParserState(&state);
+            freeOmNomNum();
+            return 0;
+        } else if (strcmp(argv[i], "--precision") == 0) {
+            if (i + 1 >= argc) {
+                fprintf(stderr, "Error: --precision requires an argument\n");
+                print_usage(argv[0]);
+                freeParserState(&state);
+                freeOmNomNum();
+                return 1;
+            }
+            precision = atoi(argv[++i]);
+            if (precision < 0) {
+                fprintf(stderr, "Error: precision must be non-negative\n");
+                freeParserState(&state);
+                freeOmNomNum();
+                return 1;
+            }
+        } else if (strcmp(argv[i], "--parse-second") == 0) {
+            parse_second = true;
+        } else if (strcmp(argv[i], "--no-parse-fractions") == 0) {
+            parse_fractions = false;
+        } else if (argv[i][0] == '-') {
+            fprintf(stderr, "Error: unknown option '%s'\n", argv[i]);
+            print_usage(argv[0]);
+            freeParserState(&state);
+            freeOmNomNum();
+            return 1;
+        } else {
+            // This is a file argument
+            file_count++;
+        }
+    }
 
+    // Apply settings to parser state
+    state.precision = precision;
+    state.parse_second = parse_second;
+    state.parse_fractions = parse_fractions;
+
+    // Process input
+    if (file_count == 0) {
+        // Read from stdin
+        process_input(stdin, &state);
+    } else {
+        // Process each file
+        for (int i = 1; i < argc; i++) {
+            if (argv[i][0] != '-') {
+                FILE *fp = fopen(argv[i], "r");
+                if (!fp) {
+                    fprintf(stderr, "Error: cannot open file '%s': %s\n", argv[i], strerror(errno));
+                    freeParserState(&state);
+                    freeOmNomNum();
+                    return 1;
+                }
+                process_input(fp, &state);
+                fclose(fp);
+            } else if (strcmp(argv[i], "--precision") == 0) {
+                // Skip the next argument (already processed)
+                i++;
+            }
+        }
+    }
+
+    freeParserState(&state);
     freeOmNomNum();
-
     return 0;
 }
 

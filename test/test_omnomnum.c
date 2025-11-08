@@ -126,6 +126,78 @@ void printlen(char *value, int len) {
     printf("\n");
 }
 
+TEST(OmNomNum, ParseFractionsDisabled_WordFractions) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_fractions = false;
+    initOmNomNum();
+
+    const char* input = "one eighth";
+    const char* expect = "one eighth";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ParseFractionsDisabled_MixedNumericFractions) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_fractions = false;
+    initOmNomNum();
+
+    const char* input = "1 1/2";
+    const char* expect = "1 1/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ParseFractionsEnabled_WordFractions) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_fractions = true;
+    initOmNomNum();
+
+    const char* input = "one eighth";
+    const char* expect = "1/8";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ParseFractionsEnabled_MixedNumericFractions) {
+    ParserState state;
+    initParserState(&state);
+    state.parse_fractions = true;
+    initOmNomNum();
+
+    const char* input = "1 1/2";
+    const char* expect = "3/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
 TEST(NullByteTest, HandlesTrailingZeros) {
     ParserState state;
     initParserState(&state);

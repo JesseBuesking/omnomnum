@@ -1,0 +1,122 @@
+# .github/workflows/codex-rerun-on-commit.yml
+# Automatically triggers @codex review on PR updates to get fresh code reviews.
+name: codex-rerun-on-commit
+on:
+  pull_request_target:
+    types: [synchronize, ready_for_review, reopened]
+  # Optional: manual trigger via /codex-nudge comment
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+  checks: read
+
+jobs:
+  nudge-codex:
+    # Let /codex-nudge trigger it from a PR comment for diagnostics
+    if: >
+      github.event_name != 'issue_comment' ||
+      (github.event.issue.pull_request && contains(github.event.comment.body, '/codex-nudge'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
+            echo "num=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          else
+            echo "num=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get latest head SHA (read-only)
+        id: sha
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr="${{ steps.pr.outputs.num }}"
+          sha="$(gh pr view "$pr" --repo "${{ github.repository }}" --json headRefOid -q .headRefOid)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: List check runs (for visibility)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="${{ steps.sha.outputs.sha }}"
+          echo "Check runs (name | app.slug | status | conclusion) on $sha:"
+          gh api repos/${{ github.repository }}/commits/$sha/check-runs \
+            -q '.check_runs[] | "\(.name)\t\(.app.slug)\t\(.status)\t\(.conclusion)"' || true
+
+      - name: Has CODEx/ChatGPT run for this commit?
+        id: has_codex
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="${{ steps.sha.outputs.sha }}"
+          runs_json="$(gh api repos/${{ github.repository }}/commits/$sha/check-runs || echo '{}')"
+
+          # Match specific Codex-related slugs and verify check name to avoid false positives
+          # from other OpenAI GitHub Apps (security scanners, compliance checks, etc.)
+          # Known app slug: chatgpt-codex-connector
+          codex_count="$(echo "$runs_json" | jq '
+            .check_runs
+            | map(select(
+                (.app.slug | ascii_downcase | test("chatgpt-codex-connector|codex-connector")) and
+                (.name | test("codex|chatgpt|code review"; "i"))
+              ))
+            | length
+          ' 2>/dev/null || echo 0)"
+
+          echo "codex_count=$codex_count" >> $GITHUB_OUTPUT
+          if [ "${codex_count:-0}" -gt 0 ]; then
+            echo "has_codex=yes" >> $GITHUB_OUTPUT
+          else
+            echo "has_codex=no" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Codex review (comment as YOU)
+        if: steps.has_codex.outputs.has_codex == 'no'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_TRIGGER_PAT }}   # your fine-grained PAT
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::CODEX_TRIGGER_PAT secret is not set. Please create a fine-grained PAT with 'issues: read and write' and 'pull requests: read' permissions, then add it as a repository secret named CODEX_TRIGGER_PAT"
+            exit 1
+          fi
+
+          echo "Repository: ${{ github.repository }}"
+          echo "PR number: ${{ steps.pr.outputs.num }}"
+
+          # Verify the token works by checking auth
+          echo "Testing PAT authentication..."
+          if ! gh auth status; then
+            echo "::error::PAT authentication failed. The token may be invalid or expired."
+            exit 1
+          fi
+
+          pr="${{ steps.pr.outputs.num }}"
+          echo "Attempting to post comment to PR #$pr..."
+
+          # Try using gh pr comment instead of gh api (might handle permissions differently)
+          if ! gh pr comment "$pr" --repo "${{ github.repository }}" --body '@codex review'; then
+            echo "::warning::gh pr comment failed, trying gh issue comment..."
+
+            # Fallback to gh issue comment
+            if ! gh issue comment "$pr" --repo "${{ github.repository }}" --body '@codex review'; then
+              echo "::error::Failed to post comment. Please verify the PAT has BOTH permissions:"
+              echo "  - Issues: Read and write ✓"
+              echo "  - Pull requests: Read and write ✓ (not just Read!)"
+              echo ""
+              echo "Go to https://github.com/settings/tokens?type=beta"
+              echo "Edit your token and set 'Pull requests' to 'Read and write'"
+              exit 1
+            fi
+          fi
+
+          echo "✓ Posted @codex review as your user."
+
+      - name: Skip (Codex already present)
+        if: steps.has_codex.outputs.has_codex == 'yes'
+        run: echo "Codex check already exists for ${{ steps.sha.outputs.sha }}; skipping."

@@ -10,11 +10,11 @@ This is a concrete, prioritized task list to continue improving correctness, per
 Implementation Notes: `ParserState` now owns `pParser` and a scratch `numberHolder`; parser is allocated on first use and reset per run (see `scanner.def.h`, `scanner.def.c`, and `omnomnum.c`).
 
 ## 2) Runtime Toggle: Fraction Parsing
-- Status: Implemented (core), CLI/tests exposure pending
+- Status: Completed
 - Add `parse_fractions` to `ParserState` and honor it in the scanner (guard fraction token emission at runtime in addition to `SCANNER_FRACTIONS`).
 - Expose in CLI/main and tests.
 - Acceptance: With `parse_fractions=false`, inputs like `"one eighth"` and `"1 1/2"` remain unchanged; with true, they normalize as fractions.
-Implementation Notes: Added `ParserState.parse_fractions` (default true). All fraction-emitting scanner rules are gated by this flag when `SCANNER_FRACTIONS` is enabled. CLI flag and dedicated tests can be added next.
+Implementation Notes: Added `ParserState.parse_fractions` (default true). All fraction-emitting scanner rules are gated by this flag when `SCANNER_FRACTIONS` is enabled. CLI now exposes `--no-parse-fractions` flag, and dedicated tests have been added (test/test_omnomnum.c:129-199) for both enabled and disabled modes.
 
 ## 3) Harden Fraction Word Matching
 - Enforce word boundaries for mixed-word fractions (ensure `and` is a standalone word).
