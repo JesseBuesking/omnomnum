@@ -42,12 +42,16 @@ Implementation Notes: Makefile gates `-msse4.2` behind x86 architectures only.
 Implementation Notes: Generated files (parser.c, parser.h, scanner.c) are now checked into git for stable builds. Makefile updated with graceful fallback when lemon/re2c are unavailable - it uses the checked-in versions. Added `make regen` target for developers who need to regenerate from parser.yy/scanner.re. Added `make distclean` for deep cleaning. Standard `make clean` now preserves generated files, preventing accidental deletion of files needed for builds without lemon/re2c installed.
 
 ## 7) CLI Utility
+- Status: Completed (Previously Implemented)
 - Add a tiny CLI (e.g., `omn`) with: `--precision`, `--parse-second`, `--parse-fractions`, reading stdin/files.
 - Acceptance: Running `omn <file>` prints normalized text; help and examples included.
+Implementation Notes: CLI (omnomnum binary) already implements all required features: --precision flag for decimal precision control, --parse-second for ordinal parsing, --no-parse-fractions to disable fraction parsing, stdin/file reading support, and comprehensive help message with examples. User settings persist across multiple input lines.
 
 ## 8) Tests: Add Coverage for New Fractions
+- Status: Completed
 - Add cases for negative fractions, mixed numeric with trailing text, expanded denominators, and runtime toggle behavior.
 - Acceptance: `make test` passes with added cases; coverage of fraction paths increases.
+Implementation Notes: Test coverage was already comprehensive from Task 3 implementation (expanded denominators, negative fractions, runtime toggle). Added 10 new test cases for mixed numeric with trailing text (e.g., "two apples" → "2 apples", "one and a half cups" → "3/2 cups") to ensure numbers are correctly normalized while preserving surrounding context. All 263 test cases now pass.
 
 ## 9) Optional: Fraction Reduction (Opt-in)
 - Provide a flag to reduce fractions (gcd) while keeping current behavior default (non-reduced).
