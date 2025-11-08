@@ -34,8 +34,10 @@ Implementation Notes: Expanded `map_denom_word` to include tenth through ninetee
 Implementation Notes: Makefile gates `-msse4.2` behind x86 architectures only.
 
 ## 6) Stabilize `parser.h` Generation
-- Either: keep a known-good `parser.h` under version control and remove in-Makefile generation; or enhance generator to mirror Lemon’s template robustly.
+- Status: Completed
+- Either: keep a known-good `parser.h` under version control and remove in-Makefile generation; or enhance generator to mirror Lemon's template robustly.
 - Acceptance: `make clean && make test` works without depending on host Lemon quirks; CI proves repeatable builds.
+Implementation Notes: Generated files (parser.c, parser.h, scanner.c) are now checked into git for stable builds. Makefile updated with graceful fallback when lemon/re2c are unavailable - it uses the checked-in versions. Added `make regen` target for developers who need to regenerate from parser.yy/scanner.re. Added `make distclean` for deep cleaning. Standard `make clean` now preserves generated files, preventing accidental deletion of files needed for builds without lemon/re2c installed.
 
 ## 7) CLI Utility
 - Add a tiny CLI (e.g., `omn`) with: `--precision`, `--parse-second`, `--parse-fractions`, reading stdin/files.
