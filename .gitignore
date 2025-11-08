@@ -10,3 +10,7 @@ tags
 *.o
 
 *.gch
+
+# Bench artifacts
+bench_*.txt
+test/gb_*.json
