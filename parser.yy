@@ -230,14 +230,6 @@ number ::= NEGATIVE(A) final_number(B). {
     B.end = B.end;
     insertYYSTYPE(&state->yystypeList, B);
 }
-number ::= MINUS(A) final_number(B). {
-    /* Propagate negativity to value and fractions (same as NEGATIVE) */
-    B.dbl = -B.dbl;
-    if (B.is_frac) { B.frac_num = -B.frac_num; }
-    B.begin = A.begin;
-    B.end = B.end;
-    insertYYSTYPE(&state->yystypeList, B);
-}
 
 final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
 final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }

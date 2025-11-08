@@ -69,7 +69,7 @@ Notes
 
 
 ## 11) Minus (Word) Sign Support
-- Status: Completed (Needs Regeneration)
+- Status: Deferred (Requires lemon/re2c for implementation)
 - Problem: The word "minus" is currently treated as plain text; only the word "negative" or a leading '-' acts as a sign. This creates inconsistent behavior across inputs like "minus five" (unchanged) vs "negative five" (→ -5).
 - Proposal: Treat the word "minus" as a sign (same as `NEGATIVE`) when it precedes a `final_number` without intervening non-separator characters.
 - Scope:
@@ -79,7 +79,7 @@ Notes
 - Acceptance:
   - "minus five" → "-5"; "minus 1 1/2" → "-3/2"; "minus one point five" → "-1.5".
   - "minus sign" or "minus-two" inside words remains unchanged.
-Implementation Notes: Added TOKEN_MINUS in scanner.re (line 464) and parser rule in parser.yy (lines 233-240) mirroring NEGATIVE functionality. Updated test cases to verify "minus five" → "-5", "minus 1 1/2" → "-3/2", "minus one point five" → "-1.5", and "minus sign" remains unchanged. NOTE: parser.c and scanner.c need regeneration with lemon/re2c to activate this feature.
+Implementation Notes: Deferred because implementation requires modifying scanner.re and parser.yy, then regenerating parser.c/scanner.c with lemon/re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with lemon and re2c available, using `make regen` to update all generated sources atomically.
 
 ## 12) Percent Unit Semantics
 - Problem: "percent" and "%" are currently preserved as-is, even when numbers are normalized (e.g., "two and a half percent" → "5/2 percent"). Desired behavior may vary: keep as a unit, convert to symbol, or normalize as a decimal [0,1].
