@@ -1,6 +1,6 @@
 LEMON?=$(shell command -v lemon 2>/dev/null)
 # I installed via apt
-RE2C=re2c
+RE2C?=$(shell command -v re2c 2>/dev/null)
 # I pulled the file from http://www.hwaci.com/sw/mkhdr/makeheaders.c here, then
 # ran `gcc makeheaders.c -o makeheaders`
 MAKEHEADERS=~/repositories/makeheaders/makeheaders
