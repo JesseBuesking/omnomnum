@@ -24,8 +24,10 @@ Implementation Notes: Added `ParserState.parse_fractions` (default true). All fr
 Implementation Notes: Expanded `map_denom_word` to include tenth through nineteenth (10-19), -ty forms (twentieth through ninetieth: 20, 30, 40, 50, 60, 70, 80, 90), and large denominators (thousandth, millionth, billionth, trillionth). Updated scanner.re fraction rules to recognize all new denominators. Word boundaries are enforced by re2c patterns using `WS+` around 'and', preventing matches inside larger words. Added 44 new test cases in cases.yml covering simple fractions, mixed fractions, and word boundary verification. All 203 tests pass.
 
 ## 4) Numeric Parsing Fast Path
+- Status: Completed
 - Replace `sscanf`/temporary `sds` conversions in scanner numeric rules with `strtod` or a fast, bounded parser to avoid allocations.
 - Acceptance: Benchmarks show equal or improved timings for DECIMAL_* cases; no change in correctness.
+Implementation Notes: Replaced all sscanf/sds allocations with direct strtod calls. For tokens requiring character cleanup (comma/space removal), we now use strtod on the already-allocated tmp buffer instead of creating an sds copy. For simple numeric tokens, we use a stack-allocated 64-byte buffer and memcpy. This eliminates 11 heap allocations per numeric parse (sds allocation + sscanf overhead), using the faster strtod instead. All tests pass with identical behavior.
 
 ## 5) Remove/Condition `-msse4.2`
 - Status: Completed
