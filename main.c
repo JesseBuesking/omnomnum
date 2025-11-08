@@ -83,6 +83,11 @@ void process_input(FILE *fp, ParserState *state) {
     size_t len = 0;
     ssize_t read;
 
+    // Save user-configured settings that should persist across lines
+    int saved_precision = state->precision;
+    bool saved_parse_second = state->parse_second;
+    bool saved_parse_fractions = state->parse_fractions;
+
     while ((read = getline(&line, &len, fp)) != -1) {
         normalize(line, read, state);
         printf("%s", state->result);
@@ -90,6 +95,10 @@ void process_input(FILE *fp, ParserState *state) {
             printf("\n");
         }
         resetParserState(state);
+        // Restore user settings after reset
+        state->precision = saved_precision;
+        state->parse_second = saved_parse_second;
+        state->parse_fractions = saved_parse_fractions;
     }
 
     if (line) {
