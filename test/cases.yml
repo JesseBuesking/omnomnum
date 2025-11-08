@@ -207,3 +207,47 @@
 # Word 'minus' stays literal for now
 - ["minus five", "minus 5", 3]
 - ["minus 1 1/2", "minus 3/2", 3]
+
+# Expanded denominator vocabulary (Task 3)
+# Simple fractions with tenth through twelfth
+- ["one tenth", "1/10", 3]
+- ["two tenths", "2/10", 3]
+- ["three elevenths", "3/11", 3]
+- ["five twelfths", "5/12", 3]
+# thirteenth through nineteenth
+- ["one thirteenth", "1/13", 3]
+- ["two fourteenths", "2/14", 3]
+- ["three fifteenths", "3/15", 3]
+- ["four sixteenths", "4/16", 3]
+- ["five seventeenths", "5/17", 3]
+- ["six eighteenths", "6/18", 3]
+- ["seven nineteenths", "7/19", 3]
+# -ty forms as denominators
+- ["one twentieth", "1/20", 3]
+- ["three twentieths", "3/20", 3]
+- ["one thirtieth", "1/30", 3]
+- ["two thirtieths", "2/30", 3]
+- ["one fortieth", "1/40", 3]
+- ["one fiftieth", "1/50", 3]
+- ["one sixtieth", "1/60", 3]
+- ["one seventieth", "1/70", 3]
+- ["one eightieth", "1/80", 3]
+- ["one ninetieth", "1/90", 3]
+# Large denominators
+- ["one thousandth", "1/1000", 3]
+- ["five thousandths", "5/1000", 3]
+- ["one millionth", "1/1000000", 3]
+- ["two millionths", "2/1000000", 3]
+- ["one billionth", "1/1000000000", 3]
+- ["one trillionth", "1/1000000000000", 3]
+# Mixed fractions with new denominators
+- ["one and two tenths", "12/10", 3]
+- ["two and three elevenths", "25/11", 3]
+- ["three and four twelfths", "40/12", 3]
+- ["one and a tenth", "11/10", 3]
+- ["two and a twentieth", "41/20", 3]
+# Word boundary tests (ensure 'and' is not matched inside words)
+- ["bandana", "bandana", 3]
+- ["understand", "understand", 3]
+- ["randall", "randall", 3]
+- ["candy", "candy", 3]
