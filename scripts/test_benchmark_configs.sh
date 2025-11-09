@@ -19,16 +19,12 @@ echo
 
 # Configurations to test (min_time, reps)
 # Start with fast configs, then test more thorough ones for baseline comparison
+# Testing hypothesis: longer min_time with fewer reps might be better
 CONFIGS=(
-  "0.05 3"
-  "0.05 5"
-  "0.05 10"
-  "0.1 3"
-  "0.1 5"
-  "0.1 10"
-  "0.2 3"
-  "0.2 10"
-  "0.5 5"
+  "1.0 1"
+  "2.0 1"
+  "0.5 2"
+  "1.0 2"
 )
 
 # Number of comparison runs for each configuration
