@@ -461,6 +461,7 @@ fast_path:
         'and' { return TOKEN_AND; }
 
         'negative' { return TOKEN_NEGATIVE; }
+        'minus' { return TOKEN_MINUS; }
 
         'zero' { return TOKEN_ZERO; }
         '1' | 'one' { return TOKEN_ONE; }
