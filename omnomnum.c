@@ -32,6 +32,9 @@
 #include "scanner.def.h"
 #include "dtoa.h"
 #include "itoa.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 /* time.h was only used for internal profiling (removed) */
 
 #define TOKEN_SEPARATOR 10000
@@ -95,6 +98,16 @@ static int is_ws_or_hyphen_only(const char* data, unsigned int a, unsigned int b
     for (unsigned int i=a;i<b;i++) if (!is_space_or_hyphen(data[i])) return 0; return 1;
 }
 
+/* Compute greatest common divisor using Euclidean algorithm */
+static uint64_t gcd(uint64_t a, uint64_t b) {
+    while (b != 0) {
+        uint64_t temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
         if (A.frac_num < 0) {
@@ -120,12 +133,171 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
     jump_table[A.suffix](s);
 }
 
+void yystypeToStringWithReduction(sds *s, YYSTYPE A, int precision, bool reduce_fractions) {
+    if (A.is_frac) {
+        double num = A.frac_num;
+        double denom = A.frac_denom;
+
+        if (reduce_fractions) {
+            // Check if numerator and denominator are whole numbers
+            double num_abs = num < 0 ? -num : num;
+            if (num_abs == (uint64_t)num_abs && denom == (uint64_t)denom) {
+                uint64_t n = (uint64_t)num_abs;
+                uint64_t d = (uint64_t)denom;
+                uint64_t divisor = gcd(n, d);
+                if (divisor > 1) {
+                    num = num < 0 ? -(double)(n / divisor) : (double)(n / divisor);
+                    denom = (double)(d / divisor);
+                }
+            }
+        }
+
+        if (num < 0) {
+            *s = sdscat(*s, "-");
+        }
+        dtoa(s, num < 0 ? -num : num, precision);
+        *s = sdscat(*s, "/");
+        sds tmp = sdsempty();
+        dtoa(&tmp, denom, precision);
+        *s = sdscatsds(*s, tmp);
+        sdsfree(tmp);
+    } else if (A.is_dbl) {
+        dtoa(s, A.dbl, precision);
+    } else {
+        if (A.dbl < 0) {
+            *s = sdscat(*s, "-");
+            itoa(s, (uint64_t)(-A.dbl));
+        } else {
+            itoa(s, (uint64_t)A.dbl);
+        }
+    }
+
+    jump_table[A.suffix](s);
+}
+
 void initOmNomNum(void) {
     /* No global state to initialize; kept for API compatibility. */
 }
 
 void freeOmNomNum(void) {
     /* No global state to free; kept for API compatibility. */
+}
+
+/* Post-process result to handle percent normalization */
+static void process_percent(sds *result, ParserState *state) {
+    if (!state->normalize_percent_symbol && !state->percent_as_decimal) {
+        return; // no percent processing needed
+    }
+
+    size_t len = sdslen(*result);
+    if (len == 0) return;
+
+    sds output = sdsempty();
+    output = sdsMakeRoomFor(output, len + 64);
+
+    size_t i = 0;
+    while (i < len) {
+        // Check if we're at a digit or negative sign (potential number start)
+        bool is_num_start = ((*result)[i] >= '0' && (*result)[i] <= '9') || (*result)[i] == '-';
+
+        if (is_num_start) {
+            size_t num_start = i;
+            // Find end of number (digits, dots, slashes, minus signs)
+            while (i < len && (
+                ((*result)[i] >= '0' && (*result)[i] <= '9') ||
+                (*result)[i] == '.' || (*result)[i] == '/' || (*result)[i] == '-'
+            )) {
+                i++;
+            }
+            size_t num_end = i;
+
+            // Check if followed by " percent" or "%"
+            bool has_percent_word = false;
+            bool has_percent_symbol = false;
+            size_t after_percent = i;
+
+            // Skip whitespace
+            while (i < len && ((*result)[i] == ' ' || (*result)[i] == '\t')) {
+                i++;
+            }
+
+            // Check for "percent"
+            if (i + 7 <= len && strncmp(*result + i, "percent", 7) == 0) {
+                char next = (i + 7 < len) ? (*result)[i + 7] : '\0';
+                if (!is_letter(next)) {
+                    has_percent_word = true;
+                    after_percent = i + 7;
+                }
+            }
+            // Check for "%"
+            else if (i < len && (*result)[i] == '%') {
+                has_percent_symbol = true;
+                after_percent = i + 1;
+            }
+
+            if (has_percent_word || has_percent_symbol) {
+                // Extract the number
+                sds num_str = sdsnewlen(*result + num_start, num_end - num_start);
+
+                // Check for embedded hyphens (ranges like "20-30")
+                // A leading hyphen is fine (negative number), but embedded ones indicate a range
+                char *embedded_hyphen = strchr(num_str + (num_str[0] == '-' ? 1 : 0), '-');
+                bool is_range = (embedded_hyphen != NULL);
+
+                if (is_range) {
+                    // This is a range like "20-30 percent", don't convert - keep original
+                    output = sdscatlen(output, *result + num_start, after_percent - num_start);
+                } else if (state->percent_as_decimal) {
+                    // Convert to decimal: n → n/100
+                    // Check if it's a fraction (contains '/')
+                    char *slash = strchr(num_str, '/');
+                    double value;
+                    if (slash) {
+                        // Parse as fraction: numerator/denominator
+                        *slash = '\0';
+                        double numerator = strtod(num_str, NULL);
+                        double denominator = strtod(slash + 1, NULL);
+                        if (denominator != 0) {
+                            value = numerator / denominator;
+                        } else {
+                            value = numerator; // fallback if denominator is 0
+                        }
+                    } else {
+                        // Parse as regular number
+                        value = strtod(num_str, NULL);
+                    }
+                    value /= 100.0;
+
+                    char buf[64];
+                    int written = snprintf(buf, sizeof(buf), "%.*g", state->precision + 2, value);
+                    output = sdscatlen(output, buf, written);
+                } else if (state->normalize_percent_symbol) {
+                    // Just normalize the symbol: number + "%"
+                    output = sdscatsds(output, num_str);
+                    output = sdscat(output, "%");
+                } else {
+                    // Keep as-is (shouldn't reach here due to early return)
+                    output = sdscatlen(output, *result + num_start, after_percent - num_start);
+                }
+
+                sdsfree(num_str);
+                i = after_percent;
+                continue;
+            } else {
+                // Not followed by percent, copy number as-is and reset position
+                output = sdscatlen(output, *result + num_start, num_end - num_start);
+                i = num_end;  // Reset to right after number, so whitespace gets processed normally
+                continue;
+            }
+        }
+
+        // Regular character, just copy
+        output = sdscatlen(output, *result + i, 1);
+        i++;
+    }
+
+    sdsfree(*result);
+    *result = output;
 }
 
 /* Internal profiling removed. */
@@ -255,10 +427,11 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             if (tok_len > 0) {
                 ParserState sub; initParserState(&sub);
                 sub.parse_second = state->parse_second; sub.precision = state->precision;
+                sub.reduce_fractions = state->reduce_fractions;
                 YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
                 if (sl.used > 0) {
                     sds tmp = sdsempty();
-                    yystypeToString(&tmp, sl.values[0], sub.precision);
+                    yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
                     state->result = sdscatsds(state->result, tmp);
                     sdsfree(tmp);
                 } else {
@@ -292,7 +465,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             lastpos = y.end;
 
             // Directly render into the result buffer to avoid an extra copy
-            yystypeToString(&state->result, y, state->precision);
+            yystypeToStringWithReduction(&state->result, y, state->precision, state->reduce_fractions);
         }
 
         // Copy what's left of the string to the final string.
@@ -302,5 +475,9 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                 data_len - l.values[l.used-1].end
                 );
     }
+
+    // Post-process for percent normalization if requested
+    process_percent(&state->result, state);
+
     /* profiling removed */
 }

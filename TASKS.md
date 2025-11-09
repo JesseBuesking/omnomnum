@@ -54,12 +54,16 @@ Implementation Notes: CLI (omnomnum binary) already implements all required feat
 Implementation Notes: Test coverage was already comprehensive from Task 3 implementation (expanded denominators, negative fractions, runtime toggle). Added 10 new test cases for mixed numeric with trailing text (e.g., "two apples" → "2 apples", "one and a half cups" → "3/2 cups") to ensure numbers are correctly normalized while preserving surrounding context. All 263 test cases now pass.
 
 ## 9) Optional: Fraction Reduction (Opt-in)
+- Status: Completed
 - Provide a flag to reduce fractions (gcd) while keeping current behavior default (non-reduced).
 - Acceptance: With reduction enabled, `"two fourths"` → `"1/2"`; disabled remains `"2/4"`.
+Implementation Notes: Added `reduce_fractions` flag to `ParserState` (default false). Implemented GCD function using Euclidean algorithm in omnomnum.c. Created `yystypeToStringWithReduction` function that reduces fractions to lowest terms when the flag is enabled. CLI now exposes `--reduce-fractions` flag. Added 6 comprehensive test cases covering: disabled behavior (2/4 unchanged), basic reduction (2/4→1/2, 4/8→1/2, 3/9→1/3), already-reduced fractions (1/2 remains 1/2), and negative fractions (-4/8→-1/2). All manual tests pass successfully.
 
 ## 10) Optional: CMake Build
+- Status: Completed
 - Introduce CMake for cross-platform builds (Linux CI, Windows/MSYS2); find re2c, lemon, gtest, yaml-cpp, google-benchmark via `find_package` or variable hints.
 - Acceptance: `cmake .. && cmake --build . && ctest` succeeds; documentation explains options.
+Implementation Notes: Created comprehensive CMakeLists.txt with support for cross-platform builds (Linux, macOS, Windows/MSYS2). Implemented automatic dependency finding for optional tools (lemon, re2c, GTest, yaml-cpp, Google Benchmark). Added build options for SCANNER_FRACTIONS, BUILD_TESTS, BUILD_BENCHMARKS, and USE_LTO. Supports Release/Debug builds with appropriate optimization flags. Architecture-specific optimizations (SSE4.2 for x86/x64). Created static library target (omnomnum_lib) and main executable. Added install targets for binary and headers. Created CMAKE.md documentation with detailed build instructions, dependency installation guides for Ubuntu/macOS/Windows, and troubleshooting tips. Tested build successfully on Linux.
 
 ---
 
@@ -82,6 +86,7 @@ Notes
 Implementation Notes: Deferred because implementation requires modifying scanner.re and parser.yy, then regenerating parser.c/scanner.c with lemon/re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with lemon and re2c available, using `make regen` to update all generated sources atomically.
 
 ## 12) Percent Unit Semantics
+- Status: Completed
 - Problem: "percent" and "%" are currently preserved as-is, even when numbers are normalized (e.g., "two and a half percent" → "5/2 percent"). Desired behavior may vary: keep as a unit, convert to symbol, or normalize as a decimal [0,1].
 - Options:
   1) Unit-preserving (status quo): continue leaving "percent"/"%" unchanged after number normalization.
@@ -95,3 +100,4 @@ Implementation Notes: Deferred because implementation requires modifying scanner
   - With defaults: behavior matches current outputs.
   - With `normalize_percent_symbol=true`: "50 percent" → "50%"; "one point five percent" → "1.5%".
   - With `percent_as_decimal=true`: "50%" → "0.5"; "two and a half percent" → "0.025" (or as fraction if configured).
+Implementation Notes: Added `normalize_percent_symbol` and `percent_as_decimal` flags to `ParserState` (both default false). Implemented `process_percent()` post-processing function that scans the result string for numbers followed by " percent" or "%". When normalize_percent_symbol is true, converts "number percent" to "number%" (no space before %). When percent_as_decimal is true, converts "n percent" or "n%" to n/100 as a decimal. CLI exposes `--normalize-percent-symbol` and `--percent-as-decimal` flags. Added 6 comprehensive test cases covering: default behavior (unchanged), symbol normalization for integers and floats, decimal conversion for integers/existing symbols/fractions. Function properly handles word boundaries and preserves non-percent text.

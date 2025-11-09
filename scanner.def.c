@@ -91,6 +91,9 @@ void initParserState(ParserState *state) {
     state->error = NO_ERROR;
     state->parse_second = false;
     state->parse_fractions = true; // default: keep current behavior
+    state->reduce_fractions = false; // default: off (keep current behavior)
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
     state->precision = 6;
     state->result = NULL;
     state->is_parsing = false;
@@ -107,6 +110,9 @@ void resetParserState(ParserState *state) {
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;
     state->parse_fractions = true; // keep fractions enabled unless caller disables
+    state->reduce_fractions = false; // default: off
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
     // Keep the cached parser and scratch buffer; just clear the buffer
     if (state->numberHolder) sdsclear(state->numberHolder);
 }
