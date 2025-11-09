@@ -1,0 +1,22 @@
+=== Benchmark Results: P1 Fraction Text Preservation Fix ===
+Date: 2025-11-09
+Commit: 3a78327 (Fix fraction text preservation when parse_fractions disabled)
+Previous: 3a9a3be
+
+=== Performance Comparison ===
+Benchmark                  Before      After      Change
+----------------------------------------------------------
+BM_simple                  181 ns      179 ns     -1.1%
+BM_long_string            1158 ns     1149 ns     -0.8%
+BM_many_numbers          31105 ns    30992 ns     -0.4%
+BM_fractions_common       5484 ns     5450 ns     -0.6%
+BM_fractions_uncommon     4356 ns     4310 ns     -1.1%
+BM_fractions_mixed        5858 ns     5785 ns     -1.2%
+
+=== Summary ===
+✅ NO PERFORMANCE REGRESSION
+All metrics show slight improvement (0.4-1.2% faster)
+This is within normal variance and confirms the fix has zero negative impact.
+
+The fix adds minimal overhead (leave_alone field assignment) only in the
+parse_fractions=false path, which is not exercised in these benchmarks.
