@@ -429,7 +429,12 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
 
     if (l.used == 0) {
         // Fallback: split on separators and normalize each token independently
-        state->result = sdsempty();
+        // OPTIMIZATION: Reuse existing buffer instead of allocating new
+        if (state->result) {
+            sdsclear(state->result);
+        } else {
+            state->result = sdsempty();
+        }
         /* Pre-reserve to reduce reallocations during append */
         state->result = sdsMakeRoomFor(state->result, (size_t)data_len + 32);
         unsigned int pos = 0;
@@ -531,7 +536,12 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
         }
     } else {
-        state->result = sdsempty();
+        // OPTIMIZATION: Reuse existing buffer instead of allocating new
+        if (state->result) {
+            sdsclear(state->result);
+        } else {
+            state->result = sdsempty();
+        }
 
         unsigned int lastpos = 0;
         unsigned int i = 0;

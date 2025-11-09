@@ -15,3 +15,9 @@ tags
 bench_*.txt
 test/gb_*.json
 build/
+benchmark_results/
+benchmark_results_gb/
+callgrind.out.*
+massif.out.*
+profile_many_numbers
+*.gcda

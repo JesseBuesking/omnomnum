@@ -1,0 +1,181 @@
+Starting benchmark across all commits...
+Original: claude/decade-late-improvements-011CUwfJXPATTXVysvQ3LBtt (3beb11abf43b09996c1bd087c79719066eac843f)
+Results directory: /home/user/omnomnum/benchmark_results
+
+Found 47 commits to benchmark
+
+[1/47] 6eb1d3ab: v0.0.1
+  ✗ Build failed, skipping
+
+[2/47] df0cc250: updating readme and bumping version
+  ✗ Build failed, skipping
+
+[3/47] c90bb9cc: Scanner-driven fraction tokens; remove post-pass; parser.h generation; Makefile bench targets; SCANNER_FRACTIONS toggle; tests passing
+  ✗ Build failed, skipping
+
+[4/47] 0575cc78: Restore whitespace separator behavior; remove profiling helpers; parser reentrancy + minor perf
+  ✗ Build failed, skipping
+
+[5/47] 455fda3e: feat: quadrillion + spelled-decimal support; expand fraction handling; add broad tests
+  ✗ Build failed, skipping
+
+[6/47] 574d8e30: tests: fix new cases; implement scanner paths for 'and a quarter', 'D+ thousand and <small>', and quadrillionths as fractions; reorder 'and a' token; add explicit hundredth(s) fractions
+  ✗ Build failed, skipping
+
+[7/47] adfc690b: bench: include latest benchmark snapshot (post-fix-four-cases)
+  ✗ Build failed, skipping
+
+[8/47] c1a4d56c: docs: add performance investigation notes and benchmarking helpers
+  ✗ Build failed, skipping
+
+[9/47] 76217133: bench: add toggle sweep script
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/9_76217133.txt
+
+[10/47] 9195f8c7: feat(scanner): add runtime fraction toggle; gate fraction tokens via ParserState.parse_fractions (default true)
+  ✗ Build failed, skipping
+
+[11/47] eee6ebc3: chore(repo): untrack generated bench artifacts and JSON; restore worktrees/* to previous state; update .gitignore for bench outputs
+  ✗ Build failed, skipping
+
+[12/47] bf743b3a: adding .gitignore
+  ✗ Build failed, skipping
+
+[13/47] e7e78dff: Complete Task #2: Runtime Toggle for Fraction Parsing
+  ✗ Build failed, skipping
+
+[14/47] 4555cbe8: fix(cli): preserve user flags across multiple input lines
+  ✗ Build failed, skipping
+
+[15/47] 51e66d3a: ci: add GitHub Actions workflows
+  ✗ Build failed, skipping
+
+[16/47] d15e0c4b: Merge pull request #1 from JesseBuesking/claude/configure-git-user-011CUw5rMqNJRpV1hMXSCFoN
+  ✗ Build failed, skipping
+
+[17/47] 9b2b7629: Task 3: Harden fraction word matching
+  ✗ Build failed, skipping
+
+[18/47] 31a0ebda: Merge pull request #2 from JesseBuesking/claude/decade-late-improvements-011CUwBc6NkaxYBVmCWroi3Z
+  ✗ Build failed, skipping
+
+[19/47] 840c0517: Task 6: Stabilize parser.h generation
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/19_840c0517.txt
+
+[20/47] 56b1cc35: Task 4: Optimize numeric parsing with strtod fast path
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/20_56b1cc35.txt
+
+[21/47] 2124f1c0: Task 8: Add test coverage for mixed numeric with trailing text
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/21_2124f1c0.txt
+
+[22/47] bae67f73: Task 11: Add 'minus' word sign support
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/22_bae67f73.txt
+
+[23/47] 9be998b7: CRITICAL FIX: Buffer overflow vulnerability + revert Task 11
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/23_9be998b7.txt
+
+[24/47] f305f2e9: P1 FIX: Guard regen against missing re2c
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/24_f305f2e9.txt
+
+[25/47] 9f6ff463: Merge pull request #3 from JesseBuesking/claude/decade-late-improvements-011CUwD2XinPJNjcDpjniB9N
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/25_9f6ff463.txt
+
+[26/47] 373ee0fd: Add optional fraction reduction feature (Task 9)
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/26_373ee0fd.txt
+
+[27/47] 2f151700: Implement Tasks 10 and 12: CMake build system and percent handling
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/27_2f151700.txt
+
+[28/47] 838b039e: Fix fraction handling in percent-as-decimal conversion
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/28_838b039e.txt
+
+[29/47] d83a44e3: Add build/ to .gitignore
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/29_d83a44e3.txt
+
+[30/47] f29a1b9d: Preserve spaces when percent normalization does not apply
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/30_f29a1b9d.txt
+
+[31/47] 43f67e94: Fix CMake: Compile test files as C++ despite .c extension
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/31_43f67e94.txt
+
+[32/47] a18444a4: Avoid collapsing percentage ranges into a single value
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/32_a18444a4.txt
+
+[33/47] 8448847f: Merge pull request #4 from JesseBuesking/claude/decade-late-improvements-011CUwLinCMJxvPrzWCxNUf6
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/33_8448847f.txt
+
+[34/47] ad743bab: Update documentation to reflect project improvements
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/34_ad743bab.txt
+
+[35/47] 62453a50: Improve code quality and readability
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/35_62453a50.txt
+
+[36/47] 94056587: Add comprehensive Changelog for Version 0.1.0
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/36_94056587.txt
+
+[37/47] 0797d076: P1: Fix parse_fractions flag not respected in token fallback path
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/37_0797d076.txt
+
+[38/47] d2b61dae: Implement Task 11: Add 'minus' word sign support
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/38_d2b61dae.txt
+
+[39/47] 856df3a8: Update TASKS.md: Mark Task 11 as completed
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/39_856df3a8.txt
+
+[40/47] 46af420c: Task 13 (WIP): Replace hardcoded fallback in mixed digit-thousand patterns
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/40_46af420c.txt
+
+[41/47] 407e7874: Complete Task 13: Fix word-to-number mapping in mixed digit-thousand patterns
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/41_407e7874.txt
+
+[42/47] 232910a2: Update documentation for latest session improvements
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/42_232910a2.txt
+
+[43/47] 1cbc90d2: Document lemon and re2c installation from source
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/43_1cbc90d2.txt
+
+[44/47] cd5590eb: Update test expectations and add googletest/yaml-cpp installation docs
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/44_cd5590eb.txt
+
+[45/47] 39405553: Fix P1 bugs: Honor parse_fractions flag comprehensively
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/45_39405553.txt
+
+[46/47] aa267d1a: Fix P1 bug: Detect 'and' with non-space whitespace in thousand patterns
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/46_aa267d1a.txt
+
+[47/47] 3beb11ab: Merge pull request #5 from JesseBuesking/claude/decade-late-improvements-011CUwXFyHsmsnYB4FL3dHRB
+  Running benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results/47_3beb11ab.txt
+
+Returning to claude/decade-late-improvements-011CUwfJXPATTXVysvQ3LBtt...
+
+Benchmark complete! Results in: /home/user/omnomnum/benchmark_results
+Total commits processed: 47

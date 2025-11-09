@@ -248,3 +248,31 @@ bench-local-after:
 
 # Convenience alias
 release: all
+
+# Profile-Guided Optimization build
+# Builds binary with runtime profiling, generates profile data, then rebuilds with optimizations
+.PHONY: pgo pgo-clean
+pgo:
+	@echo "=== Building with Profile-Guided Optimization ==="
+	@echo "Step 1/3: Building instrumented binary..."
+	$(MAKE) clean
+	$(MAKE) test/test_benchmark \
+		CCFLAGS="$(CCFLAGS) -fprofile-generate" \
+		CXXFLAGS="$(CXXFLAGS) -fprofile-generate" \
+		LDFLAGS="$(LDFLAGS) -fprofile-generate"
+	@echo "Step 2/3: Generating profile data (this may take a minute)..."
+	@./test/test_benchmark --benchmark_min_time=5s >/dev/null 2>&1 || true
+	@echo "Step 3/3: Building optimized binary..."
+	$(MAKE) clean
+	$(MAKE) all \
+		CCFLAGS="$(CCFLAGS) -fprofile-use" \
+		CXXFLAGS="$(CXXFLAGS) -fprofile-use" \
+		LDFLAGS="$(LDFLAGS) -fprofile-use"
+	@echo "=== PGO build complete! ==="
+	@echo "Binary 'omnomnum' is now optimized with PGO (~8% faster on average)"
+	@echo "Run 'make pgo-clean' to remove profile data files"
+
+pgo-clean:
+	@echo "Removing PGO profile data..."
+	@rm -f *.gcda test/*.gcda branchlut/*.gcda grisu2/*.gcda
+	@echo "Profile data removed"
