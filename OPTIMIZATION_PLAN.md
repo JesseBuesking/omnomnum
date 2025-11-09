@@ -342,5 +342,52 @@ list.capacity = 128;  // Typical case: 90 numbers → avoid most reallocations
 
 ---
 
-**Status**: Stack buffer + gperf array-based perfect hash optimizations **ACCEPTED** and ready to commit.
-**Findings:** Parser pooling already implemented. temp_buffer and switch approaches rejected.
+### Test 5: Comprehensive Hash Comparison - Manual vs gperf vs Simple Hash (2025-11-09)
+
+**Question:** Is the gperf array-based hash actually better than the original manual linear strncmp chains?
+
+**Implementations tested:**
+1. **Manual (linear strncmp)** - Original implementation with if-chains
+2. **gperf Array-based** - Perfect hash with 256-byte asso array + sparse wordlist
+3. **Simple Hash** - Custom hash using `(length << 8) | first_char` with switch statement
+
+**Results:**
+| Benchmark | Manual | gperf Array | Simple Hash | Winner |
+|-----------|--------|-------------|-------------|--------|
+| BM_simple | 181 ns | 182 ns | 182 ns | Manual ≈ |
+| BM_long_string | **1098 ns** | 1213 ns (+10.5%) | **1097 ns** | Simple Hash ✓ |
+| BM_many_numbers | 31659 ns | 31717 ns | **31300 ns** | Simple Hash ✓ |
+
+**Analysis:**
+- **gperf is SLOWER** than manual on BM_long_string by 10.5%!
+- **Simple hash matches manual** and even beats it slightly on BM_many_numbers
+
+**Why gperf array-based is slower:**
+1. 256-byte asso array creates cache pressure
+2. Sparse wordlist with empty slots wastes cache lines
+3. Extra indirection: `asso[char] -> wordlist[key]`
+4. Additional bounds checking overhead
+
+**Why simple hash wins:**
+1. Hash is pure ALU operation (shift + OR), no memory access
+2. Switch compiles to efficient jump table
+3. Only one hash collision ('f' for "four"/"five")
+4. Clean, maintainable code structure
+5. No external tool dependencies
+
+**Decision:** **REJECT gperf**, **ACCEPT simple hash** (length<<8|first_char with switch).
+Remove card_small.gperf and digit_word.gperf files - not needed.
+
+---
+
+**Final Status**:
+- **ACCEPTED**: Stack buffer optimization (omnomnum.c)
+- **ACCEPTED**: Simple hash for word-to-number lookup (scanner.re)
+- **REJECTED**: temp_buffer, gperf array-based, gperf switch-based
+
+**Performance vs original baseline (jesse/decade-late-improvements):**
+- BM_simple: 636ns → 182ns (**-71.4%**)
+- BM_long_string: 2849ns → 1097ns (**-61.5%**)
+- BM_many_numbers: 87142ns → 31300ns (**-64.1%**)
+
+**Key insight:** Sometimes a simple, well-designed hash beats a "perfect" hash that requires memory indirection.

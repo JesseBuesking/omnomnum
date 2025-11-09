@@ -148,7 +148,7 @@ Implementation Notes: Updated README to include comprehensive Features section h
 Implementation Notes: Created comprehensive Version 0.1.0 changelog entry documenting: thread safety improvements, comprehensive fraction support with runtime toggles and reduction, performance optimizations (strtod, SSE4.2), build system enhancements (CMake, stable generated files), CLI feature additions (6+ new flags), expanded test coverage (263+ cases), and documentation updates. Listed known limitations for deferred tasks requiring lemon/re2c.
 
 ## 16) Performance Optimization Investigation
-- Status: Completed ✅ (2 optimizations accepted, 3 rejected)
+- Status: Completed ✅ (2 optimizations accepted, 4 rejected)
 - Problem: Recent commits introduced a 21.73% regression in BM_many_numbers (74346 ns → 90503 ns). Current baseline on jesse/decade-late-improvements branch measured at 87142 ns.
 - Investigation: Profiled with valgrind (callgrind + massif) and identified memory allocation as the primary bottleneck (35%+ of CPU time in malloc/free/realloc).
 - Optimization Attempts:
@@ -162,18 +162,21 @@ Implementation Notes: Created comprehensive Version 0.1.0 changelog entry docume
      - Results: BM_simple -0.2%, BM_long_string **-6.1%**, BM_many_numbers +0.3%
      - Eliminates heap allocation for small temp strings in process_percent
      - Clean win with no regressions
-  4. **gperf perfect hash (array-based)** - ACCEPTED ✅
-     - Results: BM_simple -2.8%, BM_long_string **-6.7%** (combined), BM_many_numbers -1.8%
-     - Replaces linear strncmp chains with O(1) hash table lookup
-     - Used gperf to generate minimal perfect hash functions for map_card_small and map_digit_word
-     - Consistent improvements across all benchmarks
+  4. **gperf perfect hash (array-based)** - REJECTED
+     - Results: BM_simple +0.6%, BM_long_string **+10.5%** (SLOWER), BM_many_numbers +0.2%
+     - gperf 256-byte asso array creates cache pressure
+     - Extra memory indirection hurts performance
   5. **gperf switch statement vs array** - REJECTED
      - Tested switch-based vs array-based lookup (both using same perfect hash)
-     - Results: Array 7.8% faster than switch on BM_many_numbers
-     - Array-based provides better cache locality and no branch misprediction overhead
+     - Results: Array 7.8% faster than switch, but still slower than manual
+  6. **Simple hash (length<<8|first_char with switch)** - ACCEPTED ✅
+     - Results: BM_simple +0.6%, BM_long_string **-0.1%**, BM_many_numbers **-1.1%**
+     - Matches manual performance, cleaner code
+     - Pure ALU operation, no memory indirection
+     - Compiler optimizes switch to efficient jump table
 - Final Results:
   - **Original Baseline**: BM_simple=636ns, BM_long_string=2849ns, BM_many_numbers=87142ns
-  - **After stack buffer + gperf array**: BM_simple=182ns, BM_long_string=1211ns, BM_many_numbers=31509ns
-  - **Total improvement**: BM_simple -71.4%, BM_long_string -57.5%, BM_many_numbers -63.8%
-- Acceptance: Stack buffer and gperf array-based optimizations accepted and ready to commit. All tests pass (225/225).
-Implementation Notes: Installed gperf, lemon, and re2c. Created .gperf files for card_small and digit_word mappings. Generated perfect hash functions with full 256-element asso arrays. Modified scanner.re (source) with hash functions and regenerated scanner.c using re2c. Fixed strcmp→strncmp for non-null-terminated input. Compared switch vs array implementations and chose array for better performance. Documented all findings in OPTIMIZATION_PLAN.md with detailed benchmark comparisons.
+  - **After stack buffer + simple hash**: BM_simple=182ns, BM_long_string=1097ns, BM_many_numbers=31300ns
+  - **Total improvement**: BM_simple **-71.4%**, BM_long_string **-61.5%**, BM_many_numbers **-64.1%**
+- Acceptance: Stack buffer and simple hash optimizations accepted and committed. All tests pass (225/225).
+Implementation Notes: Tested manual strncmp chains, gperf array-based, and custom simple hash. Found that gperf's memory indirection overhead (256-byte asso array + sparse wordlist) made it 10.5% slower than manual on BM_long_string. Simple hash (length<<8|first_char) provides best balance: matches manual performance with better maintainability. Key insight: sometimes a simple, well-designed hash beats a "perfect" hash that requires memory indirection. Full comparison documented in hash_comparison_results.md and OPTIMIZATION_PLAN.md Test 5.
