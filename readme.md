@@ -7,7 +7,7 @@ Implements most of the logic from [numerizer](https://github.com/jduff/numerizer
 - OmNomNum preserves whitespace, Numerizer does not.
 - OmNomNum supports an optional `parse_second` parameter, Numerizer does not.
 - OmNomNum can support most currency formats, Numerizer does not.
-- Numerizer supports fractions, OmNomNum does not (yet?).
+- OmNomNum supports fractions (including mixed fractions, word-based fractions, and numeric fractions like "1 1/2"), with runtime toggle and optional reduction to lowest terms.
 
 ## Prereqs
 
@@ -32,20 +32,58 @@ To run the benchmarks:
 
 ## Building
 
-1. Install lemon to ~/repositories/lemon or update the Makefile to point to it's location.
-2. Install re2c
-3. make
+### Quick Build (no lemon/re2c required)
+The generated parser and scanner files are included in the repository for easy building:
+```bash
+make
+```
 
-## TODOS:
+### Building with CMake (Recommended for cross-platform)
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build
+```
 
-- [ ] Consider supporting scientific and other notations as well.
-- [ ] Try to support fractions.
-    - Not sure if it's possible to have both fractional support and multi-number
-      (e.g. "one two three four") support.
-- [ ] Try to make grammar unambiguous.
-- [ ] Test for thread safety.
-    - Unnecessary for my current needs since I'm embedding in ruby and it has a
-      global lock.
+See [CMAKE.md](CMAKE.md) for detailed build instructions and options.
+
+### Regenerating Parser/Scanner (requires lemon and re2c)
+If you modify `parser.yy` or `scanner.re`:
+```bash
+make regen
+```
+
+## Features
+
+- **Thread-safe**: Parser re-entrancy with no global state
+- **Fraction support**: Parse word-based ("one half"), mixed ("1 1/2"), and numeric fractions with optional reduction to lowest terms
+- **Runtime toggles**: Control fraction parsing, ordinal parsing, and percent normalization at runtime
+- **Percent handling**: Normalize "percent" to "%" or convert to decimal (e.g., "50%" → "0.5")
+- **Performance optimized**: Fast numeric parsing, minimal allocations
+- **Cross-platform**: CMake support for Linux, macOS, and Windows/MSYS2
+
+## Completed Enhancements
+
+- [x] Thread safety and parser re-entrancy
+- [x] Runtime toggles for fraction and ordinal parsing
+- [x] Comprehensive fraction support (word-based, mixed numeric, expanded denominators)
+- [x] Fast numeric parsing (replaced sscanf with strtod)
+- [x] Architecture-specific optimizations (SSE4.2 gating)
+- [x] Stable parser.h generation (checked-in generated files)
+- [x] CLI utility with flags for precision, parsing options
+- [x] Extensive test coverage (263+ test cases)
+- [x] Optional fraction reduction via GCD
+- [x] CMake build system with cross-platform support
+- [x] Percent unit normalization (symbol and decimal conversion)
+
+## Future Enhancements
+
+See [TASKS.md](TASKS.md) for detailed task tracking and implementation notes.
+
+Potential future work:
+- [ ] Support for "minus" as a sign word (currently only "negative" supported) - requires lemon/re2c
+- [ ] Scientific notation support (e.g., "1.5e10")
+- [ ] Robust <100 word-to-number mapping in mixed patterns - requires lemon/re2c
 
 ## Notes
 
