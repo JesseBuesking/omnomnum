@@ -73,7 +73,7 @@ Notes
 
 
 ## 11) Minus (Word) Sign Support
-- Status: Deferred (Requires lemon/re2c for implementation)
+- Status: Completed
 - Problem: The word "minus" is currently treated as plain text; only the word "negative" or a leading '-' acts as a sign. This creates inconsistent behavior across inputs like "minus five" (unchanged) vs "negative five" (→ -5).
 - Proposal: Treat the word "minus" as a sign (same as `NEGATIVE`) when it precedes a `final_number` without intervening non-separator characters.
 - Scope:
@@ -83,7 +83,7 @@ Notes
 - Acceptance:
   - "minus five" → "-5"; "minus 1 1/2" → "-3/2"; "minus one point five" → "-1.5".
   - "minus sign" or "minus-two" inside words remains unchanged.
-Implementation Notes: Deferred because implementation requires modifying scanner.re and parser.yy, then regenerating parser.c/scanner.c with lemon/re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with lemon and re2c available, using `make regen` to update all generated sources atomically.
+Implementation Notes: Added TOKEN_MINUS to scanner (scanner.re:464) and parser rule `number ::= MINUS final_number` (parser.yy:233-240) mirroring NEGATIVE functionality. Regenerated parser.c, parser.h, and scanner.c using lemon (from SQLite) and re2c 4.3 built from source. All tests pass: "minus five" → "-5", "minus 1 1/2" → "-3/2", "minus one point five" → "-1.5", "minus sign" → "minus sign" (preserved when not followed by number). Behavior matches "negative" for all number types.
 
 ## 12) Percent Unit Semantics
 - Status: Completed
