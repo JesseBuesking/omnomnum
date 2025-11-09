@@ -135,6 +135,10 @@ if(BUILD_TESTS)
         message(STATUS "Found GTest: ${GTEST_LIBRARIES}")
         message(STATUS "Found yaml-cpp: ${yaml-cpp_VERSION}")
 
+        # Test files are C++ despite .c extension (they use GTest C++ API)
+        set_source_files_properties(test/test_omnomnum.c PROPERTIES LANGUAGE CXX)
+        set_source_files_properties(test/test_util.c PROPERTIES LANGUAGE CXX)
+
         add_executable(test_omnomnum test/test_omnomnum.c)
         target_link_libraries(test_omnomnum PRIVATE
             omnomnum_lib
