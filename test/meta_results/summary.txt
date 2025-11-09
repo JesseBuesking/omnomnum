@@ -1,9 +1,4 @@
-t0.05_r3        FAIL       CV=3.71%  MaxDiff=8.79%  Runtime=26 s 
-t0.05_r5        PASS       CV=2.11%  MaxDiff=4.99%  Runtime=41 s 
-t0.05_r10       PASS       CV=2.02%  MaxDiff=5.00%  Runtime=81 s 
-t0.1_r3         PASS       CV=2.33%  MaxDiff=5.54%  Runtime=52 s 
-t0.1_r5         PASS       CV=2.32%  MaxDiff=5.79%  Runtime=81 s 
-t0.1_r10        PASS       CV=2.02%  MaxDiff=4.86%  Runtime=161s 
-t0.2_r3         PASS       CV=2.82%  MaxDiff=6.90%  Runtime=104s 
-t0.2_r10        PASS       CV=1.40%  MaxDiff=3.45%  Runtime=319s 
-t0.5_r5         PASS       CV=1.76%  MaxDiff=4.29%  Runtime=410s 
+t1.0_r1         FAIL       CV=3.09%  MaxDiff=7.72%  Runtime=208s 
+t2.0_r1         FAIL       CV=3.52%  MaxDiff=8.41%  Runtime=407s 
+t0.5_r2         PASS       CV=2.85%  MaxDiff=6.79%  Runtime=175s 
+t1.0_r2         FAIL       CV=4.48%  MaxDiff=10.41% Runtime=363s 
