@@ -269,8 +269,21 @@ static void process_percent(sds *result, ParserState *state) {
             }
 
             if (has_percent_word || has_percent_symbol) {
-                // Extract the number
-                sds num_str = sdsnewlen(*result + num_start, num_end - num_start);
+                // TEST 2: Stack buffer for num_str (no temp_buffer)
+                size_t num_len = num_end - num_start;
+                char num_buf[128];  // Stack buffer
+                char *num_str;
+
+                if (num_len < sizeof(num_buf)) {
+                    memcpy(num_buf, *result + num_start, num_len);
+                    num_buf[num_len] = '\0';
+                    num_str = num_buf;
+                } else {
+                    // Fallback for large numbers (rare)
+                    num_str = (char *)malloc(num_len + 1);
+                    memcpy(num_str, *result + num_start, num_len);
+                    num_str[num_len] = '\0';
+                }
 
                 // Check for embedded hyphens (ranges like "20-30")
                 // A leading hyphen is fine (negative number), but embedded ones indicate a range
@@ -306,14 +319,18 @@ static void process_percent(sds *result, ParserState *state) {
                     output = sdscatlen(output, buf, written);
                 } else if (state->normalize_percent_symbol) {
                     // Just normalize the symbol: number + "%"
-                    output = sdscatsds(output, num_str);
+                    output = sdscatlen(output, num_str, num_len);
                     output = sdscat(output, "%");
                 } else {
                     // Keep as-is (shouldn't reach here due to early return)
                     output = sdscatlen(output, *result + num_start, after_percent - num_start);
                 }
 
-                sdsfree(num_str);
+                // TEST 2: Free malloc'd memory if used
+                if (num_len >= sizeof(num_buf)) {
+                    free(num_str);
+                }
+
                 i = after_percent;
                 continue;
             } else {

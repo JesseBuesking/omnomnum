@@ -1,0 +1,15 @@
+%{
+/* Fast gperf preset A: minimal MPH, positive-heavy */
+#include <string.h>
+%}
+struct card_small { const char *name; double value; };
+%%
+one, 1.0
+two, 2.0
+three, 3.0
+four, 4.0
+five, 5.0
+six, 6.0
+seven, 7.0
+eight, 8.0
+nine, 9.0

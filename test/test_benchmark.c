@@ -122,6 +122,54 @@ void BM_many_numbers(benchmark::State& state) {
 }
 BENCHMARK(BM_many_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
+void BM_fractions_common(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "one half two thirds three quarters four fifths five sixths one half two thirds three quarters four fifths five sixths one half two thirds three quarters four fifths five sixths one half two thirds three quarters four fifths five sixths";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_fractions_common)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+
+void BM_fractions_uncommon(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "one quadrillionth two trillionths three billionths four millionths five thousandths one quadrillionth two trillionths three billionths four millionths five thousandths one quadrillionth two trillionths three billionths four millionths five thousandths";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_fractions_uncommon)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+
+void BM_fractions_mixed(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "one half two hundredths three quadrillionths four fifths five thousandths six thirds seven millionths eight quarters nine billionths ten sixths one half two hundredths three quadrillionths four fifths five thousandths six thirds seven millionths eight quarters nine billionths ten sixths";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_fractions_mixed)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
+
 int main(int argc, char** argv)
 {
     initOmNomNum();
