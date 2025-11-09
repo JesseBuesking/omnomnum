@@ -114,17 +114,41 @@ fi
 
 echo "[bench_current] Running benchmark -> $OUT_JSON_ABS"
 
-# Quick mode for development (QUICK_BENCH=1): faster iterations with 0.5s min time, 3 reps
-# Thorough mode (default): production quality with 2s min time, 10 reps
+# Benchmark modes based on tested configurations:
+# - Fast mode: 0.05s min_time, 5 reps (~8s, 2.11% CV of means)
+# - Default mode: 0.1s min_time, 10 reps (~32s, 2.02% CV of means)
+# - Accurate mode: 0.2s min_time, 10 reps (~64s, 1.40% CV of means)
+#
+# Set via BENCH_MODE=fast|default|accurate or legacy QUICK_BENCH=1
+
+BENCH_MODE="${BENCH_MODE:-default}"
+
+# Legacy support: QUICK_BENCH=1 maps to fast mode
 if [[ "${QUICK_BENCH:-0}" == "1" ]]; then
-  echo "[bench_current] Using QUICK mode (0.5s min_time, 3 reps)"
-  MIN_TIME="0.5s"
-  REPS=3
-else
-  echo "[bench_current] Using THOROUGH mode (2s min_time, 10 reps)"
-  MIN_TIME="2s"
-  REPS=10
+  BENCH_MODE="fast"
 fi
+
+case "$BENCH_MODE" in
+  fast)
+    echo "[bench_current] Using FAST mode (0.05s min_time, 5 reps, ~8s)"
+    MIN_TIME="0.05s"
+    REPS=5
+    ;;
+  accurate)
+    echo "[bench_current] Using ACCURATE mode (0.2s min_time, 10 reps, ~64s)"
+    MIN_TIME="0.2s"
+    REPS=10
+    ;;
+  default)
+    echo "[bench_current] Using DEFAULT mode (0.1s min_time, 10 reps, ~32s)"
+    MIN_TIME="0.1s"
+    REPS=10
+    ;;
+  *)
+    echo "[bench_current] ERROR: Unknown BENCH_MODE='$BENCH_MODE'. Use: fast, default, or accurate"
+    exit 1
+    ;;
+esac
 
 # Allow override of min_time and reps via environment variables
 MIN_TIME="${BENCH_MIN_TIME:-$MIN_TIME}"

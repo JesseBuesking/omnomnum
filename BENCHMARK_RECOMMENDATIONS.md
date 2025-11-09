@@ -20,29 +20,31 @@ This measures **reproducibility** - how consistent are results across runs?
 
 Tested 9 configurations with 5 independent comparison runs each:
 
-### Fast Configs (< 90 seconds)
+### Fast Configs
 
-| Config | Runtime | CV | Max Diff | Status |
-|--------|---------|-------|----------|---------|
-| 0.05s × 3 reps  | 26s  | 3.71% | 8.79% | ✗ FAIL (too unstable) |
-| 0.05s × 5 reps  | 41s  | 2.11% | 4.99% | ✓ PASS ⚡ **Fast dev** |
-| 0.05s × 10 reps | 81s  | 2.02% | 5.00% | ✓ PASS |
+| Config | Single Run | Meta-Test* | CV | Max Diff | Status |
+|--------|------------|------------|-------|----------|---------|
+| 0.05s × 3 reps  | ~7s  | 26s  | 3.71% | 8.79% | ✗ FAIL (too unstable) |
+| 0.05s × 5 reps  | ~9s  | 41s  | 2.11% | 4.99% | ✓ PASS ⚡ **Fast dev** |
+| 0.05s × 10 reps | ~16s | 81s  | 2.02% | 5.00% | ✓ PASS |
 
-### Balanced Configs (90-180 seconds)
+### Balanced Configs
 
-| Config | Runtime | CV | Max Diff | Status |
-|--------|---------|-------|----------|---------|
-| 0.1s × 3 reps   | 52s  | 2.33% | 5.54% | ✓ PASS |
-| 0.1s × 5 reps   | 81s  | 2.32% | 5.79% | ✓ PASS |
-| 0.1s × 10 reps  | 161s | 2.02% | 4.86% | ✓ PASS ⭐ **Recommended** |
+| Config | Single Run | Meta-Test* | CV | Max Diff | Status |
+|--------|------------|------------|-------|----------|---------|
+| 0.1s × 3 reps   | ~11s | 52s  | 2.33% | 5.54% | ✓ PASS |
+| 0.1s × 5 reps   | ~16s | 81s  | 2.32% | 5.79% | ✓ PASS |
+| 0.1s × 10 reps  | ~32s | 161s | 2.02% | 4.86% | ✓ PASS ⭐ **Recommended** |
 
-### Thorough Configs (> 180 seconds)
+### Thorough Configs
 
-| Config | Runtime | CV | Max Diff | Status |
-|--------|---------|-------|----------|---------|
-| 0.2s × 3 reps   | 104s | 2.82% | 6.90% | ✓ PASS |
-| 0.2s × 10 reps  | 319s | 1.40% | 3.45% | ✓ PASS 🏆 **Most reliable** |
-| 0.5s × 5 reps   | 410s | 1.76% | 4.29% | ✓ PASS (baseline) |
+| Config | Single Run | Meta-Test* | CV | Max Diff | Status |
+|--------|------------|------------|-------|----------|---------|
+| 0.2s × 3 reps   | ~21s | 104s | 2.82% | 6.90% | ✓ PASS |
+| 0.2s × 10 reps  | ~64s | 319s | 1.40% | 3.45% | ✓ PASS 🏆 **Most reliable** |
+| 0.5s × 5 reps   | ~82s | 410s | 1.76% | 4.29% | ✓ PASS (baseline) |
+
+\* Meta-test runtime includes 5 comparison runs for CV of means calculation
 
 **Key findings**:
 - **CV of means < 3%** is achievable and stable!
@@ -57,7 +59,7 @@ Tested 9 configurations with 5 independent comparison runs each:
 **min_time=0.05s, reps=5**
 
 **Pros**:
-- Fast: 41 seconds
+- Fast: ~9 seconds
 - Reliable: 2.11% CV of means
 - Can detect regressions >5%
 
@@ -68,7 +70,11 @@ Tested 9 configurations with 5 independent comparison runs each:
 
 **Example**:
 ```bash
-BENCH_MIN_TIME=0.05s BENCH_REPS=5 bash scripts/benchmark_current.sh
+# Using BENCH_MODE
+BENCH_MODE=fast bash scripts/benchmark_current.sh
+
+# Or legacy QUICK_BENCH
+QUICK_BENCH=1 bash scripts/benchmark_current.sh
 ```
 
 ### For CI/Testing (Balanced) ⭐ RECOMMENDED
@@ -76,19 +82,23 @@ BENCH_MIN_TIME=0.05s BENCH_REPS=5 bash scripts/benchmark_current.sh
 **min_time=0.1s, reps=10**
 
 **Pros**:
-- Good speed: 2.7 minutes
+- Good speed: ~32 seconds
 - Excellent reliability: 2.02% CV of means
 - Can detect regressions >4.86%
 - Best balance of speed vs precision
 
 **Cons**:
-- Takes a few minutes
+- Takes half a minute
 
 **Use for**: CI/CD pipelines, pre-merge testing
 
 **Example**:
 ```bash
-BENCH_MIN_TIME=0.1s BENCH_REPS=10 bash scripts/benchmark_current.sh
+# Default mode (no flags needed)
+bash scripts/benchmark_current.sh
+
+# Or explicitly
+BENCH_MODE=default bash scripts/benchmark_current.sh
 ```
 
 ### For Releases (Maximum Reliability) 🏆
@@ -101,13 +111,13 @@ BENCH_MIN_TIME=0.1s BENCH_REPS=10 bash scripts/benchmark_current.sh
 - Most consistent results
 
 **Cons**:
-- Slow: 5.3 minutes
+- Slower: ~64 seconds
 
 **Use for**: Official releases, performance validation, benchmarking reports
 
 **Example**:
 ```bash
-BENCH_MIN_TIME=0.2s BENCH_REPS=10 bash scripts/benchmark_current.sh
+BENCH_MODE=accurate bash scripts/benchmark_current.sh
 ```
 
 ## How to Use Mean Comparison Mode
@@ -168,8 +178,20 @@ Results are saved to `test/meta_results/` with a summary showing which configs p
 
 **Using CV of means, reliable benchmarking IS achievable:**
 
-- ⚡ **Development**: `min_time=0.05s, reps=5` (41s, 2.11% CV)
-- ⭐ **Recommended**: `min_time=0.1s, reps=10` (2.7min, 2.02% CV, detects >4.86%)
-- 🏆 **Best**: `min_time=0.2s, reps=10` (5.3min, 1.40% CV, detects >3.45%)
+- ⚡ **Fast**: `min_time=0.05s, reps=5` (~9s, 2.11% CV) - `BENCH_MODE=fast`
+- ⭐ **Default**: `min_time=0.1s, reps=10` (~32s, 2.02% CV, detects >4.86%) - **recommended**
+- 🏆 **Accurate**: `min_time=0.2s, reps=10` (~64s, 1.40% CV, detects >3.45%) - `BENCH_MODE=accurate`
 
 All of these achieve < 3% CV of means and provide reliable regression detection.
+
+**Usage**:
+```bash
+# Fast (~9s)
+BENCH_MODE=fast bash scripts/benchmark_current.sh
+
+# Default (~32s) - recommended
+bash scripts/benchmark_current.sh
+
+# Accurate (~64s)
+BENCH_MODE=accurate bash scripts/benchmark_current.sh
+```
