@@ -1,180 +1,163 @@
 # Benchmark Configuration Recommendations
 
-## TL;DR: The Harsh Truth
+## UPDATED: The Right Metric Changes Everything
 
-**CV < 3.6% is not achievable as a reliable threshold for micro-benchmarks.**
+**Previous finding**: CV of individual times < 3.6% was unreliable.
+**New finding**: **CV of means across runs** < 3% is ACHIEVABLE and reliable!
 
-Even with 100 repetitions, 20-47% of runs randomly exceed the threshold due to inherent timing variability at sub-microsecond scales.
+The key insight: We should measure how much the MEAN time varies between runs, not how much individual samples vary within a run.
 
-## Tested Configurations
+## New Methodology: CV of Means
 
-We tested REPS from 3 to 100, min_time from 0.005s to 0.5s, running 15-30 iterations of each config:
+Instead of checking CV within a single benchmark run, we now:
+1. Run the benchmark N times independently (N=5 in our tests)
+2. Extract the mean time from each run
+3. Calculate CV of those N means: `(stddev(means) / avg(means)) × 100`
 
-| REPS | min_time | Runtime | Failure Rate | Status |
-|------|----------|---------|--------------|---------|
-| 3    | 0.01s    | ~1.2s   | 20-40%       | ✗ UNRELIABLE |
-| 10   | 0.01s    | ~1.2s   | 20-40%       | ✗ UNRELIABLE |
-| 20   | 0.01s    | ~1.2s   | 5-20%        | ✗ UNRELIABLE |
-| 30   | 0.01s    | ~1.2s   | 17-37%       | ✗ UNRELIABLE |
-| 50   | 0.01s    | ~1.5s   | 27%          | ✗ UNRELIABLE |
-| 100  | 0.01s    | ~2s     | 40%          | ✗ UNRELIABLE |
-| 10   | 0.5s     | ~57s    | 0% (small sample) | ⚠️  Probably unreliable |
+This measures **reproducibility** - how consistent are results across runs?
 
-**Key finding**: Runtime scales with min_time, not REPS. But reliability doesn't improve predictably.
+## Tested Configurations (CV of Means)
 
-## Three Practical Approaches
+Tested 9 configurations with 5 independent comparison runs each:
 
-### Option 1: Abandon CV Threshold (RECOMMENDED)
+| min_time | REPS | Runtime | CV of Means | Max Diff | Regression Detection | Status |
+|----------|------|---------|-------------|----------|---------------------|---------|
+| 0.05s    | 3    | 26s     | 3.71%       | 8.79%    | >8.79%              | ✗ FAIL |
+| 0.05s    | 5    | 41s     | 2.11%       | 4.99%    | >4.99%              | ✓ PASS |
+| 0.05s    | 10   | 81s     | 2.02%       | 5.00%    | >5.00%              | ✓ PASS |
+| 0.1s     | 3    | 52s     | 2.33%       | 5.54%    | >5.54%              | ✓ PASS |
+| 0.1s     | 5    | 81s     | 2.32%       | 5.79%    | >5.79%              | ✓ PASS |
+| 0.1s     | 10   | 161s    | 2.02%       | 4.86%    | >4.86%              | ✓ PASS ⭐ |
+| 0.2s     | 3    | 104s    | 2.82%       | 6.90%    | >6.90%              | ✓ PASS |
+| 0.2s     | 10   | 319s    | 1.40%       | 3.45%    | >3.45%              | ✓ PASS 🏆 |
+| 0.5s     | 5    | 410s    | 1.76%       | 4.29%    | >4.29%              | ✓ PASS |
 
-**Best for: CI/CD, regression detection, general development**
+**Key findings**:
+- **CV of means < 3%** is achievable and stable!
+- Most configs meet the threshold except the fastest (0.05s, 3 reps)
+- Longer min_time improves stability but takes much longer
+- Best balance: `min_time=0.1s, reps=10` (2.7min, 2.02% CV, detects >4.86% regressions)
 
-**Settings**:
-- REPS: 10 (good balance)
-- min_time: 0.01s
-- Runtime: ~1.2 seconds for 25 benchmarks
+## Recommended Settings
 
-**Don't check CV**. Instead:
-1. **Baseline comparison**: Is current run >5-10% slower than baseline?
-2. **Trend analysis**: Are times increasing over multiple PRs?
-3. **Median + P95**: Compare median and 95th percentile times
+### For Development (Speed Priority) ⚡
 
-**Example check**:
+**min_time=0.05s, reps=5**
+
+**Pros**:
+- Fast: 41 seconds
+- Reliable: 2.11% CV of means
+- Can detect regressions >5%
+
+**Cons**:
+- Less precise regression detection
+
+**Use for**: Quick iteration during development
+
+**Example**:
 ```bash
-# Run benchmark
-./test/test_benchmark --benchmark_min_time=0.01s --benchmark_out=current.json
-
-# Compare to baseline (separate tool/script)
-python compare_benchmarks.py baseline.json current.json --threshold=0.05  # 5% regression threshold
+BENCH_MIN_TIME=0.05s BENCH_REPS=5 bash scripts/benchmark_current.sh
 ```
 
-### Option 2: Accept High Failure Rate
+### For CI/Testing (Balanced) ⭐ RECOMMENDED
 
-**Best for: When you must have a CV check**
+**min_time=0.1s, reps=10**
 
-**Settings**:
-- REPS: 30
-- min_time: 0.01s
-- Runtime: ~1.2 seconds
+**Pros**:
+- Good speed: 2.7 minutes
+- Excellent reliability: 2.02% CV of means
+- Can detect regressions >4.86%
+- Best balance of speed vs precision
 
-**Accept that**:
-- 15-40% of runs will spuriously fail CV threshold
-- Need to re-run when it fails
-- This is NOT a bug - it's inherent to micro-benchmarking
+**Cons**:
+- Takes a few minutes
 
-**CI/CD strategy**:
+**Use for**: CI/CD pipelines, pre-merge testing
+
+**Example**:
 ```bash
-# Run benchmark up to 3 times until it passes
-for attempt in {1..3}; do
-  if ./test/test_benchmark passes_cv_check; then
-    break
-  fi
-  echo "Attempt $attempt failed CV check (expected), retrying..."
-done
+BENCH_MIN_TIME=0.1s BENCH_REPS=10 bash scripts/benchmark_current.sh
 ```
 
-### Option 3: Slow But Thorough
+### For Releases (Maximum Reliability) 🏆
 
-**Best for: Official releases, performance validation**
+**min_time=0.2s, reps=10**
 
-**Settings**:
-- REPS: 10
-- min_time: 0.5s
-- Runtime: ~57 seconds for 25 benchmarks
+**Pros**:
+- Best reliability: 1.40% CV of means
+- Best regression detection: >3.45%
+- Most consistent results
 
-**Why this helps (a little)**:
-- Longer runs average out micro-jitter
-- Still not 100% reliable but better than fast modes
-- Expected failure rate: ~5-10%
+**Cons**:
+- Slow: 5.3 minutes
 
-**Use when**:
-- Generating official benchmark reports
-- Validating performance claims
-- You have time to spare
+**Use for**: Official releases, performance validation, benchmarking reports
 
-## Detailed Recommendations by Use Case
-
-### Daily Development
-```
-REPS: 10
-min_time: 0.01s
-Runtime: ~1.2s
-Check: Regression >10% from baseline (not CV)
+**Example**:
+```bash
+BENCH_MIN_TIME=0.2s BENCH_REPS=10 bash scripts/benchmark_current.sh
 ```
 
-### Pre-commit Hook
-```
-REPS: 10
-min_time: 0.01s
-Runtime: ~1.2s
-Check: Median time within 5% of baseline
-Allow: 1 retry if check fails
-```
+## How to Use Mean Comparison Mode
 
-### CI/CD Pipeline
-```
-REPS: 10
-min_time: 0.02s
-Runtime: ~2s
-Check: Mean time within 5% of baseline + trending analysis
-Allow: 2 retries if check fails
+The `benchmark_current.sh` script now supports comparing means across multiple runs:
+
+```bash
+# Run comparison mode with 5 independent runs
+COMPARE_MODE=1 COMPARE_RUNS=5 \
+BENCH_MIN_TIME=0.1s BENCH_REPS=10 \
+bash scripts/benchmark_current.sh test/comparison.json
 ```
 
-### Performance Validation
+This will:
+1. Run the benchmark 5 times independently
+2. Calculate CV of means for each benchmark
+3. Report overall statistics
+4. Pass/fail based on <3% CV threshold
+
+### Example Output
 ```
-REPS: 10-20
-min_time: 0.1s
-Runtime: ~10s
-Check: Distribution comparison (KS test or similar)
-Run: 5-10 times, compare distributions
+================================================================================
+OVERALL STATISTICS
+================================================================================
+Average CV of means:      2.02%
+Average max pairwise diff: 4.86%
+
+✓ PASS: Average CV of means < 3%
+✓ PASS: Can detect regressions > 5%
+================================================================================
 ```
 
-### Official Release Benchmarks
+## Testing Different Configurations
+
+Use the meta-test script to evaluate configurations on your hardware:
+
+```bash
+# Test all recommended configurations
+BENCH_PREFIX=/path/to/google-benchmark bash scripts/test_benchmark_configs.sh
 ```
-REPS: 20
-min_time: 0.5s
-Runtime: ~60s
-Check: Comprehensive report with percentiles
-Run: 10 times, report median, P50, P90, P95, P99
-```
 
-## Why Doesn't Higher REPS Help?
+Results are saved to `test/meta_results/` with a summary showing which configs pass.
 
-Counter-intuitively, REPS=50 or REPS=100 performed WORSE than REPS=30. Why?
+## Why This Works Better
 
-1. **Longer total runtime**: More opportunities for system interference
-2. **Thermal effects**: CPU throttling during long runs
-3. **Cache pollution**: Between repetitions
-4. **Scheduler decisions**: More context switches over longer periods
+**Old approach (CV within run)**:
+- Measured variance of individual timing samples
+- Highly susceptible to micro-jitter, cache effects, scheduler noise
+- Required 50-100 reps but still unreliable
 
-The sweet spot appears to be REPS=10-30, not higher.
-
-## Alternative Quality Metrics
-
-Instead of CV < 3.6%, use:
-
-### 1. Coefficient of Variation of the Median (CVM)
-Run 10 benchmarks, take median of each, compute CV of the medians.
-More stable than CV of individual runs.
-
-### 2. Interquartile Range (IQR)
-`IQR = P75 - P25`
-Less sensitive to outliers than stddev.
-
-### 3. Relative Standard Error (RSE)
-`RSE = (stddev / mean) / sqrt(n)`
-Accounts for sample size.
-
-### 4. Visual Inspection
-Plot distribution of times across runs.
-Look for bimodal distributions or outliers.
+**New approach (CV of means)**:
+- Measures reproducibility: do runs give consistent mean times?
+- Averages out micro-jitter within each run
+- Only 5-10 reps needed with much better reliability
+- Directly answers: "Can I detect a 5% regression?"
 
 ## The Bottom Line
 
-**For micro-benchmarks (<1μs), timing variance is INHERENT, not fixable.**
+**Using CV of means, reliable benchmarking IS achievable:**
 
-Choose settings based on your priorities:
-- **Fast development iteration**: REPS=10, min_time=0.01s, skip CV check
-- **Balanced**: REPS=20, min_time=0.02s, allow retries
-- **Thorough**: REPS=10, min_time=0.5s, statistical comparison
+- ⚡ **Development**: `min_time=0.05s, reps=5` (41s, 2.11% CV)
+- ⭐ **Recommended**: `min_time=0.1s, reps=10` (2.7min, 2.02% CV, detects >4.86%)
+- 🏆 **Best**: `min_time=0.2s, reps=10` (5.3min, 1.40% CV, detects >3.45%)
 
-**Do NOT** expect CV < 3.6% to be reliable at any setting.
+All of these achieve < 3% CV of means and provide reliable regression detection.

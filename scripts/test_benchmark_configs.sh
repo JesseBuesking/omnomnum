@@ -57,7 +57,8 @@ for config in "${CONFIGS[@]}"; do
   # Measure total runtime
   start_time=$(date +%s)
 
-  # Run comparison test
+  # Run comparison test (allow failure to continue testing other configs)
+  set +e
   BENCH_MIN_TIME="${min_time}s" \
   BENCH_REPS="$reps" \
   COMPARE_MODE=1 \
@@ -66,6 +67,7 @@ for config in "${CONFIGS[@]}"; do
     > "$RESULTS_DIR/${config_name}.log" 2>&1
 
   exit_code=$?
+  set -e
   end_time=$(date +%s)
   runtime=$((end_time - start_time))
 
