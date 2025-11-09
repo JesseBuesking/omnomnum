@@ -168,6 +168,16 @@ regen:
 	rm -f parser.c parser.h scanner.c
 	$(MAKE) parser.c parser.h scanner.c
 
+# Regenerate gperf perfect hash for denominator words
+# This updates scanner.re with the new hash table and regenerates scanner.c
+.PHONY: regen-gperf
+regen-gperf:
+	@if [ ! -f "scripts/regenerate_gperf.sh" ]; then \
+		echo "Error: scripts/regenerate_gperf.sh not found"; \
+		exit 1; \
+	fi
+	@./scripts/regenerate_gperf.sh
+
 # Standard clean - preserves generated files checked into git
 clean:
 	rm -rf *.o test/*.o parser.out main.o omnomnum *.gch test/test_omnomnum test/test_benchmark
