@@ -100,7 +100,9 @@ void initParserState(ParserState *state) {
     state->last_token = -1;
     state->pParser = NULL;
     state->numberHolder = sdsempty();
-    initYYSTYPEList(&(state->yystypeList), 4);
+    // OPTIMIZATION: Start with larger capacity to reduce reallocations
+    // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
+    initYYSTYPEList(&(state->yystypeList), 128);
 }
 
 void resetParserState(ParserState *state) {
