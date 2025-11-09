@@ -239,30 +239,128 @@ number ::= MINUS(A) final_number(B). {
     insertYYSTYPE(&state->yystypeList, B);
 }
 
-final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
-final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }
-final_number(A) ::= less_than_quadrillion(B) AND A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
-final_number(A) ::= less_than_quadrillion(B) AND A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }
+final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND A QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND A HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
-final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 4.0); }
-final_number(A) ::= ONE(B) QUARTER(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0); }
-final_number(A) ::= A(B) QUARTER(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0); }
+final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= ONE(B) QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
-final_number(A) ::= less_than_quadrillion(B) HALVES(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 2.0); }
-final_number(A) ::= ONE(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);  }
-final_number(A) ::= A(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0); }
+final_number(A) ::= less_than_quadrillion(B) HALVES(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= ONE(B) HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
 // explicit hundredth(s) as fractions
-final_number(A) ::= ONE(B) HUNDREDTH(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0); }
-final_number(A) ::= A(B) HUNDREDTH(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0); }
-final_number(A) ::= less_than_hundred(B) HUNDREDTHS(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 100.0); }
+final_number(A) ::= ONE(B) HUNDREDTH(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) HUNDREDTH(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_hundred(B) HUNDREDTHS(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
 final_number(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 final_number(A) ::= FRACTION(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = true; }
 final_number(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 final_number(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= less_than_quadrillion(B) AND fraction(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom); }
+final_number(A) ::= less_than_quadrillion(B) AND fraction(C). {
+    if (state->parse_fractions && C.is_frac) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 // covered by above since fractiono includes A/AN
 //final_number(A) ::= less_than_quadrillion(B) AND_A fraction(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom); }
 final_number(A) ::= fraction(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = B.is_frac; }
@@ -270,15 +368,37 @@ final_number(A) ::= fraction(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_nu
 // General fraction forms like "three eighths", "one eighth"
 fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionths(C). {
     COPY_YYSTYPE_BE2(A, B, C);
-    COPY_YYSTYPE_FRAC(A, B, C);
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC(A, B, C);
+    } else {
+        A.leave_alone = true;
+    }
 }
 fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionth(C). {
     COPY_YYSTYPE_BE2(A, B, C);
-    COPY_YYSTYPE_FRAC(A, B, C);
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC(A, B, C);
+    } else {
+        A.leave_alone = true;
+    }
 }
 
-fraction(A) ::= A(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }
-fraction(A) ::= AN(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }
+fraction(A) ::= A(B) less_than_quadrillionth(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+fraction(A) ::= AN(B) less_than_quadrillionth(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
 // should have this, but if it's not being used in a larger number, we should
 // keep it as is: it might be 007. if we dont keep it, we'll reduce it to 7,
