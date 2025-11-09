@@ -37,8 +37,9 @@ struct denom_word { const char *name; double value; };
 #define DENOM_TOTAL_KEYWORDS 67
 #define DENOM_MIN_WORD_LENGTH 4
 #define DENOM_MAX_WORD_LENGTH 14
-#define DENOM_MIN_HASH_VALUE 20
-#define DENOM_MAX_HASH_VALUE 134
+#define DENOM_MIN_HASH_VALUE 11
+#define DENOM_MAX_HASH_VALUE 87
+/* maximum key range = 77, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -52,32 +53,32 @@ denom_hash (register const char *str, register size_t len)
 {
   static const unsigned char asso_values[] =
     {
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135,   0,  55, 135,
-      135,  35,  20,  60,   0,  15, 135, 135,  35,  40,
-       10,   0, 135,  10,  95,  10,   5,  50,  45,  60,
-       60, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
-      135, 135, 135, 135, 135, 135
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88,  2, 30, 88,
+      88,  2, 13, 55,  2, 10, 88, 88,  3, 21,
+       8,  4, 88, 31,  9,  8,  3, 28, 47, 70,
+      37, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88, 88, 88, 88, 88,
+      88, 88, 88, 88, 88, 88
     };
   register unsigned int hval = len;
 
@@ -104,116 +105,164 @@ denom_hash (register const char *str, register size_t len)
   return hval;
 }
 
-static const struct denom_word *
+const struct denom_word *
 denom_in_word_set (register const char *str, register size_t len)
 {
   static const unsigned char lengthtable[] =
     {
-       0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-       0,  0,  0,  0,  0,  0, 10, 11,  0,  0,  0,  5,  6,  0,
-       0,  9, 10,  0,  0,  0,  0, 10, 11,  0,  0,  4,  5,  6,
-       0,  0,  9, 10,  0,  0,  0,  0, 10, 11,  0,  0,  0,  5,
-       6,  0,  0,  0,  5,  6,  0,  8,  9, 10,  0,  7,  8,  9,
-      10,  0,  0,  0,  9,  0,  6,  7,  0,  9, 10,  0,  0,  0,
-       0, 10, 11,  0, 13, 14,  5,  6,  0,  8,  9, 10,  0,  7,
-       8,  9, 10,  0,  0,  0,  9, 10, 11,  7,  8,  9, 10, 11,
-      12,  8,  9, 10,  6,  7,  0,  9, 10,  0,  0,  8,  9, 10,
-      11,  0,  0,  0, 10, 11,  0,  0,  9
+       0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4,  0,  0,
+       0,  8,  0,  0,  5,  6,  5,  6, 10, 11,  9,  0,  9, 10,
+      10, 11,  0,  5,  6,  0,  8, 10, 11,  9, 10, 10, 11,  5,
+       6,  9,  8,  9, 10,  9, 10,  9, 10,  6,  7,  9,  9, 10,
+       9, 10, 10, 11,  5,  6,  0,  8,  7,  8,  9, 10,  7,  8,
+      10, 11,  9,  6,  7,  0, 11, 12,  9, 10, 10, 11,  7,  8,
+      13, 14,  9, 10
     };
   static const struct denom_word wordlist[] =
     {
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
-      {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""}, {""},
-      {"thousandth", 1000},
-      {"thousandths", 1000},
-      {""}, {""}, {""},
-      {"third", 3},
-      {"thirds", 3},
-      {""}, {""},
-      {"thirtieth", 30},
-      {"thirtieths", 30},
-      {""}, {""}, {""}, {""},
-      {"thirteenth", 13},
-      {"thirteenths", 13},
-      {""}, {""},
+#line 30 "denom_words.gperf"
       {"half", 2},
-      {"ninth", 9},
-      {"ninths", 9},
-      {""}, {""},
-      {"ninetieth", 90},
-      {"ninetieths", 90},
-      {""}, {""}, {""}, {""},
-      {"nineteenth", 19},
-      {"nineteenths", 19},
       {""}, {""}, {""},
+#line 14 "denom_words.gperf"
+      {"eleventh", 11},
+      {""}, {""},
+#line 57 "denom_words.gperf"
       {"tenth", 10},
+#line 58 "denom_words.gperf"
       {"tenths", 10},
-      {""}, {""}, {""},
+#line 59 "denom_words.gperf"
+      {"third", 3},
+#line 60 "denom_words.gperf"
+      {"thirds", 3},
+#line 65 "denom_words.gperf"
+      {"thousandth", 1000},
+#line 66 "denom_words.gperf"
+      {"thousandths", 1000},
+#line 15 "denom_words.gperf"
+      {"elevenths", 11},
+      {""},
+#line 63 "denom_words.gperf"
+      {"thirtieth", 30},
+#line 64 "denom_words.gperf"
+      {"thirtieths", 30},
+#line 61 "denom_words.gperf"
+      {"thirteenth", 13},
+#line 62 "denom_words.gperf"
+      {"thirteenths", 13},
+      {""},
+#line 39 "denom_words.gperf"
+      {"ninth", 9},
+#line 40 "denom_words.gperf"
+      {"ninths", 9},
+      {""},
+#line 22 "denom_words.gperf"
+      {"fortieth", 40},
+#line 67 "denom_words.gperf"
+      {"trillionth", 1000000000000.0},
+#line 68 "denom_words.gperf"
+      {"trillionths", 1000000000000.0},
+#line 37 "denom_words.gperf"
+      {"ninetieth", 90},
+#line 38 "denom_words.gperf"
+      {"ninetieths", 90},
+#line 35 "denom_words.gperf"
+      {"nineteenth", 19},
+#line 36 "denom_words.gperf"
+      {"nineteenths", 19},
+#line 18 "denom_words.gperf"
       {"fifth", 5},
+#line 19 "denom_words.gperf"
       {"fifths", 5},
-      {""}, {""},
-      {"fiftieth", 50},
-      {"fifteenths", 15},
-      {"seventieth", 70},
-      {""},
-      {"twelfth", 12},
-      {"fifteenth", 15},
-      {"seventeenths", 17},
-      {"seventieths", 70},
-      {""}, {""}, {""},
-      {"twentieth", 20},
-      {""},
-      {"fourth", 4},
-      {"fourths", 4},
-      {""},
-      {"fourtieth", 40},
+#line 23 "denom_words.gperf"
       {"fortieths", 40},
-      {""}, {""}, {""}, {""},
+#line 20 "denom_words.gperf"
+      {"fiftieth", 50},
+#line 33 "denom_words.gperf"
+      {"millionth", 1000000},
+#line 34 "denom_words.gperf"
+      {"millionths", 1000000},
+#line 16 "denom_words.gperf"
+      {"fifteenth", 15},
+#line 17 "denom_words.gperf"
+      {"fifteenths", 15},
+#line 31 "denom_words.gperf"
+      {"hundredth", 100},
+#line 32 "denom_words.gperf"
+      {"hundredths", 100},
+#line 26 "denom_words.gperf"
+      {"fourth", 4},
+#line 27 "denom_words.gperf"
+      {"fourths", 4},
+#line 21 "denom_words.gperf"
+      {"fiftieths", 50},
+#line 6 "denom_words.gperf"
+      {"billionth", 1000000000},
+#line 7 "denom_words.gperf"
+      {"billionths", 1000000000},
+#line 28 "denom_words.gperf"
+      {"fourtieth", 40},
+#line 29 "denom_words.gperf"
+      {"fourtieths", 40},
+#line 24 "denom_words.gperf"
       {"fourteenth", 14},
+#line 25 "denom_words.gperf"
       {"fourteenths", 14},
-      {""},
-      {"quadrillionth", 1000000000000000.0},
-      {"quadrillionths", 1000000000000000.0},
+#line 53 "denom_words.gperf"
       {"sixth", 6},
+#line 54 "denom_words.gperf"
       {"sixths", 6},
       {""},
+#line 55 "denom_words.gperf"
       {"sixtieth", 60},
-      {"sixteenth", 16},
-      {"sixteenths", 16},
-      {""},
+#line 47 "denom_words.gperf"
       {"seventh", 7},
+#line 48 "denom_words.gperf"
       {"sevenths", 7},
-      {"seventeenth", 17},
-      {"sixtieths", 60},
-      {""}, {""}, {""},
-      {"hundredth", 100},
-      {"millionth", 1000000},
-      {"millionths", 1000000},
-      {"twelfths", 12},
-      {"halves", 2},
-      {"quarters", 4},
-      {"twentieths", 20},
-      {"hundredths", 100},
+#line 51 "denom_words.gperf"
+      {"sixteenth", 16},
+#line 52 "denom_words.gperf"
+      {"sixteenths", 16},
+#line 43 "denom_words.gperf"
       {"quarter", 4},
-      {"ninetieths", 90},
-      {"billionth", 1000000000},
-      {"billionths", 1000000000},
+#line 44 "denom_words.gperf"
+      {"quarters", 4},
+#line 49 "denom_words.gperf"
+      {"seventieth", 70},
+#line 50 "denom_words.gperf"
+      {"seventieths", 70},
+#line 56 "denom_words.gperf"
+      {"sixtieths", 60},
+#line 10 "denom_words.gperf"
       {"eighth", 8},
+#line 11 "denom_words.gperf"
       {"eighths", 8},
       {""},
+#line 45 "denom_words.gperf"
+      {"seventeenth", 17},
+#line 46 "denom_words.gperf"
+      {"seventeenths", 17},
+#line 12 "denom_words.gperf"
       {"eightieth", 80},
+#line 13 "denom_words.gperf"
       {"eightieths", 80},
-      {""}, {""},
-      {"fortieth", 40},
-      {"elevenths", 11},
+#line 8 "denom_words.gperf"
       {"eighteenth", 18},
+#line 9 "denom_words.gperf"
       {"eighteenths", 18},
-      {""}, {""}, {""},
-      {"trillionth", 1000000000000.0},
-      {"trillionths", 1000000000000.0},
-      {""}, {""},
-      {"fortieths", 40}
+#line 69 "denom_words.gperf"
+      {"twelfth", 12},
+#line 70 "denom_words.gperf"
+      {"twelfths", 12},
+#line 41 "denom_words.gperf"
+      {"quadrillionth", 1000000000000000.0},
+#line 42 "denom_words.gperf"
+      {"quadrillionths", 1000000000000000.0},
+#line 71 "denom_words.gperf"
+      {"twentieth", 20},
+#line 72 "denom_words.gperf"
+      {"twentieths", 20}
     };
 
   if (len <= DENOM_MAX_WORD_LENGTH && len >= DENOM_MIN_WORD_LENGTH)
