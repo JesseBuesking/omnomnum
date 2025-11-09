@@ -1,0 +1,194 @@
+Starting Google Benchmark across all commits...
+Original: claude/decade-late-improvements-011CUwfJXPATTXVysvQ3LBtt (29bc590c6a63902b43f5ca784a88c40dcf321057)
+Results directory: /home/user/omnomnum/benchmark_results_gb
+
+Found 48 commits to benchmark
+
+[1/48] 6eb1d3ab: v0.0.1
+  ✗ Build failed, skipping
+
+[2/48] df0cc250: updating readme and bumping version
+  ✗ Build failed, skipping
+
+[3/48] c90bb9cc: Scanner-driven fraction tokens; remove post-pass; parser.h generation; Makefile bench targets; SCANNER_FRACTIONS toggle; tests passing
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/3_c90bb9cc.json
+
+[4/48] 0575cc78: Restore whitespace separator behavior; remove profiling helpers; parser reentrancy + minor perf
+  ✗ Build failed, skipping
+
+[5/48] 455fda3e: feat: quadrillion + spelled-decimal support; expand fraction handling; add broad tests
+  ✗ Build failed, skipping
+
+[6/48] 574d8e30: tests: fix new cases; implement scanner paths for 'and a quarter', 'D+ thousand and <small>', and quadrillionths as fractions; reorder 'and a' token; add explicit hundredth(s) fractions
+  ✗ Build failed, skipping
+
+[7/48] adfc690b: bench: include latest benchmark snapshot (post-fix-four-cases)
+  ✗ Build failed, skipping
+
+[8/48] c1a4d56c: docs: add performance investigation notes and benchmarking helpers
+  ✗ Build failed, skipping
+
+[9/48] 76217133: bench: add toggle sweep script
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/9_76217133.json
+
+[10/48] 9195f8c7: feat(scanner): add runtime fraction toggle; gate fraction tokens via ParserState.parse_fractions (default true)
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/10_9195f8c7.json
+
+[11/48] eee6ebc3: chore(repo): untrack generated bench artifacts and JSON; restore worktrees/* to previous state; update .gitignore for bench outputs
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/11_eee6ebc3.json
+
+[12/48] bf743b3a: adding .gitignore
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/12_bf743b3a.json
+
+[13/48] e7e78dff: Complete Task #2: Runtime Toggle for Fraction Parsing
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/13_e7e78dff.json
+
+[14/48] 4555cbe8: fix(cli): preserve user flags across multiple input lines
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/14_4555cbe8.json
+
+[15/48] 51e66d3a: ci: add GitHub Actions workflows
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/15_51e66d3a.json
+
+[16/48] d15e0c4b: Merge pull request #1 from JesseBuesking/claude/configure-git-user-011CUw5rMqNJRpV1hMXSCFoN
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/16_d15e0c4b.json
+
+[17/48] 9b2b7629: Task 3: Harden fraction word matching
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/17_9b2b7629.json
+
+[18/48] 31a0ebda: Merge pull request #2 from JesseBuesking/claude/decade-late-improvements-011CUwBc6NkaxYBVmCWroi3Z
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/18_31a0ebda.json
+
+[19/48] 840c0517: Task 6: Stabilize parser.h generation
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/19_840c0517.json
+
+[20/48] 56b1cc35: Task 4: Optimize numeric parsing with strtod fast path
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/20_56b1cc35.json
+
+[21/48] 2124f1c0: Task 8: Add test coverage for mixed numeric with trailing text
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/21_2124f1c0.json
+
+[22/48] bae67f73: Task 11: Add 'minus' word sign support
+  ✗ Build failed, skipping
+
+[23/48] 9be998b7: CRITICAL FIX: Buffer overflow vulnerability + revert Task 11
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/23_9be998b7.json
+
+[24/48] f305f2e9: P1 FIX: Guard regen against missing re2c
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/24_f305f2e9.json
+
+[25/48] 9f6ff463: Merge pull request #3 from JesseBuesking/claude/decade-late-improvements-011CUwD2XinPJNjcDpjniB9N
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/25_9f6ff463.json
+
+[26/48] 373ee0fd: Add optional fraction reduction feature (Task 9)
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/26_373ee0fd.json
+
+[27/48] 2f151700: Implement Tasks 10 and 12: CMake build system and percent handling
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/27_2f151700.json
+
+[28/48] 838b039e: Fix fraction handling in percent-as-decimal conversion
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/28_838b039e.json
+
+[29/48] d83a44e3: Add build/ to .gitignore
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/29_d83a44e3.json
+
+[30/48] f29a1b9d: Preserve spaces when percent normalization does not apply
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/30_f29a1b9d.json
+
+[31/48] 43f67e94: Fix CMake: Compile test files as C++ despite .c extension
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/31_43f67e94.json
+
+[32/48] a18444a4: Avoid collapsing percentage ranges into a single value
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/32_a18444a4.json
+
+[33/48] 8448847f: Merge pull request #4 from JesseBuesking/claude/decade-late-improvements-011CUwLinCMJxvPrzWCxNUf6
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/33_8448847f.json
+
+[34/48] ad743bab: Update documentation to reflect project improvements
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/34_ad743bab.json
+
+[35/48] 62453a50: Improve code quality and readability
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/35_62453a50.json
+
+[36/48] 94056587: Add comprehensive Changelog for Version 0.1.0
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/36_94056587.json
+
+[37/48] 0797d076: P1: Fix parse_fractions flag not respected in token fallback path
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/37_0797d076.json
+
+[38/48] d2b61dae: Implement Task 11: Add 'minus' word sign support
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/38_d2b61dae.json
+
+[39/48] 856df3a8: Update TASKS.md: Mark Task 11 as completed
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/39_856df3a8.json
+
+[40/48] 46af420c: Task 13 (WIP): Replace hardcoded fallback in mixed digit-thousand patterns
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/40_46af420c.json
+
+[41/48] 407e7874: Complete Task 13: Fix word-to-number mapping in mixed digit-thousand patterns
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/41_407e7874.json
+
+[42/48] 232910a2: Update documentation for latest session improvements
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/42_232910a2.json
+
+[43/48] 1cbc90d2: Document lemon and re2c installation from source
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/43_1cbc90d2.json
+
+[44/48] cd5590eb: Update test expectations and add googletest/yaml-cpp installation docs
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/44_cd5590eb.json
+
+[45/48] 39405553: Fix P1 bugs: Honor parse_fractions flag comprehensively
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/45_39405553.json
+
+[46/48] aa267d1a: Fix P1 bug: Detect 'and' with non-space whitespace in thousand patterns
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/46_aa267d1a.json
+
+[47/48] 3beb11ab: Merge pull request #5 from JesseBuesking/claude/decade-late-improvements-011CUwXFyHsmsnYB4FL3dHRB
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/47_3beb11ab.json
+
+[48/48] 29bc590c: Add comprehensive performance analysis across all commits
+  Running Google Benchmark...
+  ✓ Saved to /home/user/omnomnum/benchmark_results_gb/48_29bc590c.json
+
+Returning to claude/decade-late-improvements-011CUwfJXPATTXVysvQ3LBtt...
+
+Google Benchmark complete! Results in: /home/user/omnomnum/benchmark_results_gb
+Total commits processed: 48
