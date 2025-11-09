@@ -31,6 +31,208 @@
 #include "scanner.h"
 #include <string.h>
 
+/* BEGIN: gperf generated perfect hash for denominator words */
+struct denom_word { const char *name; double value; };
+
+#define DENOM_TOTAL_KEYWORDS 67
+#define DENOM_MIN_WORD_LENGTH 4
+#define DENOM_MAX_WORD_LENGTH 14
+#define DENOM_MIN_HASH_VALUE 20
+#define DENOM_MAX_HASH_VALUE 134
+
+#ifdef __GNUC__
+__inline
+#else
+#ifdef __cplusplus
+inline
+#endif
+#endif
+static unsigned int
+denom_hash (register const char *str, register size_t len)
+{
+  static const unsigned char asso_values[] =
+    {
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135,   0,  55, 135,
+      135,  35,  20,  60,   0,  15, 135, 135,  35,  40,
+       10,   0, 135,  10,  95,  10,   5,  50,  45,  60,
+       60, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135, 135, 135, 135, 135,
+      135, 135, 135, 135, 135, 135
+    };
+  register unsigned int hval = len;
+
+  switch (hval)
+    {
+      default:
+        hval += asso_values[(unsigned char)str[8]];
+      /*FALLTHROUGH*/
+      case 8:
+      case 7:
+      case 6:
+      case 5:
+      case 4:
+      case 3:
+        hval += asso_values[(unsigned char)str[2]];
+      /*FALLTHROUGH*/
+      case 2:
+        hval += asso_values[(unsigned char)str[1]];
+      /*FALLTHROUGH*/
+      case 1:
+        hval += asso_values[(unsigned char)str[0]];
+        break;
+    }
+  return hval;
+}
+
+static const struct denom_word *
+denom_in_word_set (register const char *str, register size_t len)
+{
+  static const unsigned char lengthtable[] =
+    {
+       0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+       0,  0,  0,  0,  0,  0, 10, 11,  0,  0,  0,  5,  6,  0,
+       0,  9, 10,  0,  0,  0,  0, 10, 11,  0,  0,  4,  5,  6,
+       0,  0,  9, 10,  0,  0,  0,  0, 10, 11,  0,  0,  0,  5,
+       6,  0,  0,  0,  5,  6,  0,  8,  9, 10,  0,  7,  8,  9,
+      10,  0,  0,  0,  9,  0,  6,  7,  0,  9, 10,  0,  0,  0,
+       0, 10, 11,  0, 13, 14,  5,  6,  0,  8,  9, 10,  0,  7,
+       8,  9, 10,  0,  0,  0,  9, 10, 11,  7,  8,  9, 10, 11,
+      12,  8,  9, 10,  6,  7,  0,  9, 10,  0,  0,  8,  9, 10,
+      11,  0,  0,  0, 10, 11,  0,  0,  9
+    };
+  static const struct denom_word wordlist[] =
+    {
+      {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
+      {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
+      {""}, {""},
+      {"thousandth", 1000},
+      {"thousandths", 1000},
+      {""}, {""}, {""},
+      {"third", 3},
+      {"thirds", 3},
+      {""}, {""},
+      {"thirtieth", 30},
+      {"thirtieths", 30},
+      {""}, {""}, {""}, {""},
+      {"thirteenth", 13},
+      {"thirteenths", 13},
+      {""}, {""},
+      {"half", 2},
+      {"ninth", 9},
+      {"ninths", 9},
+      {""}, {""},
+      {"ninetieth", 90},
+      {"ninetieths", 90},
+      {""}, {""}, {""}, {""},
+      {"nineteenth", 19},
+      {"nineteenths", 19},
+      {""}, {""}, {""},
+      {"tenth", 10},
+      {"tenths", 10},
+      {""}, {""}, {""},
+      {"fifth", 5},
+      {"fifths", 5},
+      {""}, {""},
+      {"fiftieth", 50},
+      {"fifteenths", 15},
+      {"seventieth", 70},
+      {""},
+      {"twelfth", 12},
+      {"fifteenth", 15},
+      {"seventeenths", 17},
+      {"seventieths", 70},
+      {""}, {""}, {""},
+      {"twentieth", 20},
+      {""},
+      {"fourth", 4},
+      {"fourths", 4},
+      {""},
+      {"fourtieth", 40},
+      {"fortieths", 40},
+      {""}, {""}, {""}, {""},
+      {"fourteenth", 14},
+      {"fourteenths", 14},
+      {""},
+      {"quadrillionth", 1000000000000000.0},
+      {"quadrillionths", 1000000000000000.0},
+      {"sixth", 6},
+      {"sixths", 6},
+      {""},
+      {"sixtieth", 60},
+      {"sixteenth", 16},
+      {"sixteenths", 16},
+      {""},
+      {"seventh", 7},
+      {"sevenths", 7},
+      {"seventeenth", 17},
+      {"sixtieths", 60},
+      {""}, {""}, {""},
+      {"hundredth", 100},
+      {"millionth", 1000000},
+      {"millionths", 1000000},
+      {"twelfths", 12},
+      {"halves", 2},
+      {"quarters", 4},
+      {"twentieths", 20},
+      {"hundredths", 100},
+      {"quarter", 4},
+      {"ninetieths", 90},
+      {"billionth", 1000000000},
+      {"billionths", 1000000000},
+      {"eighth", 8},
+      {"eighths", 8},
+      {""},
+      {"eightieth", 80},
+      {"eightieths", 80},
+      {""}, {""},
+      {"fortieth", 40},
+      {"elevenths", 11},
+      {"eighteenth", 18},
+      {"eighteenths", 18},
+      {""}, {""}, {""},
+      {"trillionth", 1000000000000.0},
+      {"trillionths", 1000000000000.0},
+      {""}, {""},
+      {"fortieths", 40}
+    };
+
+  if (len <= DENOM_MAX_WORD_LENGTH && len >= DENOM_MIN_WORD_LENGTH)
+    {
+      register unsigned int key = denom_hash (str, len);
+
+      if (key <= DENOM_MAX_HASH_VALUE)
+        if (len == lengthtable[key])
+          {
+            register const char *s = wordlist[key].name;
+
+            if (*str == *s && !memcmp (str + 1, s + 1, len - 1))
+              return &wordlist[key];
+          }
+    }
+  return 0;
+}
+/* END: gperf generated perfect hash */
+
 static int map_card_small(const char* s, size_t n, double* out) {
     if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
     if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
@@ -59,76 +261,11 @@ static int map_digit_word(const char* s, size_t n, int* out) {
 }
 
 static int map_denom_word(const char* s, size_t n, double* den) {
-    if ((n==4 && !strncmp(s,"half",4)) || (n==6 && !strncmp(s,"halves",6))) { *den=2; return 1; }
-    if (n==7 && !strncmp(s,"quarter",7)) { *den=4; return 1; }
-    if (n==8 && !strncmp(s,"quarters",8)) { *den=4; return 1; }
-    if (n==5 && !strncmp(s,"third",5)) { *den=3; return 1; }
-    if (n==6 && !strncmp(s,"thirds",6)) { *den=3; return 1; }
-    if (n==6 && !strncmp(s,"fourth",6)) { *den=4; return 1; }
-    if (n==7 && !strncmp(s,"fourths",7)) { *den=4; return 1; }
-    if (n==5 && !strncmp(s,"fifth",5)) { *den=5; return 1; }
-    if (n==6 && !strncmp(s,"fifths",6)) { *den=5; return 1; }
-    if (n==5 && !strncmp(s,"sixth",5)) { *den=6; return 1; }
-    if (n==6 && !strncmp(s,"sixths",6)) { *den=6; return 1; }
-    if (n==7 && !strncmp(s,"seventh",7)) { *den=7; return 1; }
-    if (n==8 && !strncmp(s,"sevenths",8)) { *den=7; return 1; }
-    if (n==6 && !strncmp(s,"eighth",6)) { *den=8; return 1; }
-    if (n==7 && !strncmp(s,"eighths",7)) { *den=8; return 1; }
-    if (n==5 && !strncmp(s,"ninth",5)) { *den=9; return 1; }
-    if (n==6 && !strncmp(s,"ninths",6)) { *den=9; return 1; }
-    // tenth through nineteenth
-    if (n==5 && !strncmp(s,"tenth",5)) { *den=10; return 1; }
-    if (n==6 && !strncmp(s,"tenths",6)) { *den=10; return 1; }
-    if (n==8 && !strncmp(s,"eleventh",8)) { *den=11; return 1; }
-    if (n==9 && !strncmp(s,"elevenths",9)) { *den=11; return 1; }
-    if (n==7 && !strncmp(s,"twelfth",7)) { *den=12; return 1; }
-    if (n==8 && !strncmp(s,"twelfths",8)) { *den=12; return 1; }
-    if (n==10 && !strncmp(s,"thirteenth",10)) { *den=13; return 1; }
-    if (n==11 && !strncmp(s,"thirteenths",11)) { *den=13; return 1; }
-    if (n==10 && !strncmp(s,"fourteenth",10)) { *den=14; return 1; }
-    if (n==11 && !strncmp(s,"fourteenths",11)) { *den=14; return 1; }
-    if (n==9 && !strncmp(s,"fifteenth",9)) { *den=15; return 1; }
-    if (n==10 && !strncmp(s,"fifteenths",10)) { *den=15; return 1; }
-    if (n==9 && !strncmp(s,"sixteenth",9)) { *den=16; return 1; }
-    if (n==10 && !strncmp(s,"sixteenths",10)) { *den=16; return 1; }
-    if (n==11 && !strncmp(s,"seventeenth",11)) { *den=17; return 1; }
-    if (n==12 && !strncmp(s,"seventeenths",12)) { *den=17; return 1; }
-    if (n==10 && !strncmp(s,"eighteenth",10)) { *den=18; return 1; }
-    if (n==11 && !strncmp(s,"eighteenths",11)) { *den=18; return 1; }
-    if (n==10 && !strncmp(s,"nineteenth",10)) { *den=19; return 1; }
-    if (n==11 && !strncmp(s,"nineteenths",11)) { *den=19; return 1; }
-    // -ty forms
-    if (n==9 && !strncmp(s,"twentieth",9)) { *den=20; return 1; }
-    if (n==10 && !strncmp(s,"twentieths",10)) { *den=20; return 1; }
-    if (n==9 && !strncmp(s,"thirtieth",9)) { *den=30; return 1; }
-    if (n==10 && !strncmp(s,"thirtieths",10)) { *den=30; return 1; }
-    if (n==8 && !strncmp(s,"fortieth",8)) { *den=40; return 1; }
-    if (n==9 && !strncmp(s,"fortieths",9)) { *den=40; return 1; }
-    if (n==9 && !strncmp(s,"fourtieth",9)) { *den=40; return 1; }
-    if (n==10 && !strncmp(s,"fourtieths",10)) { *den=40; return 1; }
-    if (n==8 && !strncmp(s,"fiftieth",8)) { *den=50; return 1; }
-    if (n==9 && !strncmp(s,"fiftieths",9)) { *den=50; return 1; }
-    if (n==8 && !strncmp(s,"sixtieth",8)) { *den=60; return 1; }
-    if (n==9 && !strncmp(s,"sixtieths",9)) { *den=60; return 1; }
-    if (n==10 && !strncmp(s,"seventieth",10)) { *den=70; return 1; }
-    if (n==11 && !strncmp(s,"seventieths",11)) { *den=70; return 1; }
-    if (n==9 && !strncmp(s,"eightieth",9)) { *den=80; return 1; }
-    if (n==10 && !strncmp(s,"eightieths",10)) { *den=80; return 1; }
-    if (n==9 && !strncmp(s,"ninetieth",9)) { *den=90; return 1; }
-    if (n==10 && !strncmp(s,"ninetieths",10)) { *den=90; return 1; }
-    // large denominators
-    if (n==9 && !strncmp(s,"hundredth",9)) { *den=100; return 1; }
-    if (n==10 && !strncmp(s,"hundredths",10)) { *den=100; return 1; }
-    if (n==10 && !strncmp(s,"thousandth",10)) { *den=1000; return 1; }
-    if (n==11 && !strncmp(s,"thousandths",11)) { *den=1000; return 1; }
-    if (n==9 && !strncmp(s,"millionth",9)) { *den=1000000; return 1; }
-    if (n==10 && !strncmp(s,"millionths",10)) { *den=1000000; return 1; }
-    if (n==9 && !strncmp(s,"billionth",9)) { *den=1000000000; return 1; }
-    if (n==10 && !strncmp(s,"billionths",10)) { *den=1000000000; return 1; }
-    if (n==10 && !strncmp(s,"trillionth",10)) { *den=1000000000000.0; return 1; }
-    if (n==11 && !strncmp(s,"trillionths",11)) { *den=1000000000000.0; return 1; }
-    if (n==13 && !strncmp(s,"quadrillionth",13)) { *den=1000000000000000.0; return 1; }
-    if (n==14 && !strncmp(s,"quadrillionths",14)) { *den=1000000000000000.0; return 1; }
+    const struct denom_word *result = denom_in_word_set(s, n);
+    if (result) {
+        *den = result->value;
+        return 1;
+    }
     return 0;
 }
 
