@@ -1,0 +1,83 @@
+{
+  "context": {
+    "date": "2025-11-09T19:31:18+00:00",
+    "host_name": "runsc",
+    "executable": "./test/test_benchmark",
+    "num_cpus": 16,
+    "mhz_per_cpu": 2600,
+    "cpu_scaling_enabled": false,
+    "aslr_enabled": false,
+    "caches": [
+    ],
+    "load_avg": [0,0,0],
+    "library_version": "v1.9.4",
+    "library_build_type": "release",
+    "json_schema_version": 1,
+    "build_time": "2025-11-09T18:51:53Z",
+    "git_desc": "4d0dd5a",
+    "git_sha": "4d0dd5a28d92",
+    "tree_dirty": "1"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_simple/repeats:3/real_time/threads:1_mean",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple/repeats:3/real_time/threads:1",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "mean",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 6.1466418911065330e+02,
+      "cpu_time": 5.8295441296490628e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple/repeats:3/real_time/threads:1_median",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple/repeats:3/real_time/threads:1",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "median",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 6.1432852395053465e+02,
+      "cpu_time": 8.7443161944735937e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple/repeats:3/real_time/threads:1_stddev",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple/repeats:3/real_time/threads:1",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "stddev",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 2.1861671247365075e+00,
+      "cpu_time": 5.0485333087585309e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple/repeats:3/real_time/threads:1_cv",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple/repeats:3/real_time/threads:1",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "cv",
+      "aggregate_unit": "percentage",
+      "iterations": 3,
+      "real_time": 3.5566853632706891e-03,
+      "cpu_time": 8.6602540378443826e-01,
+      "time_unit": "ns"
+    }
+  ]
+}

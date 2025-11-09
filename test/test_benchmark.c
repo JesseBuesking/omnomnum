@@ -37,9 +37,9 @@ static void add_bench_context() {
 
 // Fast mode for development: 2 reps for variance testing, slower thorough mode: 10 reps
 #ifdef QUICK_BENCH
-const int REPETITIONS = 2;
+const int REPETITIONS = 20;
 #else
-const int REPETITIONS = 10;
+const int REPETITIONS = 20;
 #endif
 
 void BM_fast_double(benchmark::State& state) {
