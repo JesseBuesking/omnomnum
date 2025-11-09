@@ -103,7 +103,7 @@ Implementation Notes: Added TOKEN_MINUS to scanner (scanner.re:464) and parser r
 Implementation Notes: Added `normalize_percent_symbol` and `percent_as_decimal` flags to `ParserState` (both default false). Implemented `process_percent()` post-processing function that scans the result string for numbers followed by " percent" or "%". When normalize_percent_symbol is true, converts "number percent" to "number%" (no space before %). When percent_as_decimal is true, converts "n percent" or "n%" to n/100 as a decimal. CLI exposes `--normalize-percent-symbol` and `--percent-as-decimal` flags. Added 6 comprehensive test cases covering: default behavior (unchanged), symbol normalization for integers and floats, decimal conversion for integers/existing symbols/fractions. Function properly handles word boundaries and preserves non-percent text.
 
 ## 13) Robust Word-to-Number Mapping for Mixed Patterns
-- Status: Not Started (Requires lemon/re2c for implementation)
+- Status: Completed
 - Problem: In scanner.re:254, there's a pattern matching `D+ WS+ 'thousand' WS+ 'and' WS+ ( 'one' | 'two' | ... | 'nine' )` for inputs like "5 thousand and three". The code correctly parses the leading digits and finds the "and", but uses a hardcoded fallback value (5.0) instead of actually mapping the trailing word to its numeric value.
 - Current behavior: "5 thousand and three" is processed but incorrectly uses 5.0 as the small value, resulting in incorrect output.
 - Desired behavior: "5 thousand and three" → "5003"; "12 thousand and seven" → "12007"
@@ -116,7 +116,7 @@ Implementation Notes: Added `normalize_percent_symbol` and `percent_as_decimal` 
   - "5 thousand and one" → "5001"; "5 thousand and nine" → "5009"
   - "100 thousand and fifty" → "100050" (if pattern is extended)
   - Existing tests continue to pass
-Implementation Notes: Deferred because implementation requires modifying scanner.re and regenerating scanner.c with re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with re2c available, using `make regen` to update all generated sources atomically.
+Implementation Notes: Fixed the hardcoded `double sm=5.0;` fallback by calling `map_card_small()` to properly map the trailing word to its numeric value. **Key bug fix**: Changed `strstr(s, "and")` to `strstr(s, " and ")` because the original was matching "and" inside "thous**and**" instead of the standalone word. Regenerated scanner.c with re2c 4.3. All tests pass: "5 thousand and one" → "5001", "5 thousand and three" → "5003", "12 thousand and seven" → "12007", "100 thousand and nine" → "100009". Word-based input "five thousand and three" → "5003" also works correctly.
 
 ## 14) Update README Documentation
 - Status: Completed
