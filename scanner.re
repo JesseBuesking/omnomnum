@@ -251,7 +251,11 @@ fast_path:
             const char* small = andp ? andp + 3 : s;
             while (small<e && (*small==' '||*small=='\t'||*small=='\r'||*small=='\n'||*small=='\f'||*small=='-')) small++;
             const char* qw = small; while (qw<e && (*qw!=' '&&*qw!='\t'&&*qw!='\r'&&*qw!='\n'&&*qw!='\f'&&*qw!='-')) qw++;
-            double sm=5.0; /* crude fallback for now; see TODO: robust <100 mapping */
+            // Map the small word to its numeric value (Task 13: robust <100 mapping)
+            double sm=0.0;
+            if (!map_card_small(small, (size_t)(qw - small), &sm)) {
+                sm = 0.0; // fallback if word not recognized
+            }
             (*yylval).dbl = big * 1000.0 + sm; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
         }
 
