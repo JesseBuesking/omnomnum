@@ -30,9 +30,13 @@ Major enhancements and improvements:
   - Added CMAKE.md with cross-platform build instructions
   - Updated README.md to reflect current capabilities (Task 14)
 
-Known Limitations:
-* "minus" word sign support deferred (requires lemon/re2c) (Task 11)
-* Robust <100 word-to-number mapping in mixed patterns incomplete (Task 13)
+Latest Updates (Session 2):
+* **"minus" word sign support** (Task 11): Treat "minus" as sign word same as "negative"
+  - "minus five" → "-5"; "minus 1 1/2" → "-3/2"
+* **P1 Bug Fix**: parse_fractions flag now respected in token fallback path
+  - "one half" with --no-parse-fractions correctly outputs "one half" (not "1/2")
+* **Fixed word-to-number mapping** (Task 13): Corrected mixed digit-thousand patterns
+  - "5 thousand and three" → "5003" (was incorrectly "5000")
 
 Version 0.0.2
 ===

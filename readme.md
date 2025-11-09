@@ -76,14 +76,19 @@ make regen
 - [x] CMake build system with cross-platform support
 - [x] Percent unit normalization (symbol and decimal conversion)
 
+## Recent Additions (Latest Session)
+
+- [x] **"minus" word sign support**: "minus five" → "-5" (Task 11)
+- [x] **Fixed parse_fractions runtime toggle**: Fallback path now respects --no-parse-fractions flag
+- [x] **Robust word-to-number mapping**: "5 thousand and three" → "5003" (Task 13)
+
 ## Future Enhancements
 
 See [TASKS.md](TASKS.md) for detailed task tracking and implementation notes.
 
 Potential future work:
-- [ ] Support for "minus" as a sign word (currently only "negative" supported) - requires lemon/re2c
 - [ ] Scientific notation support (e.g., "1.5e10")
-- [ ] Robust <100 word-to-number mapping in mixed patterns - requires lemon/re2c
+- [ ] Extended number word mappings for larger ranges
 
 ## Notes
 
