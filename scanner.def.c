@@ -107,7 +107,8 @@ void initParserState(ParserState *state) {
 
 void resetParserState(ParserState *state) {
     state->precision = 6;
-    if (state->result) { sdsfree(state->result); state->result = NULL; }
+    // OPTIMIZATION: Clear result buffer instead of freeing (enables reuse)
+    if (state->result) { sdsclear(state->result); }
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;
