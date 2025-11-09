@@ -225,4 +225,34 @@ list.capacity = 128;  // Typical case: 90 numbers → avoid most reallocations
 
 ---
 
-**Next Steps**: Begin Phase 1 implementation with sds buffer reuse
+## Test Results
+
+### Test 1: Combined temp_buffer + stack buffer optimizations (2025-11-09)
+
+**Changes implemented:**
+1. Added `temp_buffer` field to ParserState
+2. Reused temp_buffer in `process_percent` instead of allocating fresh sds
+3. Replaced heap allocation for `num_str` in `process_percent` with 128-byte stack buffer
+4. Reused temp_buffer in normalize fallback path
+
+**Results:**
+| Benchmark | Baseline | Optimized | Change |
+|-----------|----------|-----------|--------|
+| BM_simple | 636 ns | 653 ns | +2.7% ❌ |
+| BM_long_string | 2849 ns | 2694 ns | -5.4% ✅ |
+| BM_many_numbers | 87142 ns | 90779 ns | +4.2% ❌ |
+
+**Analysis:**
+- Optimization helped BM_long_string (5.4% improvement)
+- Regression on BM_simple (2.7%) and BM_many_numbers (4.2%)
+- Net result: **REJECTED** - The overhead of buffer swapping and management outweighs the benefits
+- The regression on BM_many_numbers (the primary target) is unacceptable
+
+**Lessons learned:**
+- Buffer reuse adds overhead in pointer management and clearing
+- Stack buffers for rarely-used paths (process_percent) don't help the common case
+- Need to focus optimizations on the hot path (many numbers case)
+
+---
+
+**Next Steps**: Explore minimal perfect hashing for word-to-number lookups
