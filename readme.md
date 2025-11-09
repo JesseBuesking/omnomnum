@@ -53,6 +53,37 @@ If you modify `parser.yy` or `scanner.re`:
 make regen
 ```
 
+#### Installing lemon and re2c from source
+
+If lemon and re2c are not available via your package manager, you can build them from source:
+
+**lemon** (from SQLite):
+```bash
+cd /tmp
+git clone --depth 1 https://github.com/mackyle/sqlite.git sqlite-mirror
+cd sqlite-mirror/tool
+cc -o lemon lemon.c
+sudo cp lemon /usr/local/bin/
+sudo cp lempar.c /usr/local/bin/
+```
+
+**re2c** (lexer generator):
+```bash
+cd /tmp
+git clone --depth 1 https://github.com/skvadrik/re2c.git
+cd re2c
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j4
+sudo cp re2c /usr/local/bin/
+```
+
+Verify installation:
+```bash
+lemon -? 2>&1 | head -5
+re2c --version
+```
+
 ## Features
 
 - **Thread-safe**: Parser re-entrancy with no global state
