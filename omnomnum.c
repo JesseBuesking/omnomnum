@@ -239,7 +239,15 @@ static void process_percent(sds *result, ParserState *state) {
                 // Extract the number
                 sds num_str = sdsnewlen(*result + num_start, num_end - num_start);
 
-                if (state->percent_as_decimal) {
+                // Check for embedded hyphens (ranges like "20-30")
+                // A leading hyphen is fine (negative number), but embedded ones indicate a range
+                char *embedded_hyphen = strchr(num_str + (num_str[0] == '-' ? 1 : 0), '-');
+                bool is_range = (embedded_hyphen != NULL);
+
+                if (is_range) {
+                    // This is a range like "20-30 percent", don't convert - keep original
+                    output = sdscatlen(output, *result + num_start, after_percent - num_start);
+                } else if (state->percent_as_decimal) {
                     // Convert to decimal: n → n/100
                     // Check if it's a fraction (contains '/')
                     char *slash = strchr(num_str, '/');
