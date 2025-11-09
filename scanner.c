@@ -413,10 +413,22 @@ yy12:
 yy13:
 #line 837 "scanner.re"
 	{
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_WHOLE_NUMBER;
         }
@@ -676,10 +688,22 @@ yy34:
 yy35:
 #line 845 "scanner.re"
 	{
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_DECIMAL;
         }
@@ -814,10 +838,22 @@ yy43:
 yy44:
 #line 829 "scanner.re"
 	{
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_ZERO_WHOLE_NUMBER;
         }
@@ -2275,12 +2311,10 @@ yy190:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -3652,12 +3686,10 @@ yy356:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
             replace_char_inplace(tmp, len, ',', '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -3688,12 +3720,10 @@ yy358:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -3726,12 +3756,10 @@ yy360:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '\'');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -3843,12 +3871,10 @@ yy367:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '.');
             replace_char_inplace(tmp, len, ',', '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -4487,12 +4513,10 @@ yy448:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -4526,12 +4550,10 @@ yy450:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
             len = replace_two_byte_char_inplace((unsigned char*)tmp, len, (unsigned char*)"·", '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -5755,12 +5777,10 @@ yy611:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }

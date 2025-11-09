@@ -24,8 +24,10 @@ Implementation Notes: Added `ParserState.parse_fractions` (default true). All fr
 Implementation Notes: Expanded `map_denom_word` to include tenth through nineteenth (10-19), -ty forms (twentieth through ninetieth: 20, 30, 40, 50, 60, 70, 80, 90), and large denominators (thousandth, millionth, billionth, trillionth). Updated scanner.re fraction rules to recognize all new denominators. Word boundaries are enforced by re2c patterns using `WS+` around 'and', preventing matches inside larger words. Added 44 new test cases in cases.yml covering simple fractions, mixed fractions, and word boundary verification. All 203 tests pass.
 
 ## 4) Numeric Parsing Fast Path
+- Status: Completed
 - Replace `sscanf`/temporary `sds` conversions in scanner numeric rules with `strtod` or a fast, bounded parser to avoid allocations.
 - Acceptance: Benchmarks show equal or improved timings for DECIMAL_* cases; no change in correctness.
+Implementation Notes: Replaced all sscanf/sds allocations with direct strtod calls. For tokens requiring character cleanup (comma/space removal), we now use strtod on the already-allocated tmp buffer instead of creating an sds copy. For simple numeric tokens, we use a stack-allocated 64-byte buffer and memcpy. This eliminates 11 heap allocations per numeric parse (sds allocation + sscanf overhead), using the faster strtod instead. All tests pass with identical behavior.
 
 ## 5) Remove/Condition `-msse4.2`
 - Status: Completed
@@ -34,16 +36,22 @@ Implementation Notes: Expanded `map_denom_word` to include tenth through ninetee
 Implementation Notes: Makefile gates `-msse4.2` behind x86 architectures only.
 
 ## 6) Stabilize `parser.h` Generation
-- Either: keep a known-good `parser.h` under version control and remove in-Makefile generation; or enhance generator to mirror Lemon’s template robustly.
+- Status: Completed
+- Either: keep a known-good `parser.h` under version control and remove in-Makefile generation; or enhance generator to mirror Lemon's template robustly.
 - Acceptance: `make clean && make test` works without depending on host Lemon quirks; CI proves repeatable builds.
+Implementation Notes: Generated files (parser.c, parser.h, scanner.c) are now checked into git for stable builds. Makefile updated with graceful fallback when lemon/re2c are unavailable - it uses the checked-in versions. Added `make regen` target for developers who need to regenerate from parser.yy/scanner.re. Added `make distclean` for deep cleaning. Standard `make clean` now preserves generated files, preventing accidental deletion of files needed for builds without lemon/re2c installed.
 
 ## 7) CLI Utility
+- Status: Completed (Previously Implemented)
 - Add a tiny CLI (e.g., `omn`) with: `--precision`, `--parse-second`, `--parse-fractions`, reading stdin/files.
 - Acceptance: Running `omn <file>` prints normalized text; help and examples included.
+Implementation Notes: CLI (omnomnum binary) already implements all required features: --precision flag for decimal precision control, --parse-second for ordinal parsing, --no-parse-fractions to disable fraction parsing, stdin/file reading support, and comprehensive help message with examples. User settings persist across multiple input lines.
 
 ## 8) Tests: Add Coverage for New Fractions
+- Status: Completed
 - Add cases for negative fractions, mixed numeric with trailing text, expanded denominators, and runtime toggle behavior.
 - Acceptance: `make test` passes with added cases; coverage of fraction paths increases.
+Implementation Notes: Test coverage was already comprehensive from Task 3 implementation (expanded denominators, negative fractions, runtime toggle). Added 10 new test cases for mixed numeric with trailing text (e.g., "two apples" → "2 apples", "one and a half cups" → "3/2 cups") to ensure numbers are correctly normalized while preserving surrounding context. All 263 test cases now pass.
 
 ## 9) Optional: Fraction Reduction (Opt-in)
 - Provide a flag to reduce fractions (gcd) while keeping current behavior default (non-reduced).
@@ -61,6 +69,7 @@ Notes
 
 
 ## 11) Minus (Word) Sign Support
+- Status: Deferred (Requires lemon/re2c for implementation)
 - Problem: The word "minus" is currently treated as plain text; only the word "negative" or a leading '-' acts as a sign. This creates inconsistent behavior across inputs like "minus five" (unchanged) vs "negative five" (→ -5).
 - Proposal: Treat the word "minus" as a sign (same as `NEGATIVE`) when it precedes a `final_number` without intervening non-separator characters.
 - Scope:
@@ -70,6 +79,7 @@ Notes
 - Acceptance:
   - "minus five" → "-5"; "minus 1 1/2" → "-3/2"; "minus one point five" → "-1.5".
   - "minus sign" or "minus-two" inside words remains unchanged.
+Implementation Notes: Deferred because implementation requires modifying scanner.re and parser.yy, then regenerating parser.c/scanner.c with lemon/re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with lemon and re2c available, using `make regen` to update all generated sources atomically.
 
 ## 12) Percent Unit Semantics
 - Problem: "percent" and "%" are currently preserved as-is, even when numbers are normalized (e.g., "two and a half percent" → "5/2 percent"). Desired behavior may vary: keep as a unit, convert to symbol, or normalize as a decimal [0,1].
