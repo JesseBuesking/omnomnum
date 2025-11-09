@@ -255,4 +255,27 @@ list.capacity = 128;  // Typical case: 90 numbers → avoid most reallocations
 
 ---
 
-**Next Steps**: Explore minimal perfect hashing for word-to-number lookups
+### Test 2: Stack buffer for num_str only (2025-11-09)
+
+**Changes implemented:**
+- Replaced heap allocation (`sdsnewlen`) for num_str in process_percent with 128-byte stack buffer
+- Fallback to malloc for numbers >128 bytes (rare)
+- No temp_buffer changes
+
+**Results:**
+| Benchmark | Baseline | Optimized | Change |
+|-----------|----------|-----------|--------|
+| BM_simple | 636 ns | 635 ns | -0.2% ✓ |
+| BM_long_string | 2849 ns | 2675 ns | -6.1% ✅ |
+| BM_many_numbers | 87142 ns | 87429 ns | +0.3% ✓ |
+
+**Analysis:**
+- **ACCEPTED!** This optimization provides a clear win
+- 6.1% improvement on BM_long_string
+- No significant impact on other benchmarks (within measurement noise)
+- Eliminates heap allocation for small temporary strings (common case)
+- Stack allocation is faster and doesn't fragment heap
+
+---
+
+**Next Steps**: Test parser object pooling and document all findings
