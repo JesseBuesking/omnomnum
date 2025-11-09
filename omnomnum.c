@@ -276,8 +276,9 @@ static void process_percent(sds *result, ParserState *state) {
                 i = after_percent;
                 continue;
             } else {
-                // Not followed by percent, copy number as-is
+                // Not followed by percent, copy number as-is and reset position
                 output = sdscatlen(output, *result + num_start, num_end - num_start);
+                i = num_end;  // Reset to right after number, so whitespace gets processed normally
                 continue;
             }
         }
