@@ -14,3 +14,4 @@ tags
 # Bench artifacts
 bench_*.txt
 test/gb_*.json
+build/
