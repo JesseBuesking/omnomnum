@@ -42,7 +42,7 @@
 #define TOKEN_ALL_OTHERS 10002
 
 typedef void (*Handler)(sds *s);    /* A pointer to a handler function */
-void func0 (sds *s) {}
+void func0 (sds *s) { (void)s; /* unused - placeholder for jump table */ }
 void func1 (sds *s) { *s = sdscat(*s, "st"); }
 void func2 (sds *s) { *s = sdscat(*s, "sts"); }
 void func3 (sds *s) { *s = sdscat(*s, "nd"); }
@@ -72,6 +72,7 @@ static int word_match(const char* data, unsigned int pos, unsigned int len, cons
     return 1;
 }
 
+/* Reserved for Task 13: robust word-to-number mapping in mixed patterns (e.g., "5 thousand and three") */
 static int match_cardinal_small(const char* data, unsigned int pos, unsigned int len, double* value, unsigned int* consumed) {
     struct { const char* w; int v; } map[] = {
         {"one",1},{"two",2},{"three",3},{"four",4},{"five",5},{"six",6},{"seven",7},{"eight",8},{"nine",9},
@@ -82,6 +83,7 @@ static int match_cardinal_small(const char* data, unsigned int pos, unsigned int
     return 0;
 }
 
+/* Reserved for future use: additional denominator matching beyond scanner rules */
 static int match_denominator_word(const char* data, unsigned int pos, unsigned int len, double* denom, unsigned int* consumed) {
     struct { const char* w; int v; } map[] = {
         {"fourth",4},{"fourths",4},
@@ -94,8 +96,12 @@ static int match_denominator_word(const char* data, unsigned int pos, unsigned i
     return 0;
 }
 
+/* Reserved for future use: whitespace/hyphen validation */
 static int is_ws_or_hyphen_only(const char* data, unsigned int a, unsigned int b) {
-    for (unsigned int i=a;i<b;i++) if (!is_space_or_hyphen(data[i])) return 0; return 1;
+    for (unsigned int i=a;i<b;i++) {
+        if (!is_space_or_hyphen(data[i])) return 0;
+    }
+    return 1;
 }
 
 /* Compute greatest common divisor using Euclidean algorithm */
