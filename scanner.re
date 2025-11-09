@@ -247,8 +247,25 @@ fast_path:
             const char* p = s; double big=0.0;
             while (p<e && *p>='0' && *p<='9') { big = big*10 + (*p - '0'); p++; }
             // find standalone 'and' word (not the 'and' in 'thousand')
-            const char* andp = strstr(s, " and ");
-            const char* small = andp ? andp + 5 : s;  // skip " and " (5 chars to get to word start)
+            // Must be preceded and followed by non-alphabetic chars
+            const char* andp = NULL;
+            for (const char* scan = s; scan + 3 <= e; scan++) {
+                if (scan[0]=='a' && scan[1]=='n' && scan[2]=='d') {
+                    // Check before: must be non-alpha (start of string or whitespace/hyphen)
+                    bool ok_before = (scan == s) ||
+                                     (scan > s && !(scan[-1]>='a' && scan[-1]<='z') &&
+                                                   !(scan[-1]>='A' && scan[-1]<='Z'));
+                    // Check after: must be non-alpha (end of string or whitespace/hyphen)
+                    bool ok_after = (scan + 3 == e) ||
+                                    (scan + 3 < e && !(scan[3]>='a' && scan[3]<='z') &&
+                                                      !(scan[3]>='A' && scan[3]<='Z'));
+                    if (ok_before && ok_after) {
+                        andp = scan;
+                        break;
+                    }
+                }
+            }
+            const char* small = andp ? andp + 3 : s;  // skip "and" (3 chars)
             while (small<e && (*small==' '||*small=='\t'||*small=='\r'||*small=='\n'||*small=='\f'||*small=='-')) small++;
             const char* qw = small; while (qw<e && (*qw!=' '&&*qw!='\t'&&*qw!='\r'&&*qw!='\n'&&*qw!='\f'&&*qw!='-')) qw++;
             // Map the small word to its numeric value (Task 13: robust <100 mapping)
