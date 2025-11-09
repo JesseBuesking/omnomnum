@@ -133,7 +133,7 @@ TEST(OmNomNum, ParseFractionsDisabled_WordFractions) {
     initOmNomNum();
 
     const char* input = "one eighth";
-    const char* expect = "one 8th";  // With fractions disabled, 'eighth' -> '8th' (ordinal)
+    const char* expect = "one eighth";  // With fractions disabled, denominator words stay unchanged (P1 fix)
 
     normalize(input, strlen(input), &state);
 

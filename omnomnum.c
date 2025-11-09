@@ -42,7 +42,7 @@
 #define TOKEN_ALL_OTHERS 10002
 
 typedef void (*Handler)(sds *s);    /* A pointer to a handler function */
-void func0 (sds *s) {}
+void func0 (sds *s) { (void)s; /* unused - placeholder for jump table */ }
 void func1 (sds *s) { *s = sdscat(*s, "st"); }
 void func2 (sds *s) { *s = sdscat(*s, "sts"); }
 void func3 (sds *s) { *s = sdscat(*s, "nd"); }
@@ -72,6 +72,7 @@ static int word_match(const char* data, unsigned int pos, unsigned int len, cons
     return 1;
 }
 
+/* Reserved for Task 13: robust word-to-number mapping in mixed patterns (e.g., "5 thousand and three") */
 static int match_cardinal_small(const char* data, unsigned int pos, unsigned int len, double* value, unsigned int* consumed) {
     struct { const char* w; int v; } map[] = {
         {"one",1},{"two",2},{"three",3},{"four",4},{"five",5},{"six",6},{"seven",7},{"eight",8},{"nine",9},
@@ -82,6 +83,7 @@ static int match_cardinal_small(const char* data, unsigned int pos, unsigned int
     return 0;
 }
 
+/* Reserved for future use: additional denominator matching beyond scanner rules */
 static int match_denominator_word(const char* data, unsigned int pos, unsigned int len, double* denom, unsigned int* consumed) {
     struct { const char* w; int v; } map[] = {
         {"fourth",4},{"fourths",4},
@@ -94,8 +96,12 @@ static int match_denominator_word(const char* data, unsigned int pos, unsigned i
     return 0;
 }
 
+/* Reserved for future use: whitespace/hyphen validation */
 static int is_ws_or_hyphen_only(const char* data, unsigned int a, unsigned int b) {
-    for (unsigned int i=a;i<b;i++) if (!is_space_or_hyphen(data[i])) return 0; return 1;
+    for (unsigned int i=a;i<b;i++) {
+        if (!is_space_or_hyphen(data[i])) return 0;
+    }
+    return 1;
 }
 
 /* Compute greatest common divisor using Euclidean algorithm */
@@ -106,6 +112,33 @@ static uint64_t gcd(uint64_t a, uint64_t b) {
         a = temp;
     }
     return a;
+}
+
+/* Check if a word is a denominator word (for fraction handling) */
+static int is_denominator_word(const char* s, size_t len) {
+    /* Common fraction denominators that should be preserved when parse_fractions=false */
+    if (len == 4 && !strncmp(s, "half", 4)) return 1;
+    if (len == 6 && !strncmp(s, "halves", 6)) return 1;
+    if (len == 5 && !strncmp(s, "third", 5)) return 1;
+    if (len == 6 && !strncmp(s, "thirds", 6)) return 1;
+    if (len == 7 && !strncmp(s, "quarter", 7)) return 1;
+    if (len == 8 && !strncmp(s, "quarters", 8)) return 1;
+    if (len == 6 && !strncmp(s, "fourth", 6)) return 1;
+    if (len == 7 && !strncmp(s, "fourths", 7)) return 1;
+    if (len == 5 && !strncmp(s, "fifth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "fifths", 6)) return 1;
+    if (len == 5 && !strncmp(s, "sixth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "sixths", 6)) return 1;
+    if (len == 7 && !strncmp(s, "seventh", 7)) return 1;
+    if (len == 8 && !strncmp(s, "sevenths", 8)) return 1;
+    if (len == 6 && !strncmp(s, "eighth", 6)) return 1;
+    if (len == 7 && !strncmp(s, "eighths", 7)) return 1;
+    if (len == 5 && !strncmp(s, "ninth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "ninths", 6)) return 1;
+    if (len == 5 && !strncmp(s, "tenth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "tenths", 6)) return 1;
+    /* Add more as needed - these are the most common */
+    return 0;
 }
 
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
@@ -425,19 +458,76 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
             unsigned int tok_len = pos - tok_start;
             if (tok_len > 0) {
-                ParserState sub; initParserState(&sub);
-                sub.parse_second = state->parse_second; sub.precision = state->precision;
-                sub.reduce_fractions = state->reduce_fractions;
-                YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
-                if (sl.used > 0) {
-                    sds tmp = sdsempty();
-                    yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
-                    state->result = sdscatsds(state->result, tmp);
-                    sdsfree(tmp);
+                // If parse_fractions is disabled, preserve number words and denominator words as-is
+                // to avoid normalizing potential fractions like "twelve sevenths" or "twenty three eighths"
+                if (!state->parse_fractions) {
+                    // Check if token is a denominator word or if there's a denominator word within next few tokens
+                    bool is_denom = is_denominator_word(data + tok_start, tok_len);
+                    bool has_nearby_denom = false;
+
+                    if (!is_denom) {
+                        // Look ahead up to 3 tokens to find a denominator word
+                        unsigned int scan_pos = pos;
+                        for (int lookahead = 0; lookahead < 3; lookahead++) {
+                            while (scan_pos < data_len && (data[scan_pos]==' '||data[scan_pos]=='\t')) scan_pos++;
+                            unsigned int scan_start = scan_pos;
+                            while (scan_pos < data_len) {
+                                char c = data[scan_pos];
+                                if (c==' '||c=='\r'||c=='\n'||c=='\t'||c=='\f'||c=='-') break;
+                                scan_pos++;
+                            }
+                            unsigned int scan_len = scan_pos - scan_start;
+                            if (scan_len > 0 && is_denominator_word(data + scan_start, scan_len)) {
+                                has_nearby_denom = true;
+                                break;
+                            }
+                            if (scan_pos >= data_len) break;
+                        }
+                    }
+
+                    if (is_denom || has_nearby_denom) {
+                        // Preserve token as-is (it's part of a fraction pattern)
+                        state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                    } else {
+                        // Not fraction-related, proceed with normal normalization
+                        ParserState sub; initParserState(&sub);
+                        sub.parse_second = state->parse_second;
+                        sub.precision = state->precision;
+                        sub.reduce_fractions = state->reduce_fractions;
+                        sub.parse_fractions = state->parse_fractions;
+                        sub.normalize_percent_symbol = state->normalize_percent_symbol;
+                        sub.percent_as_decimal = state->percent_as_decimal;
+                        YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
+                        if (sl.used > 0) {
+                            sds tmp = sdsempty();
+                            yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
+                            state->result = sdscatsds(state->result, tmp);
+                            sdsfree(tmp);
+                        } else {
+                            state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                        }
+                        freeParserState(&sub);
+                    }
                 } else {
-                    state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                    ParserState sub; initParserState(&sub);
+                    // Copy all runtime flags to respect caller's settings
+                    sub.parse_second = state->parse_second;
+                    sub.precision = state->precision;
+                    sub.reduce_fractions = state->reduce_fractions;
+                    sub.parse_fractions = state->parse_fractions;
+                    sub.normalize_percent_symbol = state->normalize_percent_symbol;
+                    sub.percent_as_decimal = state->percent_as_decimal;
+                    YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
+                    if (sl.used > 0) {
+                        sds tmp = sdsempty();
+                        yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
+                        state->result = sdscatsds(state->result, tmp);
+                        sdsfree(tmp);
+                    } else {
+                        state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                    }
+                    freeParserState(&sub);
                 }
-                freeParserState(&sub);
             }
         }
     } else {
@@ -453,6 +543,43 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             printf("begin: %d, end: %d, value: %lf, suffix: %d\n", y.begin, y.end, y.dbl, y.suffix);
 #endif
 
+            // Skip entries that are overlapped by a later leave_alone entry
+            // (e.g., skip numerator "12" if "12 sevenths" has leave_alone=true)
+            bool is_overlapped = false;
+            for (unsigned int j = i + 1; j < l.used; ++j) {
+                YYSTYPE future = l.values[j];
+                if (future.leave_alone && future.begin <= y.begin && y.end <= future.end) {
+                    is_overlapped = true;
+                    break;
+                }
+            }
+            if (is_overlapped) {
+                continue;  // Skip this entry, will be handled by overlapping leave_alone entry
+            }
+
+            // When parse_fractions is false, check if this number is followed by a denominator word
+            // If so, preserve the original text to avoid partial normalization like "20 three eighths"
+            bool preserve_for_fraction = false;
+            if (!state->parse_fractions) {
+                unsigned int scan_pos = y.end;
+                // Look ahead up to 3 tokens after this number
+                for (int lookahead = 0; lookahead < 3; lookahead++) {
+                    while (scan_pos < data_len && (data[scan_pos]==' '||data[scan_pos]=='\t')) scan_pos++;
+                    unsigned int scan_start = scan_pos;
+                    while (scan_pos < data_len) {
+                        char c = data[scan_pos];
+                        if (c==' '||c=='\r'||c=='\n'||c=='\t'||c=='\f'||c=='-') break;
+                        scan_pos++;
+                    }
+                    unsigned int scan_len = scan_pos - scan_start;
+                    if (scan_len > 0 && is_denominator_word(data + scan_start, scan_len)) {
+                        preserve_for_fraction = true;
+                        break;
+                    }
+                    if (scan_pos >= data_len) break;
+                }
+            }
+
             if (lastpos < y.begin) {
                 // Copy the part of the string leading up to the number to
                 // the final string.
@@ -464,8 +591,13 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
             lastpos = y.end;
 
-            // Directly render into the result buffer to avoid an extra copy
-            yystypeToStringWithReduction(&state->result, y, state->precision, state->reduce_fractions);
+            // If leave_alone is set or if preserving for fraction pattern, use original text
+            if (y.leave_alone || preserve_for_fraction) {
+                state->result = sdscatlen(state->result, data + y.begin, y.end - y.begin);
+            } else {
+                // Directly render into the result buffer to avoid an extra copy
+                yystypeToStringWithReduction(&state->result, y, state->precision, state->reduce_fractions);
+            }
         }
 
         // Copy what's left of the string to the final string.

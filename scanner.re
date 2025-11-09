@@ -246,12 +246,33 @@ fast_path:
             // parse leading digits
             const char* p = s; double big=0.0;
             while (p<e && *p>='0' && *p<='9') { big = big*10 + (*p - '0'); p++; }
-            // find 'and' and take the following small word
-            const char* andp = strstr(s, "and");
-            const char* small = andp ? andp + 3 : s;
+            // find standalone 'and' word (not the 'and' in 'thousand')
+            // Must be preceded and followed by non-alphabetic chars
+            const char* andp = NULL;
+            for (const char* scan = s; scan + 3 <= e; scan++) {
+                if (scan[0]=='a' && scan[1]=='n' && scan[2]=='d') {
+                    // Check before: must be non-alpha (start of string or whitespace/hyphen)
+                    bool ok_before = (scan == s) ||
+                                     (scan > s && !(scan[-1]>='a' && scan[-1]<='z') &&
+                                                   !(scan[-1]>='A' && scan[-1]<='Z'));
+                    // Check after: must be non-alpha (end of string or whitespace/hyphen)
+                    bool ok_after = (scan + 3 == e) ||
+                                    (scan + 3 < e && !(scan[3]>='a' && scan[3]<='z') &&
+                                                      !(scan[3]>='A' && scan[3]<='Z'));
+                    if (ok_before && ok_after) {
+                        andp = scan;
+                        break;
+                    }
+                }
+            }
+            const char* small = andp ? andp + 3 : s;  // skip "and" (3 chars)
             while (small<e && (*small==' '||*small=='\t'||*small=='\r'||*small=='\n'||*small=='\f'||*small=='-')) small++;
             const char* qw = small; while (qw<e && (*qw!=' '&&*qw!='\t'&&*qw!='\r'&&*qw!='\n'&&*qw!='\f'&&*qw!='-')) qw++;
-            double sm=5.0; /* crude fallback for now; see TODO: robust <100 mapping */
+            // Map the small word to its numeric value (Task 13: robust <100 mapping)
+            double sm=0.0;
+            if (!map_card_small(small, (size_t)(qw - small), &sm)) {
+                sm = 0.0; // fallback if word not recognized
+            }
             (*yylval).dbl = big * 1000.0 + sm; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
         }
 
@@ -461,6 +482,7 @@ fast_path:
         'and' { return TOKEN_AND; }
 
         'negative' { return TOKEN_NEGATIVE; }
+        'minus' { return TOKEN_MINUS; }
 
         'zero' { return TOKEN_ZERO; }
         '1' | 'one' { return TOKEN_ONE; }

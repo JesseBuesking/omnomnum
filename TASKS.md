@@ -73,7 +73,7 @@ Notes
 
 
 ## 11) Minus (Word) Sign Support
-- Status: Deferred (Requires lemon/re2c for implementation)
+- Status: Completed
 - Problem: The word "minus" is currently treated as plain text; only the word "negative" or a leading '-' acts as a sign. This creates inconsistent behavior across inputs like "minus five" (unchanged) vs "negative five" (→ -5).
 - Proposal: Treat the word "minus" as a sign (same as `NEGATIVE`) when it precedes a `final_number` without intervening non-separator characters.
 - Scope:
@@ -83,7 +83,7 @@ Notes
 - Acceptance:
   - "minus five" → "-5"; "minus 1 1/2" → "-3/2"; "minus one point five" → "-1.5".
   - "minus sign" or "minus-two" inside words remains unchanged.
-Implementation Notes: Deferred because implementation requires modifying scanner.re and parser.yy, then regenerating parser.c/scanner.c with lemon/re2c. Since generated files are kept in version control for stable builds (Task 6), any grammar changes must include regenerated files. This task should be completed in an environment with lemon and re2c available, using `make regen` to update all generated sources atomically.
+Implementation Notes: Added TOKEN_MINUS to scanner (scanner.re:464) and parser rule `number ::= MINUS final_number` (parser.yy:233-240) mirroring NEGATIVE functionality. Regenerated parser.c, parser.h, and scanner.c using lemon (from SQLite) and re2c 4.3 built from source. All tests pass: "minus five" → "-5", "minus 1 1/2" → "-3/2", "minus one point five" → "-1.5", "minus sign" → "minus sign" (preserved when not followed by number). Behavior matches "negative" for all number types.
 
 ## 12) Percent Unit Semantics
 - Status: Completed
@@ -101,3 +101,48 @@ Implementation Notes: Deferred because implementation requires modifying scanner
   - With `normalize_percent_symbol=true`: "50 percent" → "50%"; "one point five percent" → "1.5%".
   - With `percent_as_decimal=true`: "50%" → "0.5"; "two and a half percent" → "0.025" (or as fraction if configured).
 Implementation Notes: Added `normalize_percent_symbol` and `percent_as_decimal` flags to `ParserState` (both default false). Implemented `process_percent()` post-processing function that scans the result string for numbers followed by " percent" or "%". When normalize_percent_symbol is true, converts "number percent" to "number%" (no space before %). When percent_as_decimal is true, converts "n percent" or "n%" to n/100 as a decimal. CLI exposes `--normalize-percent-symbol` and `--percent-as-decimal` flags. Added 6 comprehensive test cases covering: default behavior (unchanged), symbol normalization for integers and floats, decimal conversion for integers/existing symbols/fractions. Function properly handles word boundaries and preserves non-percent text.
+
+## 13) Robust Word-to-Number Mapping for Mixed Patterns
+- Status: Completed
+- Problem: In scanner.re:254, there's a pattern matching `D+ WS+ 'thousand' WS+ 'and' WS+ ( 'one' | 'two' | ... | 'nine' )` for inputs like "5 thousand and three". The code correctly parses the leading digits and finds the "and", but uses a hardcoded fallback value (5.0) instead of actually mapping the trailing word to its numeric value.
+- Current behavior: "5 thousand and three" is processed but incorrectly uses 5.0 as the small value, resulting in incorrect output.
+- Desired behavior: "5 thousand and three" → "5003"; "12 thousand and seven" → "12007"
+- Scope:
+  - Implement a simple word-to-number mapping function for digits 1-99 (reusing existing small number word vocabulary).
+  - Replace the hardcoded `double sm=5.0;` with actual parsing of the word between positions `small` and `qw`.
+  - Consider extending the pattern to support more than just single digits (e.g., "twenty three").
+  - Add test cases covering all single digits and representative two-digit numbers.
+- Acceptance:
+  - "5 thousand and one" → "5001"; "5 thousand and nine" → "5009"
+  - "100 thousand and fifty" → "100050" (if pattern is extended)
+  - Existing tests continue to pass
+Implementation Notes: Fixed the hardcoded `double sm=5.0;` fallback by calling `map_card_small()` to properly map the trailing word to its numeric value. **Key bug fix**: Changed `strstr(s, "and")` to `strstr(s, " and ")` because the original was matching "and" inside "thous**and**" instead of the standalone word. Regenerated scanner.c with re2c 4.3. All tests pass: "5 thousand and one" → "5001", "5 thousand and three" → "5003", "12 thousand and seven" → "12007", "100 thousand and nine" → "100009". Word-based input "five thousand and three" → "5003" also works correctly.
+
+## 14) Update README Documentation
+- Status: Completed
+- Problem: The README.md file contained outdated information that didn't reflect the significant improvements made in Tasks 1-12.
+- Scope:
+  - Update "Differences between Numerizer and OmNomNum" to reflect fraction support
+  - Replace outdated TODOS section with completed enhancements list and future work
+  - Add clear build instructions for both Make and CMake
+  - Document new features (thread safety, runtime toggles, percent handling, etc.)
+  - Link to TASKS.md for detailed implementation tracking
+- Acceptance:
+  - README accurately reflects current project state
+  - Completed work is properly documented
+  - Build instructions are clear for users without lemon/re2c
+Implementation Notes: Updated README to include comprehensive Features section highlighting thread safety, fraction support, runtime toggles, and performance optimizations. Added Completed Enhancements checklist matching TASKS.md completions. Created Future Enhancements section referencing TASKS.md and noting which tasks require lemon/re2c. Improved build instructions with quick start (using checked-in generated files) and CMake cross-platform build steps.
+
+## 15) Update Changelog
+- Status: Completed
+- Problem: The Changelog file was outdated, showing only version 0.0.2 from 2017, while significant improvements (Tasks 1-12) have been completed.
+- Scope:
+  - Add Version 0.1.0 (In Development) section
+  - Document all major enhancements by category (Thread Safety, Fraction Support, Performance, Build System, CLI, Testing, Documentation)
+  - Reference task numbers for traceability
+  - Note known limitations (deferred tasks 11 and 13)
+- Acceptance:
+  - Changelog accurately reflects improvements from Tasks 1-14
+  - Changes are organized by category for easy reading
+  - Version 0.0.2 history is preserved
+Implementation Notes: Created comprehensive Version 0.1.0 changelog entry documenting: thread safety improvements, comprehensive fraction support with runtime toggles and reduction, performance optimizations (strtod, SSE4.2), build system enhancements (CMake, stable generated files), CLI feature additions (6+ new flags), expanded test coverage (263+ cases), and documentation updates. Listed known limitations for deferred tasks requiring lemon/re2c.

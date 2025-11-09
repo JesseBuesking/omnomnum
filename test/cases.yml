@@ -204,9 +204,9 @@
 - ["negative one point two", "-1.2", 6]
 - ["one point two percent", "1.2 percent", 6]
 
-# Word 'minus' stays literal for now (Task 11 deferred - needs regeneration)
-- ["minus five", "minus 5", 3]
-- ["minus 1 1/2", "minus 3/2", 3]
+# Word 'minus' treated as sign (Task 11 completed)
+- ["minus five", "-5", 3]
+- ["minus 1 1/2", "-3/2", 3]
 
 # Expanded denominator vocabulary (Task 3)
 # Simple fractions with tenth through twelfth
