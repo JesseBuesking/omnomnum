@@ -166,11 +166,16 @@ with open(files[0]) as f:
     first_data = json.load(f)
 
 benchmark_names = set()
+has_aggregates = False
 for b in first_data['benchmarks']:
     if b.get('aggregate_name') == 'mean':
+        has_aggregates = True
         # Extract base name without aggregate suffix
         name = b['name'].rsplit('_mean', 1)[0]
         benchmark_names.add(name)
+    elif 'aggregate_name' not in b:
+        # Raw benchmark (reps=1), no aggregates
+        benchmark_names.add(b['name'])
 
 # For each benchmark, collect means across all runs
 benchmark_means = {name: [] for name in benchmark_names}
@@ -180,10 +185,16 @@ for fname in files:
         data = json.load(f)
 
     for b in data['benchmarks']:
-        if b.get('aggregate_name') == 'mean':
-            name = b['name'].rsplit('_mean', 1)[0]
-            if name in benchmark_names:
-                benchmark_means[name].append(b['real_time'])
+        if has_aggregates:
+            # Look for mean aggregate
+            if b.get('aggregate_name') == 'mean':
+                name = b['name'].rsplit('_mean', 1)[0]
+                if name in benchmark_names:
+                    benchmark_means[name].append(b['real_time'])
+        else:
+            # Use raw results (reps=1 case)
+            if 'aggregate_name' not in b and b['name'] in benchmark_names:
+                benchmark_means[b['name']].append(b['real_time'])
 
 # Calculate statistics for each benchmark
 print("\n" + "="*80)
