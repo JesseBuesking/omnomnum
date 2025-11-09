@@ -371,8 +371,9 @@ fast_path:
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
-                state->last_token = TOKEN_CHARACTERS;
-                goto fast_path;
+                // When parse_fractions is false, preserve the matched text as-is
+                (*yylval).leave_alone = true;
+                return TOKEN_DECIMAL;
             }
             #else
             if (state->is_parsing) {
@@ -384,6 +385,7 @@ fast_path:
                 state->is_parsing = false;
             }
             state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
             goto fast_path;
             #endif
         }
@@ -459,7 +461,13 @@ fast_path:
                     else { Parse(pParser, 0, *yylval, state); }
                     ParseReset(pParser); state->is_parsing = false;
                 }
-                state->last_token = TOKEN_CHARACTERS; goto fast_path;
+                // When parse_fractions is false, treat the first word as a regular word token
+                // Find the end of the first word in the matched pattern
+                const char* p = ss->token;
+                while (p < ss->cursor && (*p>='a' && *p<='z' || *p>='A' && *p<='Z' || *p>='0' && *p<='9')) p++;
+                ss->cursor = p;  // Position cursor after first word
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
             }
             #else
             if (state->is_parsing) {
@@ -467,7 +475,9 @@ fast_path:
                 else { Parse(pParser, 0, *yylval, state); }
                 ParseReset(pParser); state->is_parsing = false;
             }
-            state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
+            goto fast_path;
             #endif
         }
 
@@ -630,8 +640,9 @@ fast_path:
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
-                state->last_token = TOKEN_CHARACTERS;
-                goto fast_path;
+                // When parse_fractions is false, preserve the matched text as-is
+                (*yylval).leave_alone = true;
+                return TOKEN_DECIMAL;
             }
             #else
             if (state->is_parsing) {
@@ -643,6 +654,7 @@ fast_path:
                 state->is_parsing = false;
             }
             state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
             goto fast_path;
             #endif
         }
