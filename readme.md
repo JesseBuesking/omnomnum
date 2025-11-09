@@ -13,11 +13,27 @@ Implements most of the logic from [numerizer](https://github.com/jduff/numerizer
 
 To run the tests:
 
-- You need to make and install [yaml-cpp](https://github.com/jbeder/yaml-cpp).
-    - $ `cmake -G "Unix Makefiles"`
-    - $ `make`
-    - $ `sudo make install`
-- You need to make and install [googletest](https://github.com/google/googletest).
+- You need to make and install [yaml-cpp](https://github.com/jbeder/yaml-cpp):
+    ```bash
+    cd /tmp
+    git clone --depth 1 https://github.com/jbeder/yaml-cpp.git
+    cd yaml-cpp
+    mkdir build && cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DYAML_BUILD_SHARED_LIBS=OFF
+    make -j4
+    sudo make install
+    ```
+
+- You need to make and install [googletest](https://github.com/google/googletest):
+    ```bash
+    cd /tmp
+    git clone --depth 1 https://github.com/google/googletest.git
+    cd googletest
+    mkdir build && cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    make -j4
+    sudo make install
+    ```
 
 To run the benchmarks:
 
