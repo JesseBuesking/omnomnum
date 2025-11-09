@@ -1,0 +1,79 @@
+{
+  "context": {
+    "date": "2025-11-09T20:36:04+00:00",
+    "host_name": "runsc",
+    "executable": "./test/test_benchmark",
+    "num_cpus": 16,
+    "mhz_per_cpu": 2600,
+    "cpu_scaling_enabled": false,
+    "aslr_enabled": false,
+    "caches": [
+    ],
+    "load_avg": [0,0,0],
+    "library_version": "v1.9.4",
+    "library_build_type": "release",
+    "json_schema_version": 1
+  },
+  "benchmarks": [
+    {
+      "name": "BM_simple_mean",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "mean",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 2.2089061999698359e+02,
+      "cpu_time": 2.0000000000000009e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple_median",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "median",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 2.2325402999740618e+02,
+      "cpu_time": 2.0000000000000009e+02,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple_stddev",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "stddev",
+      "aggregate_unit": "time",
+      "iterations": 3,
+      "real_time": 9.3037269426946114e+00,
+      "cpu_time": 0.0000000000000000e+00,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_simple_cv",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_simple",
+      "run_type": "aggregate",
+      "repetitions": 3,
+      "threads": 1,
+      "aggregate_name": "cv",
+      "aggregate_unit": "percentage",
+      "iterations": 3,
+      "real_time": 4.2119158082953724e-02,
+      "cpu_time": 0.0000000000000000e+00,
+      "time_unit": "ns"
+    }
+  ]
+}
