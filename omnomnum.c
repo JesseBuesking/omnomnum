@@ -95,6 +95,16 @@ static int is_ws_or_hyphen_only(const char* data, unsigned int a, unsigned int b
     for (unsigned int i=a;i<b;i++) if (!is_space_or_hyphen(data[i])) return 0; return 1;
 }
 
+/* Compute greatest common divisor using Euclidean algorithm */
+static uint64_t gcd(uint64_t a, uint64_t b) {
+    while (b != 0) {
+        uint64_t temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
         if (A.frac_num < 0) {
@@ -104,6 +114,48 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
         *s = sdscat(*s, "/");
         sds tmp = sdsempty();
         dtoa(&tmp, A.frac_denom, precision);
+        *s = sdscatsds(*s, tmp);
+        sdsfree(tmp);
+    } else if (A.is_dbl) {
+        dtoa(s, A.dbl, precision);
+    } else {
+        if (A.dbl < 0) {
+            *s = sdscat(*s, "-");
+            itoa(s, (uint64_t)(-A.dbl));
+        } else {
+            itoa(s, (uint64_t)A.dbl);
+        }
+    }
+
+    jump_table[A.suffix](s);
+}
+
+void yystypeToStringWithReduction(sds *s, YYSTYPE A, int precision, bool reduce_fractions) {
+    if (A.is_frac) {
+        double num = A.frac_num;
+        double denom = A.frac_denom;
+
+        if (reduce_fractions) {
+            // Check if numerator and denominator are whole numbers
+            double num_abs = num < 0 ? -num : num;
+            if (num_abs == (uint64_t)num_abs && denom == (uint64_t)denom) {
+                uint64_t n = (uint64_t)num_abs;
+                uint64_t d = (uint64_t)denom;
+                uint64_t divisor = gcd(n, d);
+                if (divisor > 1) {
+                    num = num < 0 ? -(double)(n / divisor) : (double)(n / divisor);
+                    denom = (double)(d / divisor);
+                }
+            }
+        }
+
+        if (num < 0) {
+            *s = sdscat(*s, "-");
+        }
+        dtoa(s, num < 0 ? -num : num, precision);
+        *s = sdscat(*s, "/");
+        sds tmp = sdsempty();
+        dtoa(&tmp, denom, precision);
         *s = sdscatsds(*s, tmp);
         sdsfree(tmp);
     } else if (A.is_dbl) {
@@ -255,10 +307,11 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             if (tok_len > 0) {
                 ParserState sub; initParserState(&sub);
                 sub.parse_second = state->parse_second; sub.precision = state->precision;
+                sub.reduce_fractions = state->reduce_fractions;
                 YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
                 if (sl.used > 0) {
                     sds tmp = sdsempty();
-                    yystypeToString(&tmp, sl.values[0], sub.precision);
+                    yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
                     state->result = sdscatsds(state->result, tmp);
                     sdsfree(tmp);
                 } else {
@@ -292,7 +345,7 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             lastpos = y.end;
 
             // Directly render into the result buffer to avoid an extra copy
-            yystypeToString(&state->result, y, state->precision);
+            yystypeToStringWithReduction(&state->result, y, state->precision, state->reduce_fractions);
         }
 
         // Copy what's left of the string to the final string.

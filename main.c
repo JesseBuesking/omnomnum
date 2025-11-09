@@ -70,12 +70,14 @@ void print_usage(const char *prog_name) {
     fprintf(stderr, "  --precision N          Set decimal precision (default: 6)\n");
     fprintf(stderr, "  --parse-second         Parse 'second' as ordinal '2nd'\n");
     fprintf(stderr, "  --no-parse-fractions   Disable fraction parsing (keep fractions as-is)\n");
+    fprintf(stderr, "  --reduce-fractions     Reduce fractions to lowest terms (e.g., 2/4 -> 1/2)\n");
     fprintf(stderr, "  -h, --help             Show this help message\n");
     fprintf(stderr, "\n");
     fprintf(stderr, "Examples:\n");
     fprintf(stderr, "  echo 'one and a half' | %s\n", prog_name);
     fprintf(stderr, "  %s --no-parse-fractions input.txt\n", prog_name);
     fprintf(stderr, "  %s --precision 3 --parse-second < input.txt\n", prog_name);
+    fprintf(stderr, "  %s --reduce-fractions < input.txt\n", prog_name);
 }
 
 void process_input(FILE *fp, ParserState *state) {
@@ -87,6 +89,7 @@ void process_input(FILE *fp, ParserState *state) {
     int saved_precision = state->precision;
     bool saved_parse_second = state->parse_second;
     bool saved_parse_fractions = state->parse_fractions;
+    bool saved_reduce_fractions = state->reduce_fractions;
 
     while ((read = getline(&line, &len, fp)) != -1) {
         normalize(line, read, state);
@@ -99,6 +102,7 @@ void process_input(FILE *fp, ParserState *state) {
         state->precision = saved_precision;
         state->parse_second = saved_parse_second;
         state->parse_fractions = saved_parse_fractions;
+        state->reduce_fractions = saved_reduce_fractions;
     }
 
     if (line) {
@@ -114,6 +118,7 @@ int main(int argc, char *argv[]) {
     int precision = 6;
     bool parse_second = false;
     bool parse_fractions = true;
+    bool reduce_fractions = false;
     int file_count = 0;
 
     // Parse command-line arguments
@@ -142,6 +147,8 @@ int main(int argc, char *argv[]) {
             parse_second = true;
         } else if (strcmp(argv[i], "--no-parse-fractions") == 0) {
             parse_fractions = false;
+        } else if (strcmp(argv[i], "--reduce-fractions") == 0) {
+            reduce_fractions = true;
         } else if (argv[i][0] == '-') {
             fprintf(stderr, "Error: unknown option '%s'\n", argv[i]);
             print_usage(argv[0]);
@@ -158,6 +165,7 @@ int main(int argc, char *argv[]) {
     state.precision = precision;
     state.parse_second = parse_second;
     state.parse_fractions = parse_fractions;
+    state.reduce_fractions = reduce_fractions;
 
     // Process input
     if (file_count == 0) {

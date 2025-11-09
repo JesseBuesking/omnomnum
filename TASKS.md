@@ -54,8 +54,10 @@ Implementation Notes: CLI (omnomnum binary) already implements all required feat
 Implementation Notes: Test coverage was already comprehensive from Task 3 implementation (expanded denominators, negative fractions, runtime toggle). Added 10 new test cases for mixed numeric with trailing text (e.g., "two apples" → "2 apples", "one and a half cups" → "3/2 cups") to ensure numbers are correctly normalized while preserving surrounding context. All 263 test cases now pass.
 
 ## 9) Optional: Fraction Reduction (Opt-in)
+- Status: Completed
 - Provide a flag to reduce fractions (gcd) while keeping current behavior default (non-reduced).
 - Acceptance: With reduction enabled, `"two fourths"` → `"1/2"`; disabled remains `"2/4"`.
+Implementation Notes: Added `reduce_fractions` flag to `ParserState` (default false). Implemented GCD function using Euclidean algorithm in omnomnum.c. Created `yystypeToStringWithReduction` function that reduces fractions to lowest terms when the flag is enabled. CLI now exposes `--reduce-fractions` flag. Added 6 comprehensive test cases covering: disabled behavior (2/4 unchanged), basic reduction (2/4→1/2, 4/8→1/2, 3/9→1/3), already-reduced fractions (1/2 remains 1/2), and negative fractions (-4/8→-1/2). All manual tests pass successfully.
 
 ## 10) Optional: CMake Build
 - Introduce CMake for cross-platform builds (Linux CI, Windows/MSYS2); find re2c, lemon, gtest, yaml-cpp, google-benchmark via `find_package` or variable hints.

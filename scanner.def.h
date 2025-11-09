@@ -89,6 +89,7 @@ typedef struct {
     YYSTYPEList yystypeList;
     bool parse_second;
     bool parse_fractions; // runtime toggle for fraction parsing
+    bool reduce_fractions; // runtime toggle for fraction reduction
     bool is_parsing;
     int last_token;
     // Per-request context (reentrancy + caching)

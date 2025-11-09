@@ -216,3 +216,111 @@ TEST(NullByteTest, HandlesTrailingZeros) {
     freeOmNomNum();
     freeParserState(&state);
 }
+
+TEST(OmNomNum, ReduceFractionsDisabled) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = false;
+    initOmNomNum();
+
+    const char* input = "two fourths";
+    const char* expect = "2/4";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ReduceFractionsEnabled_TwoFourths) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = true;
+    initOmNomNum();
+
+    const char* input = "two fourths";
+    const char* expect = "1/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ReduceFractionsEnabled_FourEighths) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = true;
+    initOmNomNum();
+
+    const char* input = "four eighths";
+    const char* expect = "1/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ReduceFractionsEnabled_ThreeNinths) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = true;
+    initOmNomNum();
+
+    const char* input = "three ninths";
+    const char* expect = "1/3";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ReduceFractionsEnabled_AlreadyReduced) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = true;
+    initOmNomNum();
+
+    const char* input = "one half";
+    const char* expect = "1/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, ReduceFractionsEnabled_Negative) {
+    ParserState state;
+    initParserState(&state);
+    state.reduce_fractions = true;
+    initOmNomNum();
+
+    const char* input = "negative four eighths";
+    const char* expect = "-1/2";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
