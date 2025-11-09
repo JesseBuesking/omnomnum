@@ -1,3 +1,39 @@
+Version 0.1.0 (In Development)
+===
+
+Major enhancements and improvements:
+
+* **Thread Safety**: Complete parser re-entrancy with no global state (Task 1)
+* **Fraction Support**: Comprehensive fraction parsing including:
+  - Runtime toggle for fraction parsing (Task 2)
+  - Word-based fractions with expanded denominators (tenth through ninetieth, thousandth, millionth, etc.) (Task 3)
+  - Mixed numeric fractions (e.g., "1 1/2")
+  - Optional fraction reduction to lowest terms via GCD (Task 9)
+* **Performance Optimizations**:
+  - Fast numeric parsing using strtod (Task 4)
+  - Eliminated unnecessary allocations in scanner
+  - Architecture-specific optimizations (SSE4.2) (Task 5)
+* **Build System**:
+  - Stabilized parser.h generation with checked-in generated files (Task 6)
+  - CMake support for cross-platform builds (Linux, macOS, Windows/MSYS2) (Task 10)
+  - Graceful fallback when lemon/re2c unavailable
+* **CLI Enhancements**:
+  - Added --precision flag for decimal precision control (Task 7)
+  - Added --parse-second for ordinal parsing
+  - Added --no-parse-fractions to disable fraction parsing
+  - Added --reduce-fractions for fraction reduction
+  - Added --normalize-percent-symbol to convert "percent" to "%"
+  - Added --percent-as-decimal for percentage-to-decimal conversion (Task 12)
+* **Testing**: Expanded test coverage to 263+ test cases (Task 8)
+* **Documentation**:
+  - Added comprehensive TASKS.md with detailed implementation notes
+  - Added CMAKE.md with cross-platform build instructions
+  - Updated README.md to reflect current capabilities (Task 14)
+
+Known Limitations:
+* "minus" word sign support deferred (requires lemon/re2c) (Task 11)
+* Robust <100 word-to-number mapping in mixed patterns incomplete (Task 13)
+
 Version 0.0.2
 ===
 

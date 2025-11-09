@@ -132,3 +132,17 @@ Implementation Notes: Deferred because implementation requires modifying scanner
   - Completed work is properly documented
   - Build instructions are clear for users without lemon/re2c
 Implementation Notes: Updated README to include comprehensive Features section highlighting thread safety, fraction support, runtime toggles, and performance optimizations. Added Completed Enhancements checklist matching TASKS.md completions. Created Future Enhancements section referencing TASKS.md and noting which tasks require lemon/re2c. Improved build instructions with quick start (using checked-in generated files) and CMake cross-platform build steps.
+
+## 15) Update Changelog
+- Status: Completed
+- Problem: The Changelog file was outdated, showing only version 0.0.2 from 2017, while significant improvements (Tasks 1-12) have been completed.
+- Scope:
+  - Add Version 0.1.0 (In Development) section
+  - Document all major enhancements by category (Thread Safety, Fraction Support, Performance, Build System, CLI, Testing, Documentation)
+  - Reference task numbers for traceability
+  - Note known limitations (deferred tasks 11 and 13)
+- Acceptance:
+  - Changelog accurately reflects improvements from Tasks 1-14
+  - Changes are organized by category for easy reading
+  - Version 0.0.2 history is preserved
+Implementation Notes: Created comprehensive Version 0.1.0 changelog entry documenting: thread safety improvements, comprehensive fraction support with runtime toggles and reduction, performance optimizations (strtod, SSE4.2), build system enhancements (CMake, stable generated files), CLI feature additions (6+ new flags), expanded test coverage (263+ cases), and documentation updates. Listed known limitations for deferred tasks requiring lemon/re2c.
