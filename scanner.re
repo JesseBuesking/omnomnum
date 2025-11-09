@@ -31,30 +31,86 @@
 #include "scanner.h"
 #include <string.h>
 
+/* gperf-optimized perfect hash for small cardinals (1-9) */
+static inline unsigned int card_small_hash(const char *str, size_t len) {
+    static const unsigned char asso[256] = {
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,10,16,10,16,16,16,16,16,16,10,5,16,16,5,16,16,5,0,16,
+        0,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+        16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16
+    };
+    return len + asso[(unsigned char)str[2]];
+}
+
 static int map_card_small(const char* s, size_t n, double* out) {
-    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
-    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
-    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
-    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
-    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
-    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
-    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
-    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
-    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    /* gperf-generated perfect hash table (array-based lookup) */
+    static const struct { const char *name; double value; } wordlist[] = {
+        {""}, {""}, {""},
+        {"six", 6.0}, {"five", 5.0}, {"seven", 7.0}, {""}, {""},
+        {"two", 2.0}, {"four", 4.0}, {"three", 3.0}, {""}, {""},
+        {"one", 1.0}, {"nine", 9.0}, {"eight", 8.0}
+    };
+    if (n >= 3 && n <= 5) {
+        unsigned int key = card_small_hash(s, n);
+        if (key <= 15) {
+            const char *w = wordlist[key].name;
+            if (*s == *w && !strncmp(s+1, w+1, n-1)) {
+                *out = wordlist[key].value;
+                return 1;
+            }
+        }
+    }
     return 0;
 }
 
+/* gperf-optimized perfect hash for digit words (0-9) */
+static inline unsigned int digit_word_hash(const char *str, size_t len) {
+    static const unsigned char asso[256] = {
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,10,20,10,20,20,20,20,20,20,15,5,20,20,5,20,20,10,0,20,
+        0,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+        20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20
+    };
+    return len + asso[(unsigned char)str[2]];
+}
+
 static int map_digit_word(const char* s, size_t n, int* out) {
-    if (n==4 && !strncmp(s,"zero",4)) { *out=0; return 1; }
-    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
-    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
-    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
-    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
-    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
-    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
-    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
-    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
-    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    /* gperf-generated perfect hash table (array-based lookup) */
+    static const struct { const char *name; int value; } wordlist[] = {
+        {""}, {""}, {""},
+        {"six", 6}, {"five", 5}, {"seven", 7}, {""}, {""},
+        {"two", 2}, {"zero", 0}, {"three", 3}, {""}, {""},
+        {"one", 1}, {"four", 4}, {"eight", 8}, {""}, {""}, {""},
+        {"nine", 9}
+    };
+    if (n >= 3 && n <= 5) {
+        unsigned int key = digit_word_hash(s, n);
+        if (key <= 19) {
+            const char *w = wordlist[key].name;
+            if (*s == *w && !strncmp(s+1, w+1, n-1)) {
+                *out = wordlist[key].value;
+                return 1;
+            }
+        }
+    }
     return 0;
 }
 

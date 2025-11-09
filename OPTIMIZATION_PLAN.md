@@ -278,4 +278,69 @@ list.capacity = 128;  // Typical case: 90 numbers → avoid most reallocations
 
 ---
 
-**Next Steps**: Test parser object pooling and document all findings
+### Test 3: gperf-generated perfect hash (2025-11-09)
+
+**Changes implemented:**
+- Used gperf to generate perfect hash functions for map_card_small and map_digit_word
+- Hash uses length + character at position [2] for O(1) lookup
+- Replaced linear strncmp chains with hash table lookup
+
+**Results:**
+| Benchmark | Baseline+Stack | With gperf | Change |
+|-----------|----------------|------------|--------|
+| BM_simple | 635 ns | 618 ns | -2.7% ✅ |
+| BM_long_string | 2675 ns | 2658 ns | -0.6% ✅ |
+| BM_many_numbers | 87429 ns | 85567 ns | -2.1% ✅ |
+
+**Combined improvements** from original baseline:
+| Benchmark | Original | Final | Total Improvement |
+|-----------|----------|-------|-------------------|
+| BM_simple | 636 ns | 618 ns | -2.8% ✅ |
+| BM_long_string | 2849 ns | 2658 ns | -6.7% ✅✅ |
+| BM_many_numbers | 87142 ns | 85567 ns | -1.8% ✅ |
+
+**Analysis:**
+- **ACCEPTED!** gperf optimization provides consistent wins across all benchmarks
+- Combined with stack buffer optimization: 6.7% improvement on BM_long_string
+- No regressions, clean performance gains
+- gperf generates optimal hash function automatically (uses char at position [2])
+
+**Implementation:**
+- Installed lemon and re2c
+- Modified scanner.re (source file) with gperf-generated hash functions
+- Regenerated scanner.c using re2c
+- Used full 256-element asso arrays for proper character indexing
+- Fixed comparison to use strncmp (input not null-terminated)
+
+---
+
+###Test 4: gperf switch statement vs array lookup (2025-11-09)
+
+**Changes implemented:**
+- Compared gperf-generated switch statement vs array-based lookup
+- Both use the same perfect hash function
+- Switch version uses `switch (key)` with case labels
+- Array version uses direct array indexing `wordlist[key]`
+
+**Results:**
+| Benchmark | Array-based | Switch-based | Change |
+|-----------|-------------|--------------|--------|
+| BM_simple | 182 ns | 181 ns | -0.5% ≈ |
+| BM_long_string | 1211 ns | 1185 ns | -2.1% ✓ |
+| BM_many_numbers | 31509 ns | 33956 ns | +7.8% ❌ |
+
+**Analysis:**
+- **REJECTED** - Switch-based approach shows 7.8% regression on BM_many_numbers
+- Array-based lookup is faster for the hot path (many numbers case)
+- Reasons array wins:
+  - Better cache locality with contiguous array access
+  - No branch misprediction overhead from switch statement
+  - Simpler instruction pattern for CPU pipeline
+- Switch provides no benefit despite theoretical advantage in branch prediction
+
+**Decision:** Keep array-based gperf implementation, reject switch optimization.
+
+---
+
+**Status**: Stack buffer + gperf array-based perfect hash optimizations **ACCEPTED** and ready to commit.
+**Findings:** Parser pooling already implemented. temp_buffer and switch approaches rejected.
