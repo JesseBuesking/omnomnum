@@ -1,0 +1,44 @@
+================================================================================
+BENCHMARKING EACH OPTIMIZATION WITH GOOGLE BENCHMARK
+================================================================================
+
+================================================================================
+[00_baseline] Baseline (no optimizations)
+Building...
+Running Google Benchmark...
+BM_many_numbers/repeats:10/real_time/threads:1_mean        34360 ns        32080 ns           10
+
+================================================================================
+[01_buffer_reuse] OPT1: SDS Buffer Reuse
+Building...
+Running Google Benchmark...
+BM_many_numbers/repeats:10/real_time/threads:1_mean        34553 ns        32289 ns           10
+
+================================================================================
+[02_yystype_capacity] OPT2: Larger YYSTYPE Capacity (4→128)
+Building...
+Running Google Benchmark...
+BM_many_numbers/repeats:10/real_time/threads:1_mean        32125 ns        29960 ns           10
+
+================================================================================
+[03_combined] OPT1+2: Combined
+Building...
+Running Google Benchmark...
+BM_many_numbers/repeats:10/real_time/threads:1_mean        34473 ns        32175 ns           10
+
+================================================================================
+PARSING RESULTS
+================================================================================
+
+================================================================================
+OPTIMIZATION RESULTS (nanoseconds)
+================================================================================
+Step                      Real Time (ns)     vs Baseline     Improvement
+--------------------------------------------------------------------------------
+00 Baseline                 34360.06 ± 939.15      +0.00 ns    +0.00%
+01 Buffer Reuse             34553.50 ± 334.90    -193.44 ns    -0.56%
+02 Yystype Capacity         32125.01 ± 1578.02   +2235.04 ns    +6.50%
+03 Combined                 34472.62 ± 1025.69    -112.56 ns    -0.33%
+================================================================================
+
+Results saved in: optimization_benchmarks/

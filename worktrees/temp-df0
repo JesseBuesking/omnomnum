@@ -1,0 +1,69 @@
+commit 690321d4819e5c3e22dd8c2d10745dd5b35fcf7d
+Author: Jesse Buesking <jessebuesking+github@gmail.com>
+Date:   Fri Nov 7 10:05:07 2025 -0500
+
+    scripts: add benchmark_current.sh helper for this worktree
+
+diff --git a/scripts/benchmark_current.sh b/scripts/benchmark_current.sh
+new file mode 100755
+index 0000000..0a756fe
+--- /dev/null
++++ b/scripts/benchmark_current.sh
+@@ -0,0 +1,57 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++# Build and run Google Benchmark for this worktree,
++# writing results to the provided JSON path.
++#
++# Usage:
++#   bash scripts/benchmark_current.sh [OUTPUT_JSON]
++#
++# Defaults to test/gb-<timestamp>.json when OUTPUT_JSON is omitted.
++
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++cd "$ROOT_DIR"
++
++timestamp="$(date +%Y%m%d-%H%M%S)"
++OUT_JSON="${1:-test/gb-${timestamp}.json}"
++
++echo "[bench_current] Repo:  $ROOT_DIR"
++echo "[bench_current] JSON:  $OUT_JSON"
++
++# Compute absolute output path
++to_abs_path() {
++  case "$1" in
++    /*) printf "%s" "$1" ;;
++     *) printf "%s/%s" "$ROOT_DIR" "$1" ;;
++  esac
++}
++OUT_JSON_ABS="$(to_abs_path "$OUT_JSON")"
++
++mkdir -p "$(dirname "$OUT_JSON_ABS")"
++
++# Locate google-benchmark prefix if not provided
++BENCH_PREFIX_ENV="${BENCH_PREFIX:-}"
++if [[ -z "$BENCH_PREFIX_ENV" ]]; then
++  if command -v brew >/dev/null 2>&1; then
++    BENCH_PREFIX_ENV="$(brew --prefix google-benchmark 2>/dev/null || true)"
++  fi
++fi
++if [[ -z "$BENCH_PREFIX_ENV" ]]; then
++  echo "[bench_current] Error: google-benchmark not found. Install via Homebrew or set BENCH_PREFIX."
++  echo "                e.g., BENCH_PREFIX=\"$(brew --prefix google-benchmark 2>/dev/null || echo /usr/local/opt/google-benchmark)\" bash $0 <OUTPUT_JSON>"
++  exit 1
++fi
++echo "[bench_current] Using BENCH_PREFIX=$BENCH_PREFIX_ENV"
++
++echo "[bench_current] Building benchmark binary ..."
++make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"
++
++echo "[bench_current] Running benchmark -> $OUT_JSON_ABS"
++./test/test_benchmark \
++  --benchmark_min_time=2s \
++  --benchmark_repetitions=3 \
++  --benchmark_out="$OUT_JSON_ABS" \
++  --benchmark_out_format=json
++
++echo "[bench_current] Done: $OUT_JSON_ABS"
++

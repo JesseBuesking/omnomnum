@@ -88,8 +88,15 @@ typedef struct {
     enum errors error;
     YYSTYPEList yystypeList;
     bool parse_second;
+    bool parse_fractions; // runtime toggle for fraction parsing
+    bool reduce_fractions; // runtime toggle for fraction reduction
+    bool normalize_percent_symbol; // convert "percent" to "%"
+    bool percent_as_decimal; // convert "n percent" to n/100
     bool is_parsing;
     int last_token;
+    // Per-request context (reentrancy + caching)
+    void *pParser;      // Lemon parser instance cached per ParserState
+    sds numberHolder;   // Scratch buffer for number rendering
 } ParserState;
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
@@ -97,6 +104,7 @@ void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
 void resetYYSTYPElist(YYSTYPEList *l);
 void freeYYSTYPElist(YYSTYPEList *l);
 void sortYYSTYPElist(YYSTYPEList *l);
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need);
 
 void initParserState(ParserState *state);
 void resetParserState(ParserState *state);

@@ -1,0 +1,26 @@
+/Applications/Xcode.app/Contents/Developer/usr/bin/make clean
+rm -rf *.o test/*.o parser.out parser.c scanner.o scanner.c main.o omnomnum *.gch test/test_omnomnum test/test_benchmark
+/Applications/Xcode.app/Contents/Developer/usr/bin/make bench_local
+# produces parser.c (ignore non-zero exit due to conflicts)
+/opt/homebrew/bin/lemon -m parser.yy || true
+# produces parser.o
+cc  -Wall -W -Wno-missing-field-initializers  -c parser.c
+cc  -Wall -W -Wno-missing-field-initializers  -c parser_compat.c
+cc  -Wall -W -Wno-missing-field-initializers  -c omnomnum.c
+#re2c -d -o scanner.c scanner.re
+re2c -o scanner.c scanner.re
+cc  -Wall -W -Wno-missing-field-initializers  -c scanner.c
+cc  -Wall -W -Wno-missing-field-initializers  -c scan.c
+cc  -Wall -W -Wno-missing-field-initializers  -c sds.c
+cc  -Wall -W -Wno-missing-field-initializers  -c itoa.c
+cc  -Wall -W -Wno-missing-field-initializers  -c dtoa.c
+cc  -Wall -W -Wno-missing-field-initializers  -c scanner.def.c
+cc  -Wall -W -Wno-missing-field-initializers  -c util.c
+cc  -Wall -W -Wno-missing-field-initializers  -c grisu2/grisu2.c -o grisu2/grisu2.o
+cc  -Wall -W -Wno-missing-field-initializers  -c branchlut/branchlut.c -o branchlut/branchlut.o
+cc  -Wall -W -Wno-missing-field-initializers  -O3 -c bench_local.c -o bench_local.o
+cc  -Wall -W -Wno-missing-field-initializers  -O3 -o bench_local -I. parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o grisu2/grisu2.o branchlut/branchlut.o bench_local.o -lm
+./bench_local
+BM_simple: 0.056558 sec total (1.131 us/iter)
+BM_long_string: 0.016410 sec total (3.282 us/iter)
+BM_many_numbers: 0.353296 sec total (70.659 us/iter)

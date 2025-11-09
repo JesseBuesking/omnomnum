@@ -44,4 +44,5 @@ void freeOmNomNum(void);
 YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state);
 void normalize(const char *data, size_t data_len, ParserState *state);
 
+
 #endif // OMNOMNUM_H

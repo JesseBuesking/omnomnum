@@ -49,7 +49,8 @@
     A.end = B.end; \
     A.is_frac = B.is_frac; \
     A.is_dbl = B.is_dbl; \
-    A.leave_alone = B.leave_alone;
+    A.leave_alone = B.leave_alone; \
+    A.suffix = NO_SUFFIX;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_VALUE
@@ -100,7 +101,8 @@
     A.end = C.end; \
     A.is_frac = B.is_frac | C.is_frac; \
     A.is_dbl = B.is_dbl | C.is_dbl; \
-    A.leave_alone = B.leave_alone | C.leave_alone;
+    A.leave_alone = B.leave_alone | C.leave_alone; \
+    A.suffix = NO_SUFFIX;
 #endif
 
 #ifndef COPY_YYSTYPE_BE_MUL
@@ -191,6 +193,7 @@
 #define MILLION_F  1000000.0
 #define BILLION_F  1000000000.0
 #define TRILLION_F 1000000000000.0
+#define QUADRILLION_F 1000000000000000.0
 }
 
 %syntax_error {
@@ -220,44 +223,182 @@ number ::= final_number(A). {
     }
 }
 number ::= NEGATIVE(A) final_number(B). {
+    /* Propagate negativity to value and fractions */
     B.dbl = -B.dbl;
+    if (B.is_frac) { B.frac_num = -B.frac_num; }
+    B.begin = A.begin;
+    B.end = B.end;
+    insertYYSTYPE(&state->yystypeList, B);
+}
+number ::= MINUS(A) final_number(B). {
+    /* Propagate negativity to value and fractions (same as NEGATIVE) */
+    B.dbl = -B.dbl;
+    if (B.is_frac) { B.frac_num = -B.frac_num; }
     B.begin = A.begin;
     B.end = B.end;
     insertYYSTYPE(&state->yystypeList, B);
 }
 
-final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0); }
-final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0); }
+final_number(A) ::= less_than_quadrillion(B) AND_A QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND_A HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND A QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_quadrillion(B) AND A HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
-final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 4.0); }
-final_number(A) ::= ONE(B) QUARTER(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0); }
-final_number(A) ::= A(B) QUARTER(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0); }
+final_number(A) ::= less_than_quadrillion(B) QUARTERS(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= ONE(B) QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) QUARTER(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 4.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
-final_number(A) ::= less_than_quadrillion(B) HALVES(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 2.0); }
-final_number(A) ::= ONE(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);  }
-final_number(A) ::= A(B) HALF(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0); }
+final_number(A) ::= less_than_quadrillion(B) HALVES(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= ONE(B) HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) HALF(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 2.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+
+// explicit hundredth(s) as fractions
+final_number(A) ::= ONE(B) HUNDREDTH(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= A(B) HUNDREDTH(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+final_number(A) ::= less_than_hundred(B) HUNDREDTHS(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, B.dbl, 100.0);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
 final_number(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+final_number(A) ::= FRACTION(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = true; }
 final_number(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 final_number(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
 
-final_number(A) ::= less_than_quadrillion(B) AND fraction(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom); }
+final_number(A) ::= less_than_quadrillion(B) AND fraction(C). {
+    if (state->parse_fractions && C.is_frac) {
+        COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 // covered by above since fractiono includes A/AN
 //final_number(A) ::= less_than_quadrillion(B) AND_A fraction(C). { COPY_YYSTYPE_FRAC_SET_MULT(A, B, C, C.frac_num, C.frac_denom); }
 final_number(A) ::= fraction(B). { COPY_YYSTYPE_BE(A, B); A.frac_num = B.frac_num; A.frac_denom = B.frac_denom; A.is_frac = B.is_frac; }
 
-// TODO: both of these needs AND in order for multiple numbers to work
-//fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionths(C). {
-//    COPY_YYSTYPE_BE2(A, B, C);
-//    COPY_YYSTYPE_FRAC(A, B, C);
-//}
-//fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionth(C). {
-//    COPY_YYSTYPE_BE2(A, B, C);
-//    COPY_YYSTYPE_FRAC(A, B, C);
-//}
+// General fraction forms like "three eighths", "one eighth"
+fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionths(C). {
+    COPY_YYSTYPE_BE2(A, B, C);
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC(A, B, C);
+    } else {
+        A.leave_alone = true;
+    }
+}
+fraction(A) ::= less_than_quadrillion(B) less_than_quadrillionth(C). {
+    COPY_YYSTYPE_BE2(A, B, C);
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC(A, B, C);
+    } else {
+        A.leave_alone = true;
+    }
+}
 
-fraction(A) ::= A(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }
-fraction(A) ::= AN(B) less_than_quadrillionth(C). { COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl); }
+fraction(A) ::= A(B) less_than_quadrillionth(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
+fraction(A) ::= AN(B) less_than_quadrillionth(C). {
+    if (state->parse_fractions) {
+        COPY_YYSTYPE_FRAC_SET(A, B, C, 1.0, C.dbl);
+    } else {
+        COPY_YYSTYPE_BE2(A, B, C);
+        A.leave_alone = true;
+    }
+}
 
 // should have this, but if it's not being used in a larger number, we should
 // keep it as is: it might be 007. if we dont keep it, we'll reduce it to 7,
@@ -268,8 +409,59 @@ final_number(A) ::= DECIMAL(B). { COPY_YYSTYPE_BE(A, B); A.dbl = B.dbl; A.is_dbl
 final_number(A) ::= ZERO(B). { COPY_YYSTYPE_BE_VALUE(A, B, 0.0); }
 
 /* --------------------------------------
+sub quintillion ordinal
+-------------------------------------- */
+
+less_than_quintillionth_end_only(A) ::= less_than_quintillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_quintillionth_end_only(A) ::= less_than_quadrillionth_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_quintillionth(A) ::= QUADRILLION(B) less_than_quadrillionth_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillionth(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, QUADRILLION_F); }
+less_than_quintillionth(A) ::= less_than_thousand(B) QUADRILLIONTH(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, QUADRILLION_F, TH); }
+less_than_quintillionth(A) ::= less_than_quadrillionth(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= QUADRILLIONTH(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, QUADRILLION_F, TH); }
+final_number(A) ::= DECIMAL(B) QUADRILLIONTH(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, QUADRILLION_F, TH); }
+
+// ----------------------------
+
+less_than_quintillionths_end_only(A) ::= less_than_quintillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+less_than_quintillionths_end_only(A) ::= less_than_quadrillionths_end_only(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+less_than_quintillionths(A) ::= QUADRILLION(B) less_than_quadrillionths_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillionths(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillionths_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, QUADRILLION_F); }
+less_than_quintillionths(A) ::= less_than_thousand(B) QUADRILLIONTHS(C). { COPY_YYSTYPE_BE_MUL_SUFF(A, B, C, QUADRILLION_F, THS); }
+less_than_quintillionths(A) ::= less_than_quadrillionths(B). { COPY_YYSTYPE_BE_DBL_SUFF(A, B); }
+
+final_number(A) ::= QUADRILLIONTHS(B). { COPY_YYSTYPE_BE_VALUE_SUFF(A, B, QUADRILLION_F, THS); }
+final_number(A) ::= DECIMAL(B) QUADRILLIONTHS(C). { COPY_YYSTYPE_DBL_NUM_SUFF(A, B, C, QUADRILLION_F, THS); }
+
+/* --------------------------------------
+sub quintillion regular
+-------------------------------------- */
+
+less_than_quintillion_end_only(A) ::= less_than_quintillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_quintillion_end_only(A) ::= less_than_quadrillion_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+
+less_than_quintillion(A) ::= QUADRILLION(B) less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_thousand(B) QUADRILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, QUADRILLION_F); }
+less_than_quintillion(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+
+// Direct final forms using QUADRILLION to avoid ambiguity with fractions
+final_number(A) ::= QUADRILLION(B) less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, QUADRILLION_F); }
+final_number(A) ::= less_than_thousand(B) QUADRILLION less_than_quadrillion_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, QUADRILLION_F); }
+final_number(A) ::= less_than_thousand(B) QUADRILLION(C). { COPY_YYSTYPE_BE_MUL(A, B, C, QUADRILLION_F); }
+/* Prefer combined forms; avoid early reduction on bare QUADRILLION forms */
+final_number(A) ::= DECIMAL(B) QUADRILLION(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, QUADRILLION_F); }
+
+/* --------------------------------------
 sub quadrillion ordinal
 -------------------------------------- */
+
+// allow tails after quadrillion in a top-level context
+less_than_quadrillion_end_only(A) ::= less_than_quadrillion(B). { COPY_YYSTYPE_BE_DBL(A, B); }
+less_than_quadrillion_end_only(A) ::= less_than_trillion_end_only(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 
 less_than_quadrillionth(A) ::= TRILLION(B) less_than_trillionth_end_only(C). { COPY_YYSTYPE_BE_ADD_SUFF_VALUE(A, B, C, TRILLION_F); }
 less_than_quadrillionth(A) ::= less_than_thousand(B) TRILLION less_than_trillionth_end_only(C). { COPY_YYSTYPE_BE_MUL_ADD_SUFF(A, B, C, TRILLION_F); }
@@ -433,6 +625,9 @@ less_than_million(A) ::= less_than_thousand(B). { COPY_YYSTYPE_BE_DBL(A, B); }
 final_number(A) ::= THOUSAND(B). { COPY_YYSTYPE_BE_VALUE(A, B, THOUSAND_F); }
 final_number(A) ::= DECIMAL(B) THOUSAND(C). { COPY_YYSTYPE_DBL_NUM(A, B, C, THOUSAND_F); }
 final_number(A) ::= WHOLE_NUMBER(B) THOUSAND(C). { COPY_YYSTYPE_BE_MUL(A, B, C, THOUSAND_F); }
+// Handle trailing 'and <less than hundred>' explicitly to avoid early reduction
+final_number(A) ::= less_than_thousand(B) THOUSAND AND less_than_hundred(C). { COPY_YYSTYPE_BE_MUL_ADD(A, B, C, THOUSAND_F); }
+final_number(A) ::= THOUSAND(B) AND less_than_hundred(C). { COPY_YYSTYPE_BE_ADD_VALUE(A, B, C, THOUSAND_F); }
 
 /* --------------------------------------
 sub thousand ordinal

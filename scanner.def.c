@@ -29,6 +29,8 @@
  */
 
 #include "scanner.def.h"
+// For ParseFree declaration and ParseReset wrapper
+#include "parser.h"
 // pull in definitions for malloc and free
 #include <stdlib.h>
 
@@ -78,20 +80,48 @@ void sortYYSTYPElist(YYSTYPEList *l) {
     qsort(l->values, l->used, sizeof(YYSTYPE), compare);
 }
 
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need) {
+    if (l->size < need) {
+        l->size = need;
+        l->values = (YYSTYPE *)realloc(l->values, l->size * sizeof(YYSTYPE));
+    }
+}
+
 void initParserState(ParserState *state) {
     state->error = NO_ERROR;
     state->parse_second = false;
-    initYYSTYPEList(&(state->yystypeList), 4);
+    state->parse_fractions = true; // default: keep current behavior
+    state->reduce_fractions = false; // default: off (keep current behavior)
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
+    state->precision = 6;
+    state->result = NULL;
+    state->is_parsing = false;
+    state->last_token = -1;
+    state->pParser = NULL;
+    state->numberHolder = sdsempty();
+    // OPTIMIZATION: Start with larger capacity to reduce reallocations
+    // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
+    initYYSTYPEList(&(state->yystypeList), 128);
 }
 
 void resetParserState(ParserState *state) {
     state->precision = 6;
-    sdsfree(state->result);
+    // OPTIMIZATION: Clear result buffer instead of freeing (enables reuse)
+    if (state->result) { sdsclear(state->result); }
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;
+    state->parse_fractions = true; // keep fractions enabled unless caller disables
+    state->reduce_fractions = false; // default: off
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
+    // Keep the cached parser and scratch buffer; just clear the buffer
+    if (state->numberHolder) sdsclear(state->numberHolder);
 }
 
 void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
+    if (state->numberHolder) { sdsfree(state->numberHolder); state->numberHolder = NULL; }
+    if (state->pParser) { ParseFree(state->pParser, free); state->pParser = NULL; }
 }

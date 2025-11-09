@@ -105,19 +105,21 @@ fi
 
 echo "[bench_current] Running benchmark -> $OUT_JSON_ABS"
 
-# Quick mode for development (QUICK_BENCH=1): faster iterations with 0.5s min time
-# Thorough mode (default): production quality with 2s min time
+# Quick mode for development (QUICK_BENCH=1): faster iterations with 0.5s min time, 3 reps
+# Thorough mode (default): production quality with 2s min time, 10 reps
 if [[ "${QUICK_BENCH:-0}" == "1" ]]; then
-  echo "[bench_current] Using QUICK mode (0.5s min_time, 3 reps in code)"
+  echo "[bench_current] Using QUICK mode (0.5s min_time, 3 reps)"
   MIN_TIME="0.5s"
+  REPS=3
 else
-  echo "[bench_current] Using THOROUGH mode (2s min_time, 10 reps in code)"
+  echo "[bench_current] Using THOROUGH mode (2s min_time, 10 reps)"
   MIN_TIME="2s"
+  REPS=10
 fi
 
 ./test/test_benchmark \
   --benchmark_min_time="$MIN_TIME" \
-  --benchmark_repetitions=3 \
+  --benchmark_repetitions="$REPS" \
   --benchmark_out="$OUT_JSON_ABS" \
   --benchmark_out_format=json
 

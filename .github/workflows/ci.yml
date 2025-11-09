@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            re2c \
+            lemon \
+            libgtest-dev \
+            libyaml-cpp-dev \
+            cmake \
+            valgrind
+
+      - name: Build Google Test
+        run: |
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          sudo make
+          sudo cp lib/*.a /usr/lib
+
+      - name: Set compiler
+        run: |
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            echo "CC=clang" >> $GITHUB_ENV
+            echo "CXX=clang++" >> $GITHUB_ENV
+          else
+            echo "CC=gcc" >> $GITHUB_ENV
+            echo "CXX=g++" >> $GITHUB_ENV
+          fi
+
+      - name: Build project
+        run: make all
+
+      - name: Run tests
+        run: make test
+
+      - name: Check for compiler warnings
+        run: |
+          make clean
+          make all 2>&1 | tee build.log
+          if grep -i "error:" build.log; then
+            echo "Build errors found!"
+            exit 1
+          fi
+          # Count warnings (informational only, don't fail)
+          warning_count=$(grep -c "warning:" build.log || true)
+          echo "Total warnings: $warning_count"
+
+      - name: Build CLI examples
+        run: |
+          echo "one and a half" | ./omnomnum
+          echo "1 1/2" | ./omnomnum --no-parse-fractions
+          echo "0.123456789" | ./omnomnum --precision 3
+
+      - name: Memory leak check (valgrind)
+        run: |
+          echo "two hundred" | valgrind --leak-check=full --error-exitcode=1 ./omnomnum
