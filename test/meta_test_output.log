@@ -1,0 +1,121 @@
+==================================
+BENCHMARK CONFIGURATION META-TEST
+==================================
+
+Testing 9 configurations with 5 comparison runs each
+Results will be saved to: test/meta_results
+
+================================================================
+Testing configuration: min_time=0.05s, reps=3
+================================================================
+
+Results for t0.05_r3:
+  CV of means:      3.71%
+  Max pairwise diff: 8.79%
+  Runtime:          26s
+  Status:           FAIL
+
+================================================================
+Testing configuration: min_time=0.05s, reps=5
+================================================================
+
+Results for t0.05_r5:
+  CV of means:      2.11%
+  Max pairwise diff: 4.99%
+  Runtime:          41s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.05s, reps=10
+================================================================
+
+Results for t0.05_r10:
+  CV of means:      2.02%
+  Max pairwise diff: 5.00%
+  Runtime:          81s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.1s, reps=3
+================================================================
+
+Results for t0.1_r3:
+  CV of means:      2.33%
+  Max pairwise diff: 5.54%
+  Runtime:          52s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.1s, reps=5
+================================================================
+
+Results for t0.1_r5:
+  CV of means:      2.32%
+  Max pairwise diff: 5.79%
+  Runtime:          81s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.1s, reps=10
+================================================================
+
+Results for t0.1_r10:
+  CV of means:      2.02%
+  Max pairwise diff: 4.86%
+  Runtime:          161s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.2s, reps=3
+================================================================
+
+Results for t0.2_r3:
+  CV of means:      2.82%
+  Max pairwise diff: 6.90%
+  Runtime:          104s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.2s, reps=10
+================================================================
+
+Results for t0.2_r10:
+  CV of means:      1.40%
+  Max pairwise diff: 3.45%
+  Runtime:          319s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=0.5s, reps=5
+================================================================
+
+Results for t0.5_r5:
+  CV of means:      1.76%
+  Max pairwise diff: 4.29%
+  Runtime:          410s
+  Status:           PASS
+
+
+================================================================
+META-TEST COMPLETE
+================================================================
+
+Summary of all configurations:
+------------------------------
+t0.05_r3        FAIL       CV=3.71%  MaxDiff=8.79%  Runtime=26 s 
+t0.05_r5        PASS       CV=2.11%  MaxDiff=4.99%  Runtime=41 s 
+t0.05_r10       PASS       CV=2.02%  MaxDiff=5.00%  Runtime=81 s 
+t0.1_r3         PASS       CV=2.33%  MaxDiff=5.54%  Runtime=52 s 
+t0.1_r5         PASS       CV=2.32%  MaxDiff=5.79%  Runtime=81 s 
+t0.1_r10        PASS       CV=2.02%  MaxDiff=4.86%  Runtime=161s 
+t0.2_r3         PASS       CV=2.82%  MaxDiff=6.90%  Runtime=104s 
+t0.2_r10        PASS       CV=1.40%  MaxDiff=3.45%  Runtime=319s 
+t0.5_r5         PASS       CV=1.76%  MaxDiff=4.29%  Runtime=410s 
+
+Detailed logs available in: test/meta_results/
+
+Recommendation:
+  Choose configuration with:
+  - CV of means < 3%
+  - Runtime < 5s
+  - Lowest max pairwise diff (better regression detection)

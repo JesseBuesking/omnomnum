@@ -1,0 +1,4 @@
+t1.0_r1         FAIL       CV=3.09%  MaxDiff=7.72%  Runtime=208s 
+t2.0_r1         FAIL       CV=3.52%  MaxDiff=8.41%  Runtime=407s 
+t0.5_r2         PASS       CV=2.85%  MaxDiff=6.79%  Runtime=175s 
+t1.0_r2         FAIL       CV=4.48%  MaxDiff=10.41% Runtime=363s 

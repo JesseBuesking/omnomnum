@@ -1,0 +1,66 @@
+==================================
+BENCHMARK CONFIGURATION META-TEST
+==================================
+
+Testing 4 configurations with 5 comparison runs each
+Results will be saved to: test/meta_results
+
+================================================================
+Testing configuration: min_time=1.0s, reps=1
+================================================================
+
+Results for t1.0_r1:
+  CV of means:      3.09%
+  Max pairwise diff: 7.72%
+  Runtime:          208s
+  Status:           FAIL
+
+================================================================
+Testing configuration: min_time=2.0s, reps=1
+================================================================
+
+Results for t2.0_r1:
+  CV of means:      3.52%
+  Max pairwise diff: 8.41%
+  Runtime:          407s
+  Status:           FAIL
+
+================================================================
+Testing configuration: min_time=0.5s, reps=2
+================================================================
+
+Results for t0.5_r2:
+  CV of means:      2.85%
+  Max pairwise diff: 6.79%
+  Runtime:          175s
+  Status:           PASS
+
+================================================================
+Testing configuration: min_time=1.0s, reps=2
+================================================================
+
+Results for t1.0_r2:
+  CV of means:      4.48%
+  Max pairwise diff: 10.41%
+  Runtime:          363s
+  Status:           FAIL
+
+
+================================================================
+META-TEST COMPLETE
+================================================================
+
+Summary of all configurations:
+------------------------------
+t1.0_r1         FAIL       CV=3.09%  MaxDiff=7.72%  Runtime=208s 
+t2.0_r1         FAIL       CV=3.52%  MaxDiff=8.41%  Runtime=407s 
+t0.5_r2         PASS       CV=2.85%  MaxDiff=6.79%  Runtime=175s 
+t1.0_r2         FAIL       CV=4.48%  MaxDiff=10.41% Runtime=363s 
+
+Detailed logs available in: test/meta_results/
+
+Recommendation:
+  Choose configuration with:
+  - CV of means < 3%
+  - Runtime < 5s
+  - Lowest max pairwise diff (better regression detection)

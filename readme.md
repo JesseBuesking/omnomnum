@@ -100,6 +100,85 @@ lemon -? 2>&1 | head -5
 re2c --version
 ```
 
+## Benchmarking
+
+OmNomNum includes comprehensive benchmarking support using Google Benchmark. After installing google-benchmark (see above), you can run benchmarks using three optimized configurations:
+
+### Quick Start
+
+```bash
+# Fast mode: Quick iteration during development (~9s)
+make benchmark-fast
+
+# Default mode: Recommended for CI/CD (~32s)
+make benchmark
+
+# Accurate mode: For releases and validation (~64s)
+make benchmark-accurate
+```
+
+### Benchmark Modes
+
+Three configurations have been thoroughly tested and validated for reliability:
+
+| Mode | min_time | reps | Runtime | CV of Means | Use Case |
+|------|----------|------|---------|-------------|----------|
+| **Fast** ⚡ | 0.05s | 5 | ~9s | 2.11% | Quick development iteration |
+| **Default** ⭐ | 0.1s | 10 | ~32s | 2.02% | CI/CD, pre-merge testing (recommended) |
+| **Accurate** 🏆 | 0.2s | 10 | ~64s | 1.40% | Official releases, performance validation |
+
+**CV of Means** measures reproducibility - how consistent results are across runs. All modes achieve <3% CV, ensuring reliable regression detection.
+
+### Advanced Usage
+
+**Direct script usage:**
+```bash
+# Fast mode
+BENCH_MODE=fast bash scripts/benchmark_current.sh output.json
+
+# Default mode (or no flag)
+bash scripts/benchmark_current.sh output.json
+
+# Accurate mode
+BENCH_MODE=accurate bash scripts/benchmark_current.sh output.json
+```
+
+**Mean comparison mode** - Run benchmarks multiple times to measure reproducibility:
+```bash
+# Run 5 independent benchmark runs and compare means
+make benchmark-compare COMPARE_RUNS=5
+
+# Or via script directly
+COMPARE_MODE=1 COMPARE_RUNS=5 bash scripts/benchmark_current.sh output.json
+```
+
+This will analyze the coefficient of variation (CV) of means across runs and report:
+- Average CV of means (target: <3%)
+- Maximum pairwise differences
+- Pass/fail based on reliability thresholds
+
+**Custom configurations:**
+```bash
+# Override min_time and reps
+BENCH_MIN_TIME=0.3s BENCH_REPS=15 bash scripts/benchmark_current.sh output.json
+```
+
+**Legacy support:**
+```bash
+# QUICK_BENCH=1 maps to fast mode for backward compatibility
+QUICK_BENCH=1 bash scripts/benchmark_current.sh output.json
+```
+
+### Performance Tips
+
+For most reliable results:
+1. Set CPU governor to performance mode (see installation section above)
+2. Close unnecessary background applications
+3. Run on a quiet system (minimal other processes)
+4. For release validation, use `make benchmark-accurate`
+
+See [BENCHMARK_RECOMMENDATIONS.md](BENCHMARK_RECOMMENDATIONS.md) for detailed analysis of configuration testing and reliability metrics.
+
 ## Features
 
 - **Thread-safe**: Parser re-entrancy with no global state

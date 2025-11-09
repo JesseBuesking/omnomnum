@@ -225,9 +225,28 @@ bench_local: $(OMNOMNUM_OBJ) bench_local.o
 bench_local.o: bench_local.c $(DEPS)
 	$(OMNOMNUM_CC) -O3 -c bench_local.c -o $@
 
-# Default benchmark target runs Google Benchmark binary
+# Benchmark targets using optimized configurations from BENCHMARK_RECOMMENDATIONS.md
+.PHONY: benchmark benchmark-fast benchmark-accurate benchmark-compare
+
+# Fast mode: 0.05s min_time, 5 reps (~9s, 2.11% CV of means)
+# Use for: Quick iteration during development
+benchmark-fast: all test/test_benchmark
+	BENCH_MODE=fast bash scripts/benchmark_current.sh test/benchmark-fast.json
+
+# Default mode: 0.1s min_time, 10 reps (~32s, 2.02% CV of means) - RECOMMENDED
+# Use for: CI/CD pipelines, pre-merge testing
 benchmark: all test/test_benchmark
-	cd test && ./test_benchmark --benchmark_min_time=2s --benchmark_repetitions=3 --benchmark_out=benchmark.json --benchmark_out_format=json
+	bash scripts/benchmark_current.sh test/benchmark.json
+
+# Accurate mode: 0.2s min_time, 10 reps (~64s, 1.40% CV of means)
+# Use for: Official releases, performance validation
+benchmark-accurate: all test/test_benchmark
+	BENCH_MODE=accurate bash scripts/benchmark_current.sh test/benchmark-accurate.json
+
+# Compare mode: Run benchmark multiple times and analyze CV of means
+# Example: make benchmark-compare COMPARE_RUNS=5
+benchmark-compare: all test/test_benchmark
+	COMPARE_MODE=1 COMPARE_RUNS=$${COMPARE_RUNS:-5} bash scripts/benchmark_current.sh test/benchmark-compare.json
 
 .PHONY: bench-before bench-after bench-local-before bench-local-after
 
