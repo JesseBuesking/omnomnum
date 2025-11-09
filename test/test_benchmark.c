@@ -35,9 +35,9 @@ static void add_bench_context() {
 #endif
 }
 
-// Fast mode for development: 2 reps for variance testing, slower thorough mode: 10 reps
+// Fast mode for development: 3 reps, slower thorough mode: 10 reps
 #ifdef QUICK_BENCH
-const int REPETITIONS = 10;
+const int REPETITIONS = 3;
 #else
 const int REPETITIONS = 10;
 #endif
@@ -50,7 +50,7 @@ void BM_fast_double(benchmark::State& state) {
         morphNumericString(&buffer, 3);
     }
 }
-/*BENCHMARK(BM_fast_double)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_double)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_normal_int(benchmark::State& state) {
     long int value = 100200300400500600;
@@ -59,7 +59,7 @@ void BM_normal_int(benchmark::State& state) {
         sprintf(buffer, "%ld", value);
     }
 }
-/*BENCHMARK(BM_normal_int)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_normal_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_int(benchmark::State& state) {
     long long int value = 100200300400500600;
@@ -68,7 +68,7 @@ void BM_fast_int(benchmark::State& state) {
         i64toa_branchlut(value, buffer2);
     }
 }
-/*BENCHMARK(BM_fast_int)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_fast_dbl_to_int(benchmark::State& state) {
     double value = 123456789.123456;
@@ -77,7 +77,7 @@ void BM_fast_dbl_to_int(benchmark::State& state) {
         i64toa_branchlut((uint64_t)value, buffer2);
     }
 }
-/*BENCHMARK(BM_fast_dbl_to_int)->ReportAggregatesOnly(true);*/
+/*BENCHMARK(BM_fast_dbl_to_int)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);*/
 
 void BM_simple(benchmark::State& state) {
     ParserState pstate;
@@ -93,7 +93,7 @@ void BM_simple(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_simple)->ReportAggregatesOnly(true);
+BENCHMARK(BM_simple)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_long_string(benchmark::State& state) {
     ParserState pstate;
@@ -109,7 +109,7 @@ void BM_long_string(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_long_string)->ReportAggregatesOnly(true);
+BENCHMARK(BM_long_string)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_many_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -125,7 +125,7 @@ void BM_many_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_many_numbers)->ReportAggregatesOnly(true);
+BENCHMARK(BM_many_numbers)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimals_simple(benchmark::State& state) {
     ParserState pstate;
@@ -141,7 +141,7 @@ void BM_decimals_simple(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimals_simple)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimals_simple)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimals_complex(benchmark::State& state) {
     ParserState pstate;
@@ -157,7 +157,7 @@ void BM_decimals_complex(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimals_complex)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimals_complex)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_ordinals_common(benchmark::State& state) {
     ParserState pstate;
@@ -173,7 +173,7 @@ void BM_ordinals_common(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_ordinals_common)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_ordinals_common)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_ordinals_large(benchmark::State& state) {
     ParserState pstate;
@@ -189,7 +189,7 @@ void BM_ordinals_large(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_ordinals_large)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_ordinals_large)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_negatives(benchmark::State& state) {
     ParserState pstate;
@@ -205,7 +205,7 @@ void BM_negatives(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_negatives)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_negatives)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_large_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -221,7 +221,7 @@ void BM_large_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_large_numbers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_large_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_large_numbers_composed(benchmark::State& state) {
     ParserState pstate;
@@ -237,7 +237,7 @@ void BM_large_numbers_composed(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_large_numbers_composed)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_large_numbers_composed)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_mixed_fractions_word(benchmark::State& state) {
     ParserState pstate;
@@ -253,7 +253,7 @@ void BM_mixed_fractions_word(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_mixed_fractions_word)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_mixed_fractions_word)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_mixed_fractions_numeric(benchmark::State& state) {
     ParserState pstate;
@@ -269,7 +269,7 @@ void BM_mixed_fractions_numeric(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_mixed_fractions_numeric)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_mixed_fractions_numeric)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_numeric_fractions(benchmark::State& state) {
     ParserState pstate;
@@ -285,7 +285,7 @@ void BM_numeric_fractions(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_numeric_fractions)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_numeric_fractions)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_percents(benchmark::State& state) {
     ParserState pstate;
@@ -301,7 +301,7 @@ void BM_percents(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_percents)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_percents)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_zeros(benchmark::State& state) {
     ParserState pstate;
@@ -317,7 +317,7 @@ void BM_zeros(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_zeros)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_zeros)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_edge_cases_boundary(benchmark::State& state) {
     ParserState pstate;
@@ -333,7 +333,7 @@ void BM_edge_cases_boundary(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_edge_cases_boundary)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_edge_cases_boundary)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimal_multipliers(benchmark::State& state) {
     ParserState pstate;
@@ -349,7 +349,7 @@ void BM_decimal_multipliers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimal_multipliers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimal_multipliers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_compound_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -365,7 +365,7 @@ void BM_compound_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_compound_numbers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_compound_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_all_digits(benchmark::State& state) {
     ParserState pstate;
@@ -381,7 +381,7 @@ void BM_all_digits(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_all_digits)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_all_digits)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_teens(benchmark::State& state) {
     ParserState pstate;
@@ -397,7 +397,7 @@ void BM_teens(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_teens)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_teens)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_tens(benchmark::State& state) {
     ParserState pstate;
@@ -413,7 +413,7 @@ void BM_tens(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_tens)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_tens)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_comprehensive_mix(benchmark::State& state) {
     ParserState pstate;
@@ -429,7 +429,7 @@ void BM_comprehensive_mix(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_comprehensive_mix)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_comprehensive_mix)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimals_simple(benchmark::State& state) {
     ParserState pstate;
@@ -445,7 +445,7 @@ void BM_decimals_simple(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimals_simple)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimals_simple)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimals_complex(benchmark::State& state) {
     ParserState pstate;
@@ -461,7 +461,7 @@ void BM_decimals_complex(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimals_complex)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimals_complex)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_ordinals_common(benchmark::State& state) {
     ParserState pstate;
@@ -477,7 +477,7 @@ void BM_ordinals_common(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_ordinals_common)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_ordinals_common)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_ordinals_large(benchmark::State& state) {
     ParserState pstate;
@@ -493,7 +493,7 @@ void BM_ordinals_large(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_ordinals_large)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_ordinals_large)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_negatives(benchmark::State& state) {
     ParserState pstate;
@@ -509,7 +509,7 @@ void BM_negatives(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_negatives)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_negatives)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_large_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -525,7 +525,7 @@ void BM_large_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_large_numbers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_large_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_large_numbers_composed(benchmark::State& state) {
     ParserState pstate;
@@ -541,7 +541,7 @@ void BM_large_numbers_composed(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_large_numbers_composed)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_large_numbers_composed)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_mixed_fractions_word(benchmark::State& state) {
     ParserState pstate;
@@ -557,7 +557,7 @@ void BM_mixed_fractions_word(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_mixed_fractions_word)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_mixed_fractions_word)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_mixed_fractions_numeric(benchmark::State& state) {
     ParserState pstate;
@@ -573,7 +573,7 @@ void BM_mixed_fractions_numeric(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_mixed_fractions_numeric)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_mixed_fractions_numeric)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_numeric_fractions(benchmark::State& state) {
     ParserState pstate;
@@ -589,7 +589,7 @@ void BM_numeric_fractions(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_numeric_fractions)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_numeric_fractions)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_percents(benchmark::State& state) {
     ParserState pstate;
@@ -605,7 +605,7 @@ void BM_percents(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_percents)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_percents)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_zeros(benchmark::State& state) {
     ParserState pstate;
@@ -621,7 +621,7 @@ void BM_zeros(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_zeros)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_zeros)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_edge_cases_boundary(benchmark::State& state) {
     ParserState pstate;
@@ -637,7 +637,7 @@ void BM_edge_cases_boundary(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_edge_cases_boundary)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_edge_cases_boundary)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_decimal_multipliers(benchmark::State& state) {
     ParserState pstate;
@@ -653,7 +653,7 @@ void BM_decimal_multipliers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_decimal_multipliers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_decimal_multipliers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_compound_numbers(benchmark::State& state) {
     ParserState pstate;
@@ -669,7 +669,7 @@ void BM_compound_numbers(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_compound_numbers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_compound_numbers)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_all_digits(benchmark::State& state) {
     ParserState pstate;
@@ -685,7 +685,7 @@ void BM_all_digits(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_all_digits)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_all_digits)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_teens(benchmark::State& state) {
     ParserState pstate;
@@ -701,7 +701,7 @@ void BM_teens(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_teens)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_teens)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_tens(benchmark::State& state) {
     ParserState pstate;
@@ -717,7 +717,7 @@ void BM_tens(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_tens)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_tens)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 void BM_comprehensive_mix(benchmark::State& state) {
     ParserState pstate;
@@ -733,7 +733,7 @@ void BM_comprehensive_mix(benchmark::State& state) {
 
     freeParserState(&pstate);
 }
-BENCHMARK(BM_comprehensive_mix)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+BENCHMARK(BM_comprehensive_mix)->UseRealTime()->Threads(1)->Repetitions(REPETITIONS)->ReportAggregatesOnly(true);
 
 int main(int argc, char** argv)
 {
