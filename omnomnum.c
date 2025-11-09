@@ -32,6 +32,9 @@
 #include "scanner.def.h"
 #include "dtoa.h"
 #include "itoa.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 /* time.h was only used for internal profiling (removed) */
 
 #define TOKEN_SEPARATOR 10000
@@ -178,6 +181,98 @@ void initOmNomNum(void) {
 
 void freeOmNomNum(void) {
     /* No global state to free; kept for API compatibility. */
+}
+
+/* Post-process result to handle percent normalization */
+static void process_percent(sds *result, ParserState *state) {
+    if (!state->normalize_percent_symbol && !state->percent_as_decimal) {
+        return; // no percent processing needed
+    }
+
+    size_t len = sdslen(*result);
+    if (len == 0) return;
+
+    sds output = sdsempty();
+    output = sdsMakeRoomFor(output, len + 64);
+
+    size_t i = 0;
+    while (i < len) {
+        // Check if we're at a digit or negative sign (potential number start)
+        bool is_num_start = ((*result)[i] >= '0' && (*result)[i] <= '9') || (*result)[i] == '-';
+
+        if (is_num_start) {
+            size_t num_start = i;
+            // Find end of number (digits, dots, slashes, minus signs)
+            while (i < len && (
+                ((*result)[i] >= '0' && (*result)[i] <= '9') ||
+                (*result)[i] == '.' || (*result)[i] == '/' || (*result)[i] == '-'
+            )) {
+                i++;
+            }
+            size_t num_end = i;
+
+            // Check if followed by " percent" or "%"
+            bool has_percent_word = false;
+            bool has_percent_symbol = false;
+            size_t after_percent = i;
+
+            // Skip whitespace
+            while (i < len && ((*result)[i] == ' ' || (*result)[i] == '\t')) {
+                i++;
+            }
+
+            // Check for "percent"
+            if (i + 7 <= len && strncmp(*result + i, "percent", 7) == 0) {
+                char next = (i + 7 < len) ? (*result)[i + 7] : '\0';
+                if (!is_letter(next)) {
+                    has_percent_word = true;
+                    after_percent = i + 7;
+                }
+            }
+            // Check for "%"
+            else if (i < len && (*result)[i] == '%') {
+                has_percent_symbol = true;
+                after_percent = i + 1;
+            }
+
+            if (has_percent_word || has_percent_symbol) {
+                // Extract the number
+                sds num_str = sdsnewlen(*result + num_start, num_end - num_start);
+
+                if (state->percent_as_decimal) {
+                    // Convert to decimal: n → n/100
+                    double value = strtod(num_str, NULL);
+                    value /= 100.0;
+
+                    char buf[64];
+                    int written = snprintf(buf, sizeof(buf), "%.*g", state->precision + 2, value);
+                    output = sdscatlen(output, buf, written);
+                } else if (state->normalize_percent_symbol) {
+                    // Just normalize the symbol: number + "%"
+                    output = sdscatsds(output, num_str);
+                    output = sdscat(output, "%");
+                } else {
+                    // Keep as-is (shouldn't reach here due to early return)
+                    output = sdscatlen(output, *result + num_start, after_percent - num_start);
+                }
+
+                sdsfree(num_str);
+                i = after_percent;
+                continue;
+            } else {
+                // Not followed by percent, copy number as-is
+                output = sdscatlen(output, *result + num_start, num_end - num_start);
+                continue;
+            }
+        }
+
+        // Regular character, just copy
+        output = sdscatlen(output, *result + i, 1);
+        i++;
+    }
+
+    sdsfree(*result);
+    *result = output;
 }
 
 /* Internal profiling removed. */
@@ -355,5 +450,9 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                 data_len - l.values[l.used-1].end
                 );
     }
+
+    // Post-process for percent normalization if requested
+    process_percent(&state->result, state);
+
     /* profiling removed */
 }

@@ -90,6 +90,8 @@ typedef struct {
     bool parse_second;
     bool parse_fractions; // runtime toggle for fraction parsing
     bool reduce_fractions; // runtime toggle for fraction reduction
+    bool normalize_percent_symbol; // convert "percent" to "%"
+    bool percent_as_decimal; // convert "n percent" to n/100
     bool is_parsing;
     int last_token;
     // Per-request context (reentrancy + caching)

@@ -324,3 +324,110 @@ TEST(OmNomNum, ReduceFractionsEnabled_Negative) {
     freeOmNomNum();
     freeParserState(&state);
 }
+
+TEST(OmNomNum, PercentDefault) {
+    ParserState state;
+    initParserState(&state);
+    initOmNomNum();
+
+    const char* input = "fifty percent";
+    const char* expect = "50 percent";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, NormalizePercentSymbol) {
+    ParserState state;
+    initParserState(&state);
+    state.normalize_percent_symbol = true;
+    initOmNomNum();
+
+    const char* input = "fifty percent";
+    const char* expect = "50%";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, NormalizePercentSymbol_Float) {
+    ParserState state;
+    initParserState(&state);
+    state.normalize_percent_symbol = true;
+    initOmNomNum();
+
+    const char* input = "one point five percent";
+    const char* expect = "1.5%";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, PercentAsDecimal) {
+    ParserState state;
+    initParserState(&state);
+    state.percent_as_decimal = true;
+    initOmNomNum();
+
+    const char* input = "50 percent";
+    const char* expect = "0.5";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, PercentAsDecimal_WithExistingSymbol) {
+    ParserState state;
+    initParserState(&state);
+    state.percent_as_decimal = true;
+    initOmNomNum();
+
+    const char* input = "25%";
+    const char* expect = "0.25";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
+
+TEST(OmNomNum, PercentAsDecimal_Fraction) {
+    ParserState state;
+    initParserState(&state);
+    state.percent_as_decimal = true;
+    initOmNomNum();
+
+    const char* input = "two and a half percent";
+    const char* expect = "0.025";
+
+    normalize(input, strlen(input), &state);
+
+    ASSERT_TRUE(strcmp(expect, state.result) == 0) << "expected \"" << expect << "\" given \"" << input << "\", actual \"" << state.result << "\"\n";
+
+    sdsfree(state.result);
+    freeOmNomNum();
+    freeParserState(&state);
+}
