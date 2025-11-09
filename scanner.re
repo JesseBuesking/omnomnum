@@ -372,6 +372,9 @@ fast_path:
                     state->is_parsing = false;
                 }
                 // When parse_fractions is false, preserve the matched text as-is
+                // Initialize numeric fields to prevent undefined behavior
+                (*yylval).is_dbl = true;
+                (*yylval).dbl = 0.0;
                 (*yylval).leave_alone = true;
                 return TOKEN_DECIMAL;
             }
@@ -641,6 +644,9 @@ fast_path:
                     state->is_parsing = false;
                 }
                 // When parse_fractions is false, preserve the matched text as-is
+                // Initialize numeric fields to prevent undefined behavior
+                (*yylval).is_dbl = true;
+                (*yylval).dbl = 0.0;
                 (*yylval).leave_alone = true;
                 return TOKEN_DECIMAL;
             }
