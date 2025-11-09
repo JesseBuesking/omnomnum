@@ -37,8 +37,18 @@ install_re2c() {
     elif command_exists brew; then
         brew install re2c
     else
-        echo -e "${RED}Could not install re2c automatically. Please install manually.${NC}"
-        exit 1
+        echo -e "${YELLOW}Package manager not found, building re2c from source...${NC}"
+        cd /tmp
+        if [ -d "re2c" ]; then
+            rm -rf re2c
+        fi
+        git clone --depth 1 https://github.com/skvadrik/re2c.git
+        cd re2c
+        mkdir build && cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        make -j4
+        sudo cp re2c /usr/local/bin/
+        cd "$PROJECT_ROOT"
     fi
     echo -e "${GREEN}re2c installed successfully${NC}"
 }
@@ -50,12 +60,11 @@ install_benchmark() {
     if [ -d "benchmark" ]; then
         rm -rf benchmark
     fi
-    git clone https://github.com/google/benchmark.git
+    git clone --depth 1 https://github.com/google/benchmark.git
     cd benchmark
-    cmake -E make_directory "build"
-    cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
-    cmake --build "build" --config Release
-    sudo cmake --build "build" --config Release --target install
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true
+    make -j4
+    sudo make install
     cd "$PROJECT_ROOT"
     echo -e "${GREEN}Google Benchmark installed successfully${NC}"
 }
