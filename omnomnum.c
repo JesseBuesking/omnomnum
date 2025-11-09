@@ -114,6 +114,33 @@ static uint64_t gcd(uint64_t a, uint64_t b) {
     return a;
 }
 
+/* Check if a word is a denominator word (for fraction handling) */
+static int is_denominator_word(const char* s, size_t len) {
+    /* Common fraction denominators that should be preserved when parse_fractions=false */
+    if (len == 4 && !strncmp(s, "half", 4)) return 1;
+    if (len == 6 && !strncmp(s, "halves", 6)) return 1;
+    if (len == 5 && !strncmp(s, "third", 5)) return 1;
+    if (len == 6 && !strncmp(s, "thirds", 6)) return 1;
+    if (len == 7 && !strncmp(s, "quarter", 7)) return 1;
+    if (len == 8 && !strncmp(s, "quarters", 8)) return 1;
+    if (len == 6 && !strncmp(s, "fourth", 6)) return 1;
+    if (len == 7 && !strncmp(s, "fourths", 7)) return 1;
+    if (len == 5 && !strncmp(s, "fifth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "fifths", 6)) return 1;
+    if (len == 5 && !strncmp(s, "sixth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "sixths", 6)) return 1;
+    if (len == 7 && !strncmp(s, "seventh", 7)) return 1;
+    if (len == 8 && !strncmp(s, "sevenths", 8)) return 1;
+    if (len == 6 && !strncmp(s, "eighth", 6)) return 1;
+    if (len == 7 && !strncmp(s, "eighths", 7)) return 1;
+    if (len == 5 && !strncmp(s, "ninth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "ninths", 6)) return 1;
+    if (len == 5 && !strncmp(s, "tenth", 5)) return 1;
+    if (len == 6 && !strncmp(s, "tenths", 6)) return 1;
+    /* Add more as needed - these are the most common */
+    return 0;
+}
+
 void yystypeToString(sds *s, YYSTYPE A, int precision) {
     if (A.is_frac) {
         if (A.frac_num < 0) {
@@ -431,19 +458,30 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
             }
             unsigned int tok_len = pos - tok_start;
             if (tok_len > 0) {
-                ParserState sub; initParserState(&sub);
-                sub.parse_second = state->parse_second; sub.precision = state->precision;
-                sub.reduce_fractions = state->reduce_fractions;
-                YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
-                if (sl.used > 0) {
-                    sds tmp = sdsempty();
-                    yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
-                    state->result = sdscatsds(state->result, tmp);
-                    sdsfree(tmp);
-                } else {
+                // If parse_fractions is disabled and this token is a denominator word,
+                // preserve it as-is to avoid converting it to an ordinal (e.g., "thirds" → "3rds")
+                if (!state->parse_fractions && is_denominator_word(data + tok_start, tok_len)) {
                     state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                } else {
+                    ParserState sub; initParserState(&sub);
+                    // Copy all runtime flags to respect caller's settings
+                    sub.parse_second = state->parse_second;
+                    sub.precision = state->precision;
+                    sub.reduce_fractions = state->reduce_fractions;
+                    sub.parse_fractions = state->parse_fractions;
+                    sub.normalize_percent_symbol = state->normalize_percent_symbol;
+                    sub.percent_as_decimal = state->percent_as_decimal;
+                    YYSTYPEList sl = find_numbers(data + tok_start, tok_len, &sub);
+                    if (sl.used > 0) {
+                        sds tmp = sdsempty();
+                        yystypeToStringWithReduction(&tmp, sl.values[0], sub.precision, sub.reduce_fractions);
+                        state->result = sdscatsds(state->result, tmp);
+                        sdsfree(tmp);
+                    } else {
+                        state->result = sdscatlen(state->result, data + tok_start, tok_len);
+                    }
+                    freeParserState(&sub);
                 }
-                freeParserState(&sub);
             }
         }
     } else {
