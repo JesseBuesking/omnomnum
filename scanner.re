@@ -32,41 +32,29 @@
 #include <string.h>
 
 static int map_card_small(const char* s, size_t n, double* out) {
-    /* Simple hash: length << 8 | first_char for switch-based dispatch */
-    unsigned int h = (n << 8) | s[0];
-    switch (h) {
-        case (3<<8)|'o': if (!strncmp(s,"one",3)) { *out=1; return 1; } break;
-        case (3<<8)|'t': if (!strncmp(s,"two",3)) { *out=2; return 1; } break;
-        case (5<<8)|'t': if (!strncmp(s,"three",5)) { *out=3; return 1; } break;
-        case (4<<8)|'f':
-            if (!strncmp(s,"four",4)) { *out=4; return 1; }
-            if (!strncmp(s,"five",4)) { *out=5; return 1; }
-            break;
-        case (3<<8)|'s': if (!strncmp(s,"six",3)) { *out=6; return 1; } break;
-        case (5<<8)|'s': if (!strncmp(s,"seven",5)) { *out=7; return 1; } break;
-        case (5<<8)|'e': if (!strncmp(s,"eight",5)) { *out=8; return 1; } break;
-        case (4<<8)|'n': if (!strncmp(s,"nine",4)) { *out=9; return 1; } break;
-    }
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
     return 0;
 }
 
 static int map_digit_word(const char* s, size_t n, int* out) {
-    /* Simple hash: length << 8 | first_char for switch-based dispatch */
-    unsigned int h = (n << 8) | s[0];
-    switch (h) {
-        case (4<<8)|'z': if (!strncmp(s,"zero",4)) { *out=0; return 1; } break;
-        case (3<<8)|'o': if (!strncmp(s,"one",3)) { *out=1; return 1; } break;
-        case (3<<8)|'t': if (!strncmp(s,"two",3)) { *out=2; return 1; } break;
-        case (5<<8)|'t': if (!strncmp(s,"three",5)) { *out=3; return 1; } break;
-        case (4<<8)|'f':
-            if (!strncmp(s,"four",4)) { *out=4; return 1; }
-            if (!strncmp(s,"five",4)) { *out=5; return 1; }
-            break;
-        case (3<<8)|'s': if (!strncmp(s,"six",3)) { *out=6; return 1; } break;
-        case (5<<8)|'s': if (!strncmp(s,"seven",5)) { *out=7; return 1; } break;
-        case (5<<8)|'e': if (!strncmp(s,"eight",5)) { *out=8; return 1; } break;
-        case (4<<8)|'n': if (!strncmp(s,"nine",4)) { *out=9; return 1; } break;
-    }
+    if (n==4 && !strncmp(s,"zero",4)) { *out=0; return 1; }
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
     return 0;
 }
 
