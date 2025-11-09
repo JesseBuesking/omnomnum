@@ -35,9 +35,9 @@ static void add_bench_context() {
 #endif
 }
 
-// Fast mode for development: 3 reps, slower thorough mode: 10 reps
+// Fast mode for development: 2 reps for variance testing, slower thorough mode: 10 reps
 #ifdef QUICK_BENCH
-const int REPETITIONS = 3;
+const int REPETITIONS = 2;
 #else
 const int REPETITIONS = 10;
 #endif
