@@ -20,23 +20,35 @@ This measures **reproducibility** - how consistent are results across runs?
 
 Tested 9 configurations with 5 independent comparison runs each:
 
-| min_time | REPS | Runtime | CV of Means | Max Diff | Regression Detection | Status |
-|----------|------|---------|-------------|----------|---------------------|---------|
-| 0.05s    | 3    | 26s     | 3.71%       | 8.79%    | >8.79%              | ✗ FAIL |
-| 0.05s    | 5    | 41s     | 2.11%       | 4.99%    | >4.99%              | ✓ PASS |
-| 0.05s    | 10   | 81s     | 2.02%       | 5.00%    | >5.00%              | ✓ PASS |
-| 0.1s     | 3    | 52s     | 2.33%       | 5.54%    | >5.54%              | ✓ PASS |
-| 0.1s     | 5    | 81s     | 2.32%       | 5.79%    | >5.79%              | ✓ PASS |
-| 0.1s     | 10   | 161s    | 2.02%       | 4.86%    | >4.86%              | ✓ PASS ⭐ |
-| 0.2s     | 3    | 104s    | 2.82%       | 6.90%    | >6.90%              | ✓ PASS |
-| 0.2s     | 10   | 319s    | 1.40%       | 3.45%    | >3.45%              | ✓ PASS 🏆 |
-| 0.5s     | 5    | 410s    | 1.76%       | 4.29%    | >4.29%              | ✓ PASS |
+### Fast Configs (< 90 seconds)
+
+| Config | Runtime | CV | Max Diff | Status |
+|--------|---------|-------|----------|---------|
+| 0.05s × 3 reps  | 26s  | 3.71% | 8.79% | ✗ FAIL (too unstable) |
+| 0.05s × 5 reps  | 41s  | 2.11% | 4.99% | ✓ PASS ⚡ **Fast dev** |
+| 0.05s × 10 reps | 81s  | 2.02% | 5.00% | ✓ PASS |
+
+### Balanced Configs (90-180 seconds)
+
+| Config | Runtime | CV | Max Diff | Status |
+|--------|---------|-------|----------|---------|
+| 0.1s × 3 reps   | 52s  | 2.33% | 5.54% | ✓ PASS |
+| 0.1s × 5 reps   | 81s  | 2.32% | 5.79% | ✓ PASS |
+| 0.1s × 10 reps  | 161s | 2.02% | 4.86% | ✓ PASS ⭐ **Recommended** |
+
+### Thorough Configs (> 180 seconds)
+
+| Config | Runtime | CV | Max Diff | Status |
+|--------|---------|-------|----------|---------|
+| 0.2s × 3 reps   | 104s | 2.82% | 6.90% | ✓ PASS |
+| 0.2s × 10 reps  | 319s | 1.40% | 3.45% | ✓ PASS 🏆 **Most reliable** |
+| 0.5s × 5 reps   | 410s | 1.76% | 4.29% | ✓ PASS (baseline) |
 
 **Key findings**:
 - **CV of means < 3%** is achievable and stable!
-- Most configs meet the threshold except the fastest (0.05s, 3 reps)
-- Longer min_time improves stability but takes much longer
-- Best balance: `min_time=0.1s, reps=10` (2.7min, 2.02% CV, detects >4.86% regressions)
+- Only the fastest config (0.05s, 3 reps) fails
+- Best balance: `0.1s × 10 reps` (2.7min, 2.02% CV, detects >4.86% regressions)
+- Most reliable: `0.2s × 10 reps` (5.3min, 1.40% CV, detects >3.45% regressions)
 
 ## Recommended Settings
 
