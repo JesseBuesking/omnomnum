@@ -241,7 +241,23 @@ static void process_percent(sds *result, ParserState *state) {
 
                 if (state->percent_as_decimal) {
                     // Convert to decimal: n → n/100
-                    double value = strtod(num_str, NULL);
+                    // Check if it's a fraction (contains '/')
+                    char *slash = strchr(num_str, '/');
+                    double value;
+                    if (slash) {
+                        // Parse as fraction: numerator/denominator
+                        *slash = '\0';
+                        double numerator = strtod(num_str, NULL);
+                        double denominator = strtod(slash + 1, NULL);
+                        if (denominator != 0) {
+                            value = numerator / denominator;
+                        } else {
+                            value = numerator; // fallback if denominator is 0
+                        }
+                    } else {
+                        // Parse as regular number
+                        value = strtod(num_str, NULL);
+                    }
                     value /= 100.0;
 
                     char buf[64];
