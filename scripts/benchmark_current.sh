@@ -70,11 +70,18 @@ ensure_objs() {
 }
 
 echo "[bench_current] Building benchmark binary ..."
+
+# Set compile flags for quick mode
+EXTRA_CXXFLAGS=""
+if [[ "${QUICK_BENCH:-0}" == "1" ]]; then
+  EXTRA_CXXFLAGS="-DQUICK_BENCH"
+fi
+
 ensure_objs
-if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"; then
+if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS"; then
   echo "[bench_current] Make link failed; ensuring objects and retrying"
   ensure_objs
-  if ! make -B test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"; then
+  if ! make -B test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS"; then
     echo "[bench_current] Manual compile+link fallback"
     # Build core objects explicitly (ignore failures; gather what exists)
     make -k parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o BENCH_PREFIX="$BENCH_PREFIX_ENV" || true
@@ -86,6 +93,7 @@ if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"; then
         -DGIT_DESC=\"$(git describe --always --dirty --tags 2>/dev/null || git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)\" \
         -DBUILD_TIME=\"$(date -u +%FT%TZ)\" \
         -DTREE_DIRTY_STR=\"$(test -n "$(git status --porcelain 2>/dev/null)" && echo 1 || echo 0)\" \
+        $EXTRA_CXXFLAGS \
         -c test/test_benchmark.c -o test/test_benchmark.o
     fi
     # Link with whatever objects we have; include top-level and subdir objects
@@ -96,9 +104,22 @@ if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV"; then
 fi
 
 echo "[bench_current] Running benchmark -> $OUT_JSON_ABS"
+
+# Quick mode for development (QUICK_BENCH=1): faster iterations with 0.5s min time, 3 reps
+# Thorough mode (default): production quality with 2s min time, 10 reps
+if [[ "${QUICK_BENCH:-0}" == "1" ]]; then
+  echo "[bench_current] Using QUICK mode (0.5s min_time, 3 reps)"
+  MIN_TIME="0.5s"
+  REPS=3
+else
+  echo "[bench_current] Using THOROUGH mode (2s min_time, 10 reps)"
+  MIN_TIME="2s"
+  REPS=10
+fi
+
 ./test/test_benchmark \
-  --benchmark_min_time=2s \
-  --benchmark_repetitions=3 \
+  --benchmark_min_time="$MIN_TIME" \
+  --benchmark_repetitions="$REPS" \
   --benchmark_out="$OUT_JSON_ABS" \
   --benchmark_out_format=json
 

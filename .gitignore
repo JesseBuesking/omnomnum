@@ -11,6 +11,22 @@ tags
 
 *.gch
 
+# Benchmark test data (raw JSON outputs - keep summary .md files only)
+test/*test_r*.json
+test/cv_*.json
+test/compare_*.json
+test/better_*.json
+test/explain_*.json
+test/verify_*.json
+test/gb-*.json
+test/threshold_*.json
+test/var_*.json
+test/extreme_*.json
+test/stability_*.json
+test/absolute_*.json
+test/ultra_*.json
+test/benchmark_*.json
+
 # Bench artifacts
 bench_*.txt
 test/gb_*.json

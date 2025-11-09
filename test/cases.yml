@@ -262,3 +262,163 @@
 - ["negative five degrees", "-5 degrees", 3]
 - ["one eighth teaspoon", "1/8 teaspoon", 3]
 - ["three quarters full", "3/4 full", 3]
+
+# Edge cases: Zero
+- ["zero zero zero", "0 0 0", 3]
+- ["zero point zero", "0", 6]
+- ["negative zero", "-0", 3]
+- ["zero million", "0", 3]
+- ["zero thousand zero hundred", "0", 3]
+
+# Edge cases: Very large numbers
+- ["nine hundred ninety nine quadrillion nine hundred ninety nine trillion nine hundred ninety nine billion nine hundred ninety nine million nine hundred ninety nine thousand nine hundred ninety nine", "999999999999999999", 3]
+- ["one quadrillion one", "1000000000000001", 3]
+- ["999 quadrillion", "999000000000000000", 3]
+
+# Edge cases: Small decimal precision
+- ["point zero zero one", "0.001", 6]
+- ["point zero zero zero one", "0.0001", 6]
+- ["zero point nine nine nine", "0.999", 6]
+- ["point one two three four five", "0.12345", 6]
+
+# Edge cases: Fraction edge cases
+- ["zero halves", "0/2", 3]
+- ["zero thirds", "0/3", 3]
+- ["ten halves", "10/2", 3]
+- ["ninety nine hundredths", "99/100", 3]
+- ["one hundred quarters", "100/4", 3]
+
+# Edge cases: Mixed fractions edge cases
+- ["zero and a half", "1/2", 3]
+- ["ten and three quarters", "43/4", 3]
+- ["one hundred and one half", "201/2", 3]
+- ["one thousand and a quarter", "4001/4", 3]
+
+# Edge cases: Ordinals at boundaries
+- ["twenty first", "21st", 3]
+- ["forty third", "43rd", 3]
+- ["fifty fourth", "54th", 3]
+- ["sixty fifth", "65th", 3]
+- ["seventy sixth", "76th", 3]
+- ["eighty seventh", "87th", 3]
+- ["ninety eighth", "98th", 3]
+- ["ninety ninth", "99th", 3]
+- ["one hundred first", "101st", 3]
+- ["one hundred second", "100 second", 3]
+- ["one hundred third", "103rd", 3]
+- ["one hundred eleventh", "111th", 3]
+- ["one hundred twenty first", "121st", 3]
+
+# Edge cases: Negative numbers
+- ["minus zero", "-0", 3]
+- ["minus point five", "-0.5", 6]
+- ["minus zero point one", "-0.1", 6]
+- ["negative zero point zero one", "-0.01", 6]
+- ["minus one thousand", "-1000", 3]
+- ["negative nine hundred ninety nine", "-999", 3]
+- ["minus one million", "-1000000", 3]
+
+# Edge cases: Negative fractions
+- ["minus one half", "-1/2", 3]
+- ["negative three quarters", "-3/4", 3]
+- ["minus two and a half", "-5/2", 3]
+- ["negative ten and three eighths", "-83/8", 3]
+
+# Edge cases: Decimals with multipliers
+- ["point one million", "100000", 6]
+- ["point five billion", "500000000", 6]
+- ["point zero one thousand", "10", 6]
+- ["zero point five million", "500000", 6]
+
+# Edge cases: Multiple consecutive numbers
+- ["zero one two three four five six seven eight nine", "0 1 2 3 4 5 6 7 8 9", 3]
+- ["ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen", "10 11 12 13 14 15 16 17 18 19", 3]
+- ["twenty thirty forty fifty sixty seventy eighty ninety", "20 30 40 50 60 70 80 90", 3]
+
+# Edge cases: Numbers with hyphens vs spaces
+- ["twenty-one", "21", 3]
+- ["thirty-seven", "37", 3]
+- ["ninety-nine", "99", 3]
+
+# Edge cases: Compound numbers without spaces
+- ["fortyfive", "45", 3]
+- ["fiftysix", "56", 3]
+- ["sixtyseven", "67", 3]
+- ["seventyeight", "78", 3]
+- ["eightyeight", "88", 3]
+- ["ninetynine", "99", 3]
+
+# Edge cases: 'fourty' vs 'forty' spelling
+- ["fourty", "40", 3]
+- ["fourty five", "45", 3]
+- ["fourty-five", "45", 3]
+- ["fourtyfive", "45", 3]
+
+# Edge cases: Mixed numeric and word fractions
+- ["1 half", "1/2", 3]
+- ["2 thirds", "2/3", 3]
+- ["5 eighths", "5/8", 3]
+- ["10 quarters", "10/4", 3]
+- ["100 halves", "100/2", 3]
+
+# Edge cases: Numeric fractions
+- ["3/4", "3/4", 3]
+- ["7/8", "7/8", 3]
+- ["99/100", "99/100", 3]
+- ["1/1000", "1/1000", 3]
+
+# Edge cases: Mixed numeric fractions with various formats
+- ["2 3/4", "11/4", 3]
+- ["10 1/2", "21/2", 3]
+- ["100 1/4", "401/4", 3]
+
+# Edge cases: Percent (without normalization)
+- ["zero percent", "0 percent", 3]
+- ["one percent", "1 percent", 3]
+- ["one hundred percent", "100 percent", 3]
+- ["five hundred percent", "500 percent", 3]
+- ["one thousand percent", "1000 percent", 3]
+- ["point five percent", "0.5 percent", 6]
+- ["zero point one percent", "0.1 percent", 6]
+
+# Edge cases: Complex combinations
+- ["negative zero point five million", "-500000", 6]
+- ["minus one point five billion", "-1500000000", 6]
+- ["one million two hundred thirty four thousand five hundred sixty seven point eight nine", "1234567.89", 6]
+
+# Edge cases: Word boundaries (should NOT be converted)
+- ["wonderful", "wonderful", 3]
+- ["someone", "someone", 3]
+
+# Edge cases: Preservation of formatting
+- ["$1,234.56", "$1234.56", 6]
+
+# Edge cases: Long chains
+- ["one thousand one hundred eleven", "1111", 3]
+- ["two thousand two hundred twenty two", "2222", 3]
+- ["three thousand three hundred thirty three", "3333", 3]
+- ["nine thousand nine hundred ninety nine", "9999", 3]
+
+# Edge cases: Denominators - all supported types
+- ["one eleventh", "1/11", 3]
+- ["one twelfth", "1/12", 3]
+- ["one fourteenth", "1/14", 3]
+- ["one fifteenth", "1/15", 3]
+- ["one sixteenth", "1/16", 3]
+- ["one seventeenth", "1/17", 3]
+- ["one eighteenth", "1/18", 3]
+- ["one nineteenth", "1/19", 3]
+
+# Edge cases: All -ty denominators
+- ["five twentieths", "5/20", 3]
+- ["five thirtieths", "5/30", 3]
+- ["five fortieths", "5/40", 3]
+- ["five fiftieths", "5/50", 3]
+- ["five sixtieths", "5/60", 3]
+- ["five seventieths", "5/70", 3]
+- ["five eightieths", "5/80", 3]
+- ["five ninetieths", "5/90", 3]
+
+# Edge cases: Quadrillionths (largest supported denominator)
+- ["five quadrillionths", "5/1000000000000000", 3]
+- ["ten quadrillionths", "10/1000000000000000", 3]
