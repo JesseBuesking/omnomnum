@@ -4,8 +4,18 @@
 # 1. lemon (parser generator from SQLite)
 # 2. re2c (lexer generator)
 # 3. google benchmark (performance testing framework)
+#
+# Usage:
+#   bash scripts/setup_environment.sh        # Install only
+#   source scripts/setup_environment.sh      # Install + add to PATH
 
-set -e  # Exit on error
+# Detect if being sourced or executed
+(return 0 2>/dev/null) && SOURCED=1 || SOURCED=0
+
+# Only exit on error if not sourced (to avoid killing the user's shell)
+if [ "$SOURCED" -eq 0 ]; then
+    set -e
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -267,15 +277,33 @@ verify_installations() {
 
         info "Tools installed to: $TOOLS_DIR"
         echo ""
-        info "To use the tools in your current shell, run:"
-        echo "    source tools/env.sh"
-        echo ""
-        info "To add permanently, the script can update your shell config."
-        echo ""
 
-        # Offer to add to shell config
-        add_to_shell_config
+        # Handle environment setup based on whether script was sourced or executed
+        if [ "$SOURCED" -eq 1 ]; then
+            # Script was sourced - automatically add to PATH for current shell
+            export PATH="$TOOLS_BIN:$PATH"
+            export PKG_CONFIG_PATH="$TOOLS_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 
+            info "Tools added to PATH for current shell session!"
+            echo ""
+            info "To add permanently, add this to your ~/.bashrc or ~/.zshrc:"
+            echo "    source $PROJECT_ROOT/tools/env.sh"
+        else
+            # Script was executed - provide instructions
+            info "To use the tools in your current shell, run:"
+            echo "    source tools/env.sh"
+            echo ""
+            echo "Or run the setup script with source to install + add to PATH:"
+            echo "    source scripts/setup_environment.sh"
+            echo ""
+            info "To add permanently, the script can update your shell config."
+            echo ""
+
+            # Offer to add to shell config
+            add_to_shell_config
+        fi
+
+        echo ""
         info "You can now build OmNomNum with:"
         echo "    make"
         echo ""
@@ -385,6 +413,9 @@ main() {
     echo ""
     echo "========================================="
     echo "  OmNomNum Environment Setup"
+    if [ "$SOURCED" -eq 1 ]; then
+        echo "  (Sourced mode - will add to PATH)"
+    fi
     echo "========================================="
     echo ""
     echo "This script will install the following tools:"
