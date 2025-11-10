@@ -76,7 +76,7 @@ fi
 
 # Auto-detect PR if not provided
 if [ -z "$PR_NUMBER" ]; then
-  PR_NUMBER=$(auto_detect_pr)
+  PR_NUMBER=$(auto_detect_pr || true)
   if [ -z "$PR_NUMBER" ]; then
     echo "Error: Could not auto-detect PR number from current branch."
     echo "Please provide PR_NUMBER manually."
