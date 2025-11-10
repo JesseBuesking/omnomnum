@@ -15,14 +15,14 @@ REPO="${GITHUB_REPOSITORY:-JesseBuesking/omnomnum}"
 
 # Auto-detect PR number from current branch if not provided
 auto_detect_pr() {
-  local branch=$(git branch --show-current 2>/dev/null)
+  local branch=$(git branch --show-current 2>/dev/null || true)
   if [ -z "$branch" ]; then
     echo ""
     return 1
   fi
 
   if command -v gh &> /dev/null; then
-    local pr=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null)
+    local pr=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null || true)
     if [ -n "$pr" ]; then
       echo "$pr"
       return 0
