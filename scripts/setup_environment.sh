@@ -436,7 +436,10 @@ main() {
     check_install_benchmark
 
     # Verify everything is installed
-    verify_installations
+    if ! verify_installations; then
+        # Verification failed - don't show success message
+        return 1
+    fi
 
     # Show CPU governor tip
     cpu_governor_info
