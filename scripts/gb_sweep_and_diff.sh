@@ -170,20 +170,29 @@ with open(delta_file, 'w') as f:
     for i, row in enumerate(rows):
         output_row = [row['file']]
 
-        # Add benchmark values
-        curr_vals = [float(row[col]) for col in bench_cols]
-        output_row.extend([f'{v:.2f}' for v in curr_vals])
+        # Add benchmark values (handle missing/empty values as None)
+        curr_vals = []
+        for col in bench_cols:
+            val = row[col].strip()
+            curr_vals.append(float(val) if val else None)
+
+        # Format values for output (None -> empty string)
+        output_row.extend([f'{v:.2f}' if v is not None else '' for v in curr_vals])
 
         # Add deltas and percentages
         if prev_vals is None:
-            # First row: all deltas are 0
-            for _ in bench_cols:
-                output_row.extend(['0.00', '0.00'])
+            # First row: all deltas are 0 or empty
+            for v in curr_vals:
+                output_row.extend(['0.00' if v is not None else '', '0.00' if v is not None else ''])
         else:
             for prev, curr in zip(prev_vals, curr_vals):
-                delta = curr - prev
-                pct = (100.0 * delta / prev) if prev != 0 else 0
-                output_row.extend([f'{delta:.2f}', f'{pct:+.2f}'])
+                if curr is None or prev is None:
+                    # Missing benchmark: leave delta empty
+                    output_row.extend(['', ''])
+                else:
+                    delta = curr - prev
+                    pct = (100.0 * delta / prev) if prev != 0 else 0
+                    output_row.extend([f'{delta:.2f}', f'{pct:+.2f}'])
 
         writer.writerow(output_row)
         prev_vals = curr_vals
