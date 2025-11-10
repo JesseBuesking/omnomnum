@@ -99,6 +99,13 @@ for c in "${COMMITS[@]}"; do
     cp -f "$ROOT_DIR/scripts/benchmark_current.sh" scripts/benchmark_current.sh
     chmod +x scripts/benchmark_current.sh
 
+    # Copy current benchmark suite to test all commits with same comprehensive benchmarks
+    mkdir -p test
+    if [[ -f "$ROOT_DIR/test/test_benchmark.c" ]]; then
+      cp -f "$ROOT_DIR/test/test_benchmark.c" test/test_benchmark.c
+      echo "[sweep] Copied current test_benchmark.c to $short"
+    fi
+
     # Optional freeze of generated files if tracked in this ref (handled by runner via FREEZE_CODEGEN)
     FREEZE_VARS=()
     if [[ "$FREEZE_CODEGEN" == "1" ]]; then FREEZE_VARS=(FREEZE_CODEGEN=1); fi
@@ -130,16 +137,66 @@ bash scripts/gb_extract_means.sh "${files[@]}" > "$MEANS"
 
 # Add deltas vs previous commit
 DELTA_OUT="$OUT_ABS/means_with_deltas.csv"
-awk -F',' 'BEGIN{OFS=","}
-  NR==1{print $0, "d_simple_ns","d_simple_pct","d_long_ns","d_long_pct","d_many_ns","d_many_pct"; next}
-  NR==2{print $0, 0, 0, 0, 0, 0, 0; ps=$2; pl=$3; pm=$4; next}
-  {
-    ds=$2-ps; dls=$3-pl; dm=$4-pm;
-    pcts=(ps!=0?100.0*ds/ps:0); pctl=(pl!=0?100.0*dls/pl:0); pctm=(pm!=0?100.0*dm/pm:0);
-    print $0, ds, pcts, dls, pctl, dm, pctm;
-    ps=$2; pl=$3; pm=$4;
-  }
-' "$MEANS" > "$DELTA_OUT"
+python3 - "$MEANS" "$DELTA_OUT" <<'PYTHON'
+import sys
+import csv
+
+means_file = sys.argv[1]
+delta_file = sys.argv[2]
+
+# Read all rows
+with open(means_file) as f:
+    reader = csv.DictReader(f)
+    rows = list(reader)
+    fieldnames = reader.fieldnames
+
+# Get benchmark columns (all except 'file')
+bench_cols = [col for col in fieldnames if col != 'file']
+
+# Build output headers: file, bench1, bench2, ..., bench1_delta, bench1_pct, bench2_delta, bench2_pct, ...
+output_headers = ['file']
+for col in bench_cols:
+    output_headers.append(col)
+for col in bench_cols:
+    output_headers.append(f'{col}_delta')
+    output_headers.append(f'{col}_pct')
+
+# Write output with deltas
+with open(delta_file, 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(output_headers)
+
+    prev_vals = None
+    for i, row in enumerate(rows):
+        output_row = [row['file']]
+
+        # Add benchmark values (handle missing/empty values as None)
+        curr_vals = []
+        for col in bench_cols:
+            val = row[col].strip()
+            curr_vals.append(float(val) if val else None)
+
+        # Format values for output (None -> empty string)
+        output_row.extend([f'{v:.2f}' if v is not None else '' for v in curr_vals])
+
+        # Add deltas and percentages
+        if prev_vals is None:
+            # First row: all deltas are 0 or empty
+            for v in curr_vals:
+                output_row.extend(['0.00' if v is not None else '', '0.00' if v is not None else ''])
+        else:
+            for prev, curr in zip(prev_vals, curr_vals):
+                if curr is None or prev is None:
+                    # Missing benchmark: leave delta empty
+                    output_row.extend(['', ''])
+                else:
+                    delta = curr - prev
+                    pct = (100.0 * delta / prev) if prev != 0 else 0
+                    output_row.extend([f'{delta:.2f}', f'{pct:+.2f}'])
+
+        writer.writerow(output_row)
+        prev_vals = curr_vals
+PYTHON
 
 echo "[sweep] Done. Outputs:"
 echo "  JSONs: $OUT_ABS/*.json"
