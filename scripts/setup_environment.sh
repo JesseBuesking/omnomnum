@@ -39,7 +39,11 @@ warn() {
 
 error() {
     echo -e "${RED}[ERROR]${NC} $1"
-    exit 1
+    if [ "$SOURCED" -eq 1 ]; then
+        return 1
+    else
+        exit 1
+    fi
 }
 
 section() {
