@@ -11,6 +11,30 @@ Implements most of the logic from [numerizer](https://github.com/jduff/numerizer
 
 ## Prereqs
 
+### Automated Setup (Recommended)
+
+For **lemon**, **re2c**, and **Google Benchmark**, use the automated setup script:
+
+```bash
+# Option 1: Install and add to current shell session
+source scripts/setup_environment.sh
+
+# Option 2: Install and optionally add to ~/.bashrc or ~/.zshrc
+bash scripts/setup_environment.sh
+```
+
+The script will:
+- Check for and install missing tools (lemon, re2c, Google Benchmark)
+- Install to local `tools/` directory (no sudo required)
+- Verify installations
+- Optionally configure your shell for permanent access
+
+**For Claude Code users:** Tools are automatically available via `.claude/hooks/session-start.sh` - no manual setup needed!
+
+**Manual setup alternative:** See "Installing lemon and re2c from source" section below for manual installation steps.
+
+### Test Dependencies (Manual Installation Required)
+
 To run the tests:
 
 - You need to make and install [yaml-cpp](https://github.com/jbeder/yaml-cpp):
@@ -35,16 +59,23 @@ To run the tests:
     sudo make install
     ```
 
-To run the benchmarks:
+### Performance Optimization (Optional)
 
-- You need to make and install [google benchmark](https://github.com/google/benchmark).
-    - $ `cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true`
-    - $ `make`
-    - $ `sudo make install`
-    - before running, you should set your cpu governor to performance:
-        - `sudo cpufreq-set -c \# -g performance`
-        - you can switch back to `ondemand`
-        - bonus: set up a function to change for all cores, e.g. `cpup performance`
+For best benchmark results, set your CPU governor to performance mode:
+```bash
+sudo cpufreq-set -c # -g performance  # Replace # with core number
+```
+
+Switch back to default:
+```bash
+sudo cpufreq-set -c # -g ondemand
+```
+
+Pro tip: Create a function to change all cores at once (add to `~/.bashrc`):
+```bash
+cpup() { for i in {0..$(nproc --ignore=1)}; do sudo cpufreq-set -c $i -g $1; done; }
+# Usage: cpup performance
+```
 
 ## Building
 
@@ -64,14 +95,21 @@ ctest --test-dir build
 See [CMAKE.md](CMAKE.md) for detailed build instructions and options.
 
 ### Regenerating Parser/Scanner (requires lemon and re2c)
+
 If you modify `parser.yy` or `scanner.re`:
 ```bash
+# Ensure tools are available (if not using automated setup)
+source tools/env.sh  # or: source scripts/setup_environment.sh
+
+# Regenerate parser and scanner
 make regen
 ```
 
-#### Installing lemon and re2c from source
+#### Manual Installation of lemon and re2c (Advanced)
 
-If lemon and re2c are not available via your package manager, you can build them from source:
+**Note:** The recommended way is to use `scripts/setup_environment.sh` (see Prereqs section above).
+
+If you prefer manual installation or need to install system-wide, you can build from source:
 
 **lemon** (from SQLite):
 ```bash
@@ -94,15 +132,30 @@ make -j4
 sudo cp re2c /usr/local/bin/
 ```
 
+**Google Benchmark** (for benchmarking):
+```bash
+cd /tmp
+git clone --depth 1 https://github.com/google/benchmark.git
+cd benchmark
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true -DBENCHMARK_ENABLE_TESTING=OFF
+make -j4
+sudo make install
+```
+
 Verify installation:
 ```bash
-lemon -? 2>&1 | head -5
+lemon -x  # Should print version
 re2c --version
+pkg-config --modversion benchmark
 ```
 
 ## Benchmarking
 
-OmNomNum includes comprehensive benchmarking support using Google Benchmark. After installing google-benchmark (see above), you can run benchmarks using three optimized configurations:
+OmNomNum includes comprehensive benchmarking support using Google Benchmark.
+
+**Prerequisites:** Google Benchmark must be installed. Use `source scripts/setup_environment.sh` (recommended) or see manual installation above.
+
+You can run benchmarks using three optimized configurations:
 
 ### Quick Start
 
@@ -178,6 +231,37 @@ For most reliable results:
 4. For release validation, use `make benchmark-accurate`
 
 See [BENCHMARK_RECOMMENDATIONS.md](BENCHMARK_RECOMMENDATIONS.md) for detailed analysis of configuration testing and reliability metrics.
+
+## Development Scripts
+
+OmNomNum includes several helper scripts in the `scripts/` directory to streamline development:
+
+### Environment Setup
+- **`scripts/setup_environment.sh`** - Automated installation of development tools
+  - Installs lemon, re2c, and Google Benchmark to local `tools/` directory
+  - Can be sourced (`source scripts/setup_environment.sh`) to add tools to PATH immediately
+  - Can be executed (`bash scripts/setup_environment.sh`) with optional shell config integration
+  - No sudo required - installs locally
+  - See [Prereqs](#prereqs) section for usage details
+
+### Claude Code Integration
+- **`.claude/hooks/session-start.sh`** - Automatic tool setup for Claude Code sessions
+  - Runs automatically when opening the project in Claude Code
+  - Ensures development tools are always available without manual intervention
+  - Sources the environment setup script to configure PATH
+
+### Benchmarking Scripts
+- **`scripts/benchmark_current.sh`** - Run benchmarks on current codebase
+- **`scripts/benchmark_all_commits.sh`** - Benchmark across multiple commits
+- **`scripts/benchmark_runner.sh`** - Core benchmark execution logic
+- **`scripts/gb_compare.sh`** - Compare Google Benchmark results
+- See [scripts/README.md](scripts/README.md) for detailed script documentation
+
+### Code Generation
+- **`scripts/regenerate_gperf.sh`** - Regenerate perfect hash for denominator word lookup
+  - Automatically updates `scanner.re` with gperf-generated code
+  - Rebuilds scanner and verifies tests pass
+  - See [scripts/README.md](scripts/README.md) for usage details
 
 ## Features
 
