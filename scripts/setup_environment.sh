@@ -261,16 +261,21 @@ verify_installations() {
     if [ $failed -eq 0 ]; then
         info "All tools verified successfully!"
         echo ""
+
+        # Create env.sh helper script
+        create_env_script
+
         info "Tools installed to: $TOOLS_DIR"
         echo ""
-        info "Add to your PATH by running:"
-        echo "    export PATH=\"$TOOLS_BIN:\$PATH\""
-        echo "    export PKG_CONFIG_PATH=\"$TOOLS_DIR/lib/pkgconfig:\$PKG_CONFIG_PATH\""
+        info "To use the tools in your current shell, run:"
+        echo "    source tools/env.sh"
         echo ""
-        info "Or add these lines to your ~/.bashrc or ~/.zshrc:"
-        echo "    export PATH=\"$TOOLS_BIN:\$PATH\""
-        echo "    export PKG_CONFIG_PATH=\"$TOOLS_DIR/lib/pkgconfig:\$PKG_CONFIG_PATH\""
+        info "To add permanently, the script can update your shell config."
         echo ""
+
+        # Offer to add to shell config
+        add_to_shell_config
+
         info "You can now build OmNomNum with:"
         echo "    make"
         echo ""
@@ -284,6 +289,77 @@ verify_installations() {
     else
         error "$failed tool(s) failed verification"
     fi
+}
+
+# Create a sourceable env.sh script
+create_env_script() {
+    local env_file="$TOOLS_DIR/env.sh"
+
+    cat > "$env_file" <<'EOF'
+#!/bin/bash
+# Source this file to add OmNomNum development tools to your PATH
+# Usage: source tools/env.sh
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+export PATH="$SCRIPT_DIR/bin:$PATH"
+export PKG_CONFIG_PATH="$SCRIPT_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+echo "OmNomNum development tools added to PATH"
+echo "  lemon: $SCRIPT_DIR/bin/lemon"
+echo "  re2c: $SCRIPT_DIR/bin/re2c"
+echo "  Google Benchmark: $SCRIPT_DIR/lib/libbenchmark.*"
+EOF
+
+    chmod +x "$env_file"
+    info "Created $env_file"
+}
+
+# Offer to add to shell config
+add_to_shell_config() {
+    # Detect shell config file
+    local shell_config=""
+    if [ -n "$BASH_VERSION" ]; then
+        if [ -f "$HOME/.bashrc" ]; then
+            shell_config="$HOME/.bashrc"
+        elif [ -f "$HOME/.bash_profile" ]; then
+            shell_config="$HOME/.bash_profile"
+        fi
+    elif [ -n "$ZSH_VERSION" ]; then
+        shell_config="$HOME/.zshrc"
+    fi
+
+    if [ -z "$shell_config" ]; then
+        warn "Could not detect shell config file"
+        return
+    fi
+
+    # Check if already added
+    if grep -q "source.*tools/env.sh" "$shell_config" 2>/dev/null; then
+        info "Already added to $shell_config"
+        return
+    fi
+
+    echo ""
+    read -p "Add 'source tools/env.sh' to $shell_config? (y/N) " -n 1 -r
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "" >> "$shell_config"
+        echo "# OmNomNum development tools" >> "$shell_config"
+        echo "if [ -f \"$PROJECT_ROOT/tools/env.sh\" ]; then" >> "$shell_config"
+        echo "    source \"$PROJECT_ROOT/tools/env.sh\"" >> "$shell_config"
+        echo "fi" >> "$shell_config"
+
+        info "Added to $shell_config"
+        echo ""
+        info "Restart your shell or run: source $shell_config"
+    else
+        info "Skipped. You can manually add this line to your shell config:"
+        echo "    source \"$PROJECT_ROOT/tools/env.sh\""
+    fi
+    echo ""
 }
 
 # Display CPU governor recommendation
