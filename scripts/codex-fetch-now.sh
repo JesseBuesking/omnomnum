@@ -50,14 +50,8 @@ fetch_github_api() {
   local endpoint="$1"
 
   if [ -n "${GITHUB_TOKEN:-}" ]; then
-    # Add github_pat_ prefix if token doesn't already have a prefix
-    local token="$GITHUB_TOKEN"
-    if [[ ! "$token" =~ ^(ghp_|github_pat_) ]]; then
-      token="github_pat_${token}"
-    fi
-
     # Use curl with token
-    curl -s -H "Authorization: token $token" \
+    curl -s -H "Authorization: token $GITHUB_TOKEN" \
          -H "Accept: application/vnd.github+json" \
          "https://api.github.com/${endpoint}"
   elif command -v gh &> /dev/null; then
