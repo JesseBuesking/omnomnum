@@ -80,19 +80,25 @@ check_install_lemon() {
     # Create tools directory
     mkdir -p "$TOOLS_BIN"
 
-    # Build and install lemon
-    info "Cloning SQLite repository..."
-    cd /tmp
-    rm -rf sqlite-mirror 2>/dev/null || true
-    git clone --depth 1 https://github.com/mackyle/sqlite.git sqlite-mirror
+    # Build and install lemon (in subshell to preserve current directory)
+    (
+        info "Cloning SQLite repository..."
+        cd /tmp
+        rm -rf sqlite-mirror 2>/dev/null || true
+        git clone --depth 1 https://github.com/mackyle/sqlite.git sqlite-mirror
 
-    info "Building lemon..."
-    cd sqlite-mirror/tool
-    cc -o lemon lemon.c
+        info "Building lemon..."
+        cd sqlite-mirror/tool
+        cc -o lemon lemon.c
 
-    info "Installing lemon to $TOOLS_BIN..."
-    cp lemon "$TOOLS_BIN/"
-    cp lempar.c "$TOOLS_BIN/"
+        info "Installing lemon to $TOOLS_BIN..."
+        cp lemon "$TOOLS_BIN/"
+        cp lempar.c "$TOOLS_BIN/"
+
+        # Cleanup
+        cd /tmp
+        rm -rf sqlite-mirror
+    )
 
     # Add to PATH for this session
     export PATH="$TOOLS_BIN:$PATH"
@@ -104,10 +110,6 @@ check_install_lemon() {
 
     info "lemon installed successfully!"
     lemon -? 2>&1 | head -5
-
-    # Cleanup
-    cd /tmp
-    rm -rf sqlite-mirror
 }
 
 # Check and install re2c (lexer generator)
@@ -136,21 +138,27 @@ check_install_re2c() {
     # Create tools directory
     mkdir -p "$TOOLS_BIN"
 
-    # Build and install re2c
-    info "Cloning re2c repository..."
-    cd /tmp
-    rm -rf re2c 2>/dev/null || true
-    git clone --depth 1 https://github.com/skvadrik/re2c.git
+    # Build and install re2c (in subshell to preserve current directory)
+    (
+        info "Cloning re2c repository..."
+        cd /tmp
+        rm -rf re2c 2>/dev/null || true
+        git clone --depth 1 https://github.com/skvadrik/re2c.git
 
-    info "Building re2c..."
-    cd re2c
-    rm -rf build 2>/dev/null || true
-    mkdir build && cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
-    make -j4
+        info "Building re2c..."
+        cd re2c
+        rm -rf build 2>/dev/null || true
+        mkdir build && cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
+        make -j4
 
-    info "Installing re2c to $TOOLS_BIN..."
-    make install
+        info "Installing re2c to $TOOLS_BIN..."
+        make install
+
+        # Cleanup
+        cd /tmp
+        rm -rf re2c
+    )
 
     # Add to PATH for this session
     export PATH="$TOOLS_BIN:$PATH"
@@ -162,10 +170,6 @@ check_install_re2c() {
 
     info "re2c installed successfully!"
     re2c --version
-
-    # Cleanup
-    cd /tmp
-    rm -rf re2c
 }
 
 # Check and install Google Benchmark
@@ -201,19 +205,25 @@ check_install_benchmark() {
     # Create tools directory
     mkdir -p "$TOOLS_DIR"
 
-    # Build and install Google Benchmark
-    info "Cloning Google Benchmark repository..."
-    cd /tmp
-    rm -rf benchmark 2>/dev/null || true
-    git clone --depth 1 https://github.com/google/benchmark.git
+    # Build and install Google Benchmark (in subshell to preserve current directory)
+    (
+        info "Cloning Google Benchmark repository..."
+        cd /tmp
+        rm -rf benchmark 2>/dev/null || true
+        git clone --depth 1 https://github.com/google/benchmark.git
 
-    info "Building Google Benchmark with LTO enabled..."
-    cd benchmark
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
-    make -j4
+        info "Building Google Benchmark with LTO enabled..."
+        cd benchmark
+        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
+        make -j4
 
-    info "Installing Google Benchmark to $TOOLS_DIR..."
-    make install
+        info "Installing Google Benchmark to $TOOLS_DIR..."
+        make install
+
+        # Cleanup
+        cd /tmp
+        rm -rf benchmark
+    )
 
     # Update PKG_CONFIG_PATH for this session
     export PKG_CONFIG_PATH="$TOOLS_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -224,10 +234,6 @@ check_install_benchmark() {
     fi
 
     info "Google Benchmark installed successfully!"
-
-    # Cleanup
-    cd /tmp
-    rm -rf benchmark
 }
 
 # Verify all installations
