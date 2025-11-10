@@ -400,6 +400,246 @@ void BM_comprehensive_mix(benchmark::State& state) {
 }
 BENCHMARK(BM_comprehensive_mix)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
 
+void BM_numeric_literals(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "123 456 789 1234567 98765432 12.34 56.789 0.123 456.0 100200.300400 123 456 789 1234567 98765432 12.34 56.789 0.123 456.0 100200.300400";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_numeric_literals)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_spelled_decimals(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "three point one four one five nine two point seven one eight two eight one eight two eight four five nine zero four five two three five three six point zero two eight eight four one nine seven one six nine three nine nine three seven five";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_spelled_decimals)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_international_decimals(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "1,234.56 12,345.678 1,234,567.89 123,456,789.012 1,234.56 12,345.678 1,234,567.89 123,456,789.012 1,234.56 12,345.678";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_international_decimals)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_dates_preserved(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "12/31/2024 01/15/2023 10/31/2022 06/15/2021 12/25/2020 05/01/2019 12/31/2024 01/15/2023 10/31/2022 06/15/2021";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_dates_preserved)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_article_prefixes(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "a hundred a thousand a million a billion a trillion a hundred a thousand a million a billion a trillion a hundred a thousand a million";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_article_prefixes)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_misspellings(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "ninteen fourty nineth ninteen fourty nineth ninteen fourty nineth ninteen fourty nineth ninteen fourty nineth ninteen fourty nineth";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_misspellings)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_thousand_and_pattern(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "1000 and one 2000 and two 3000 and three 4000 and four 5000 and five 6000 and six 7000 and seven 8000 and eight 9000 and nine";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_thousand_and_pattern)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_simple_fractions(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "half quarter three quarters two thirds five eighths seven ninths half quarter three quarters two thirds five eighths seven ninths";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_simple_fractions)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_numeric_with_text(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "The meeting is at 3 PM on 12/15 with 5 people discussing 100 items and 25 percent completion The meeting is at 3 PM on 12/15 with 5 people discussing 100 items and 25 percent completion";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_numeric_with_text)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_zero_prefixed_numbers(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "0123 0456 0789 01234 056789 012345 0123 0456 0789 01234 056789 012345 0123 0456 0789 01234 056789 012345";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_zero_prefixed_numbers)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_ordinal_fractions(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "one hundredth two hundredths three thousandths four millionths five billionths one hundredth two hundredths three thousandths four millionths five billionths";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_ordinal_fractions)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_complex_compound(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "twenty one thirty two forty three fifty four sixty five seventy six eighty seven ninety eight twenty one thirty two forty three fifty four";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_complex_compound)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_alternating_types(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "1 one 2 two 3 three 4 four 5 five 6 six 7 seven 8 eight 9 nine 10 ten 1 one 2 two 3 three 4 four 5 five";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_alternating_types)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_long_numeric_sequences(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "123456789 987654321 1122334455 5544332211 9988776655 1234567890 123456789 987654321 1122334455 5544332211 9988776655 1234567890";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_long_numeric_sequences)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
+void BM_very_large_cardinals(benchmark::State& state) {
+    ParserState pstate;
+    initParserState(&pstate);
+
+    const char* data = "nine hundred ninety nine trillion nine hundred ninety nine billion nine hundred ninety nine million nine hundred ninety nine thousand nine hundred ninety nine";
+    size_t data_len = strlen(data);
+
+    while (state.KeepRunning()) {
+        normalize(data, data_len, &pstate);
+        resetParserState(&pstate);
+    }
+
+    freeParserState(&pstate);
+}
+BENCHMARK(BM_very_large_cardinals)->UseRealTime()->Threads(1)->ReportAggregatesOnly(true);
+
 int main(int argc, char** argv)
 {
     initOmNomNum();
