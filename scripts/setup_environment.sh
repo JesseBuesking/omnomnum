@@ -22,6 +22,10 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TOOLS_DIR="$PROJECT_ROOT/tools"
 TOOLS_BIN="$TOOLS_DIR/bin"
 
+# Performance optimizations
+PARALLEL_JOBS=$(nproc 2>/dev/null || echo 4)
+CACHE_DIR="/tmp/omnomnum-build-cache"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -57,6 +61,18 @@ section() {
 # Check if command exists
 command_exists() {
     command -v "$1" &> /dev/null
+}
+
+# Quick verification - check if all tools already installed
+quick_verify() {
+    export PATH="$TOOLS_BIN:$PATH"
+    export PKG_CONFIG_PATH="$TOOLS_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+    command_exists lemon || return 1
+    command_exists re2c || return 1
+    pkg-config --exists benchmark 2>/dev/null || return 1
+
+    return 0
 }
 
 # Check and install lemon (from SQLite)
@@ -150,7 +166,7 @@ check_install_re2c() {
         rm -rf build 2>/dev/null || true
         mkdir build && cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
-        make -j4
+        make -j$PARALLEL_JOBS
 
         info "Installing re2c to $TOOLS_BIN..."
         make install
@@ -215,7 +231,7 @@ check_install_benchmark() {
         info "Building Google Benchmark with LTO enabled..."
         cd benchmark
         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX="$TOOLS_DIR"
-        make -j4
+        make -j$PARALLEL_JOBS
 
         info "Installing Google Benchmark to $TOOLS_DIR..."
         make install
@@ -420,6 +436,28 @@ cpu_governor_info() {
 
 # Main execution
 main() {
+    # Quick check first - if all tools exist, skip installation
+    if quick_verify 2>/dev/null; then
+        section "Tools Already Installed"
+        info "All development tools are already available!"
+        echo ""
+        echo "  ✓ lemon: $(which lemon)"
+        echo "  ✓ re2c: $(which re2c)"
+        echo "  ✓ Google Benchmark: $(pkg-config --modversion benchmark 2>/dev/null)"
+        echo ""
+        info "No installation needed. Ready to build!"
+        echo ""
+
+        # Still show environment setup instructions
+        if [ "$SOURCED" -eq 1 ]; then
+            info "Tools added to PATH for current shell session!"
+        else
+            info "To use tools in your current shell, run:"
+            echo "    source tools/env.sh"
+        fi
+        return 0
+    fi
+
     echo ""
     echo "========================================="
     echo "  OmNomNum Environment Setup"
@@ -434,6 +472,7 @@ main() {
     echo "  3. Google Benchmark - Performance testing framework"
     echo ""
     echo "Tools will be installed to: $TOOLS_DIR"
+    echo "Using $PARALLEL_JOBS parallel jobs for compilation"
     echo ""
 
     # Install each tool

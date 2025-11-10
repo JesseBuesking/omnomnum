@@ -29,9 +29,47 @@ The script will:
 - Verify installations
 - Optionally configure your shell for permanent access
 
-**For Claude Code users:** Tools are automatically available via `.claude/hooks/session-start.sh` - no manual setup needed!
-
 **Manual setup alternative:** See "Installing lemon and re2c from source" section below for manual installation steps.
+
+### Claude Code Users - Important!
+
+**TL;DR:** Always prefix build commands with `source tools/env.sh &&`
+
+Claude Code runs each Bash command in a **new shell session**. This means environment variables (like PATH) don't persist between commands.
+
+**First time setup:**
+```bash
+source scripts/setup_environment.sh
+```
+
+**Every build command:**
+```bash
+# ❌ WRONG - tools won't be found
+source tools/env.sh
+make
+
+# ✅ CORRECT - same shell session
+source tools/env.sh && make
+```
+
+**Common commands:**
+```bash
+# Build
+source tools/env.sh && make -j4
+
+# Rebuild from scratch
+source tools/env.sh && make clean && make regen && make -j4
+
+# Run tests
+source tools/env.sh && make test
+
+# Run benchmarks
+source tools/env.sh && make benchmark
+```
+
+**Why?** Each `Bash` tool invocation creates a fresh shell. The `&&` operator chains commands in the same shell, preserving the environment.
+
+See [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md) for detailed workflow and session start instructions.
 
 ### Test Dependencies (Manual Installation Required)
 
