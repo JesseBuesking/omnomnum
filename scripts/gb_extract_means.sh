@@ -12,11 +12,11 @@ fi
 echo "file,BM_simple_ns,BM_long_string_ns,BM_many_numbers_ns"
 for f in "$@"; do
   awk -v file="$f" '
-    /"name": "BM_simple\/repeats:.*_mean"/ { s=1; next }
+    /"name": "BM_simple_mean"/ { s=1; next }
     s && /"real_time":/ { s_val=$2; gsub(",","",s_val); s=0 }
-    /"name": "BM_long_string\/repeats:.*_mean"/ { l=1; next }
+    /"name": "BM_long_string_mean"/ { l=1; next }
     l && /"real_time":/ { l_val=$2; gsub(",","",l_val); l=0 }
-    /"name": "BM_many_numbers\/repeats:.*_mean"/ { m=1; next }
+    /"name": "BM_many_numbers_mean"/ { m=1; next }
     m && /"real_time":/ { m_val=$2; gsub(",","",m_val); m=0; printf "%s,%s,%s,%s\n", file, s_val, l_val, m_val }
   ' "$f" || true
 done

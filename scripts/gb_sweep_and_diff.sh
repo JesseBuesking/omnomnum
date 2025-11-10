@@ -99,6 +99,13 @@ for c in "${COMMITS[@]}"; do
     cp -f "$ROOT_DIR/scripts/benchmark_current.sh" scripts/benchmark_current.sh
     chmod +x scripts/benchmark_current.sh
 
+    # Copy current benchmark suite to test all commits with same comprehensive benchmarks
+    mkdir -p test
+    if [[ -f "$ROOT_DIR/test/test_benchmark.c" ]]; then
+      cp -f "$ROOT_DIR/test/test_benchmark.c" test/test_benchmark.c
+      echo "[sweep] Copied current test_benchmark.c to $short"
+    fi
+
     # Optional freeze of generated files if tracked in this ref (handled by runner via FREEZE_CODEGEN)
     FREEZE_VARS=()
     if [[ "$FREEZE_CODEGEN" == "1" ]]; then FREEZE_VARS=(FREEZE_CODEGEN=1); fi
