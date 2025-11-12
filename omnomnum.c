@@ -559,6 +559,9 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
         } else {
             state->result = sdsempty();
         }
+        // OPTIMIZATION: Pre-reserve space to reduce reallocations in the loop
+        // Most normalized output is similar length to input, +32 for number expansions
+        state->result = sdsMakeRoomFor(state->result, (size_t)data_len + 32);
 
         unsigned int lastpos = 0;
         unsigned int i = 0;
