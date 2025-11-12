@@ -148,10 +148,8 @@ void yystypeToString(sds *s, YYSTYPE A, int precision) {
         }
         dtoa(s, A.frac_num < 0 ? -A.frac_num : A.frac_num, precision);
         *s = sdscat(*s, "/");
-        sds tmp = sdsempty();
-        dtoa(&tmp, A.frac_denom, precision);
-        *s = sdscatsds(*s, tmp);
-        sdsfree(tmp);
+        // OPTIMIZATION: Append denominator directly instead of allocating tmp buffer
+        dtoa(s, A.frac_denom, precision);
     } else if (A.is_dbl) {
         dtoa(s, A.dbl, precision);
     } else {
@@ -190,10 +188,8 @@ void yystypeToStringWithReduction(sds *s, YYSTYPE A, int precision, bool reduce_
         }
         dtoa(s, num < 0 ? -num : num, precision);
         *s = sdscat(*s, "/");
-        sds tmp = sdsempty();
-        dtoa(&tmp, denom, precision);
-        *s = sdscatsds(*s, tmp);
-        sdsfree(tmp);
+        // OPTIMIZATION: Append denominator directly instead of allocating tmp buffer
+        dtoa(s, denom, precision);
     } else if (A.is_dbl) {
         dtoa(s, A.dbl, precision);
     } else {
