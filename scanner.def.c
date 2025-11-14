@@ -36,10 +36,18 @@
 
 size_t RESET_LIST_SIZE = 8;
 
+#ifdef DEBUG_ALLOCATIONS
+unsigned long g_yystype_init_total_bytes = 0;
+unsigned long g_yystype_realloc_count = 0;
+#endif
+
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize) {
     l->values = (YYSTYPE *)malloc(initialSize * sizeof(YYSTYPE));
     l->used = 0;
     l->size = initialSize;
+#ifdef DEBUG_ALLOCATIONS
+    g_yystype_init_total_bytes += initialSize * sizeof(YYSTYPE);
+#endif
 }
 
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element) {
@@ -50,6 +58,9 @@ void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element) {
             l->size *= 2;
         }
         l->values = (YYSTYPE *)realloc(l->values, l->size * sizeof(YYSTYPE));
+#ifdef DEBUG_ALLOCATIONS
+        g_yystype_realloc_count++;
+#endif
     }
     l->values[l->used] = element;
     l->used += 1;
@@ -139,7 +150,26 @@ ParserState* getOrInitSubState(ParserState *state) {
     if (state->subState == NULL) {
         // Lazy-allocate and initialize subState on first use
         state->subState = (ParserState*)malloc(sizeof(ParserState));
-        initParserState(state->subState);
+
+        // Initialize with smaller YYSTYPEList capacity than main state
+        // SubState processes single tokens (typically 1-2 numbers) vs full strings (many numbers)
+        // Using capacity 8 instead of 128 reduces initial allocation from ~1-4KB to ~64-256 bytes
+        state->subState->error = NO_ERROR;
+        state->subState->parse_second = false;
+        state->subState->parse_fractions = true;
+        state->subState->reduce_fractions = false;
+        state->subState->normalize_percent_symbol = false;
+        state->subState->percent_as_decimal = false;
+        state->subState->precision = 6;
+        state->subState->result = NULL;
+        state->subState->is_parsing = false;
+        state->subState->last_token = -1;
+        state->subState->pParser = NULL;
+        state->subState->numberHolder = sdsempty();
+        state->subState->subState = NULL;
+        // OPTIMIZATION: SubState typically processes single tokens with 1-2 numbers
+        // Use smaller initial capacity (8) vs main state (128) to reduce allocation overhead
+        initYYSTYPEList(&(state->subState->yystypeList), 8);
     } else {
         // Reset existing subState for reuse
         resetParserState(state->subState);

@@ -1,0 +1,11 @@
+Testing YYSTYPEList allocations in fallback path...
+
+Running 5 test strings x 100 iterations = 500 normalizations
+Each normalization triggers multiple subState uses (one per token)
+
+Results:
+  Total YYSTYPEList allocation bytes: 6144
+  YYSTYPEList realloc count: 0
+
+Note: Optimized version should show significant reduction in initial allocation bytes
+      (128 elements = ~1-4KB per subState init, should reduce to 8 elements = ~64-256 bytes)

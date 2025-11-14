@@ -1,0 +1,39 @@
+Testing memory leaks in ResultBuffer implementation...
+PID: 21198
+Running tests...
+  - Short text test...
+  - Long text test...
+  - Mixed sizes test...
+  - Many numbers test...
+  - Percent normalization test...
+Tests complete. Check for leaks with:
+  leaks 21198
+Sleeping for 1 second to allow leak detection...
+Done.
+Process 21198 is not debuggable. Due to security restrictions, leaks can only show or save contents of readonly memory of restricted processes.
+
+Process:         test_memory [21198]
+Path:            /Users/USER/*/test_memory
+Load Address:    0x10007c000
+Identifier:      test_memory
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  leaks [21195]
+Target Type:     live task
+
+Date/Time:       2025-11-14 10:09:33.814 -0500
+Launch Time:     2025-11-14 10:09:32.517 -0500
+OS Version:      macOS 26.0.1 (25A362)
+Report Version:  7
+Analysis Tool:   /usr/bin/leaks
+
+Physical footprint:         2513K
+Physical footprint (peak):  2513K
+Idle exit:                  untracked
+----
+
+leaks Report Version: 4.0, multi-line stacks
+Process 21198: 188 nodes malloced for 30 KB
+Process 21198: 0 leaks for 0 total leaked bytes.
+
