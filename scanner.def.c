@@ -118,12 +118,15 @@ void resetParserState(ParserState *state) {
     state->normalize_percent_symbol = false; // default: off
     state->percent_as_decimal = false; // default: off
     // Keep the cached parser and scratch buffer; just clear the buffer
-    if (state->numberHolder) sdsclear(state->numberHolder);
+    // No NULL check needed - numberHolder is always allocated in initParserState
+    sdsclear(state->numberHolder);
 }
 
 void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
-    if (state->numberHolder) { sdsfree(state->numberHolder); state->numberHolder = NULL; }
+    // No NULL check needed - numberHolder is always allocated in initParserState
+    sdsfree(state->numberHolder);
+    state->numberHolder = NULL;
     if (state->pParser) { ParseFree(state->pParser, free); state->pParser = NULL; }
     if (state->subState) {
         freeParserState(state->subState);
