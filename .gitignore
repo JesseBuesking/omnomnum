@@ -9,6 +9,7 @@ test/test_memory
 test/test_malloc_count
 test/test_allocation_count
 test/test_allocation_count_issue*
+test/test_massif
 
 # Benchmark executables
 benchmark_c
