@@ -100,6 +100,7 @@ void initParserState(ParserState *state) {
     state->last_token = -1;
     state->pParser = NULL;
     state->numberHolder = sdsempty();
+    state->subState = NULL; // Lazy-allocate on first use
     // OPTIMIZATION: Start with larger capacity to reduce reallocations
     // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
     initYYSTYPEList(&(state->yystypeList), 128);
@@ -124,4 +125,21 @@ void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
     if (state->numberHolder) { sdsfree(state->numberHolder); state->numberHolder = NULL; }
     if (state->pParser) { ParseFree(state->pParser, free); state->pParser = NULL; }
+    if (state->subState) {
+        freeParserState(state->subState);
+        free(state->subState);
+        state->subState = NULL;
+    }
+}
+
+ParserState* getOrInitSubState(ParserState *state) {
+    if (state->subState == NULL) {
+        // Lazy-allocate and initialize subState on first use
+        state->subState = (ParserState*)malloc(sizeof(ParserState));
+        initParserState(state->subState);
+    } else {
+        // Reset existing subState for reuse
+        resetParserState(state->subState);
+    }
+    return state->subState;
 }

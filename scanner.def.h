@@ -82,7 +82,8 @@ typedef struct {
     size_t size;
 } YYSTYPEList;
 
-typedef struct {
+typedef struct ParserState ParserState;
+struct ParserState {
     int precision;
     sds result;
     enum errors error;
@@ -97,7 +98,8 @@ typedef struct {
     // Per-request context (reentrancy + caching)
     void *pParser;      // Lemon parser instance cached per ParserState
     sds numberHolder;   // Scratch buffer for number rendering
-} ParserState;
+    ParserState *subState; // Reusable sub-state for fallback tokenization (lazy-allocated)
+};
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
@@ -109,5 +111,6 @@ void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need);
 void initParserState(ParserState *state);
 void resetParserState(ParserState *state);
 void freeParserState(ParserState *state);
+ParserState* getOrInitSubState(ParserState *state);
 
 #endif // SCANNER_DEF_H
