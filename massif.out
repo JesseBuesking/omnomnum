@@ -1,0 +1,604 @@
+desc: --massif-out-file=massif.out --stacks=yes
+cmd: ./test/test_massif
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=401895
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=3504
+heap_tree=peak
+n5: 16406 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 11280 0x10FBE1: ParseAlloc (in /home/user/omnomnum/test/test_massif)
+  n2: 11280 0x10EA70: find_numbers (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10E111: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10ED8E: normalize (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+     n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n1: 4096 0x48DF1B4: _IO_file_doallocate (filedoalloc.c:101)
+  n1: 4096 0x48EF523: _IO_doallocbuf (genops.c:347)
+   n1: 4096 0x48ECF8F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:745)
+    n1: 4096 0x48EDAAE: _IO_new_file_xsputn (fileops.c:1244)
+     n1: 4096 0x48EDAAE: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+      n1: 4096 0x48E1C5C: puts (ioputs.c:40)
+       n0: 4096 0x10CA55: main (in /home/user/omnomnum/test/test_massif)
+ n2: 384 0x131574: initYYSTYPEList (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131B42: getOrInitSubState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10E098: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 384 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 384 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 384 0x131707: resetYYSTYPElist (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131957: resetParserState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10C9EA: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+    n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n0: 262 in 4 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=2
+#-----------
+time=2650170
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1472
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=4540995
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1200
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=5936280
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=6965781
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1080
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=8582549
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1080
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=10029473
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1192
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=12300604
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1472
+heap_tree=detailed
+n5: 16406 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 11280 0x10FBE1: ParseAlloc (in /home/user/omnomnum/test/test_massif)
+  n2: 11280 0x10EA70: find_numbers (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10E111: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10ED8E: normalize (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+     n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n1: 4096 0x48DF1B4: _IO_file_doallocate (filedoalloc.c:101)
+  n1: 4096 0x48EF523: _IO_doallocbuf (genops.c:347)
+   n1: 4096 0x48ECF8F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:745)
+    n1: 4096 0x48EDAAE: _IO_new_file_xsputn (fileops.c:1244)
+     n1: 4096 0x48EDAAE: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+      n1: 4096 0x48E1C5C: puts (ioputs.c:40)
+       n0: 4096 0x10CA55: main (in /home/user/omnomnum/test/test_massif)
+ n2: 384 0x131574: initYYSTYPEList (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131B42: getOrInitSubState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10E098: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 384 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 384 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 384 0x131707: resetYYSTYPElist (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131957: resetParserState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10C9EA: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+    n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n0: 262 in 4 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=9
+#-----------
+time=14207709
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=3288
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=15087714
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1000
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=16848027
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1296
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=18112909
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1984
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=20255183
+mem_heap_B=16790
+mem_heap_extra_B=5506
+mem_stacks_B=1000
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=21445712
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1088
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=22636090
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1464
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=23826197
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1344
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=25968515
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1200
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=27634675
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1576
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=29776942
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1472
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=31419500
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1576
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=32651351
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1288
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=34293816
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1288
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=35936321
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=2328
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=37989589
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1400
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=39632283
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1224
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=40864276
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1464
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=42506758
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1000
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=43328240
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=872
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=44970693
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=648
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=46613315
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=2336
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=48255827
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1584
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=49487772
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=3128
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=51482602
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=640
+heap_tree=detailed
+n5: 16406 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 11280 0x10FBE1: ParseAlloc (in /home/user/omnomnum/test/test_massif)
+  n2: 11280 0x10EA70: find_numbers (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10E111: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10ED8E: normalize (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+     n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n1: 4096 0x48DF1B4: _IO_file_doallocate (filedoalloc.c:101)
+  n1: 4096 0x48EF523: _IO_doallocbuf (genops.c:347)
+   n1: 4096 0x48ECF8F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:745)
+    n1: 4096 0x48EDAAE: _IO_new_file_xsputn (fileops.c:1244)
+     n1: 4096 0x48EDAAE: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+      n1: 4096 0x48E1C5C: puts (ioputs.c:40)
+       n0: 4096 0x10CA55: main (in /home/user/omnomnum/test/test_massif)
+ n2: 384 0x131574: initYYSTYPEList (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131B42: getOrInitSubState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10E098: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 384 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 384 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 384 0x131707: resetYYSTYPElist (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131957: resetParserState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10C9EA: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+    n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n0: 262 in 4 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=34
+#-----------
+time=53829702
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1472
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=55003391
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1944
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=56177260
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1464
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=58524394
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1584
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=60871504
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=62631828
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1400
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=64392123
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1296
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=65565713
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=67912856
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1464
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=69673252
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1576
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=70846840
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=72607200
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=2152
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=74954258
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1400
+heap_tree=detailed
+n5: 16406 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 11280 0x10FBE1: ParseAlloc (in /home/user/omnomnum/test/test_massif)
+  n2: 11280 0x10EA70: find_numbers (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10E111: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10ED8E: normalize (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+     n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n1: 4096 0x48DF1B4: _IO_file_doallocate (filedoalloc.c:101)
+  n1: 4096 0x48EF523: _IO_doallocbuf (genops.c:347)
+   n1: 4096 0x48ECF8F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:745)
+    n1: 4096 0x48EDAAE: _IO_new_file_xsputn (fileops.c:1244)
+     n1: 4096 0x48EDAAE: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+      n1: 4096 0x48E1C5C: puts (ioputs.c:40)
+       n0: 4096 0x10CA55: main (in /home/user/omnomnum/test/test_massif)
+ n2: 384 0x131574: initYYSTYPEList (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131B42: getOrInitSubState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10E098: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 384 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 384 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 384 0x131707: resetYYSTYPElist (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131957: resetParserState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10C9EA: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+    n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n0: 262 in 4 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=47
+#-----------
+time=76127898
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=2336
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=77301599
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1464
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=79648729
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1984
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=80470217
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=81291723
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=3128
+heap_tree=detailed
+n5: 16406 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 11280 0x10FBE1: ParseAlloc (in /home/user/omnomnum/test/test_massif)
+  n2: 11280 0x10EA70: find_numbers (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10E111: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+   n1: 5640 0x10ED8E: normalize (in /home/user/omnomnum/test/test_massif)
+    n1: 5640 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+     n0: 5640 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n1: 4096 0x48DF1B4: _IO_file_doallocate (filedoalloc.c:101)
+  n1: 4096 0x48EF523: _IO_doallocbuf (genops.c:347)
+   n1: 4096 0x48ECF8F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:745)
+    n1: 4096 0x48EDAAE: _IO_new_file_xsputn (fileops.c:1244)
+     n1: 4096 0x48EDAAE: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1197)
+      n1: 4096 0x48E1C5C: puts (ioputs.c:40)
+       n0: 4096 0x10CA55: main (in /home/user/omnomnum/test/test_massif)
+ n2: 384 0x131574: initYYSTYPEList (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131B42: getOrInitSubState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10E098: process_fallback_token (in /home/user/omnomnum/test/test_massif)
+    n1: 384 0x10F1A4: normalize (in /home/user/omnomnum/test/test_massif)
+     n1: 384 0x10C9DB: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+      n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+  n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 384 0x131707: resetYYSTYPElist (in /home/user/omnomnum/test/test_massif)
+  n1: 384 0x131957: resetParserState (in /home/user/omnomnum/test/test_massif)
+   n1: 384 0x10C9EA: test_fallback_heavy (in /home/user/omnomnum/test/test_massif)
+    n0: 384 0x10CA73: main (in /home/user/omnomnum/test/test_massif)
+ n0: 262 in 4 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=52
+#-----------
+time=82113239
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1408
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=82934726
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1040
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=83756210
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1344
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=84577698
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=1400
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=85399183
+mem_heap_B=16406
+mem_heap_extra_B=5890
+mem_stacks_B=3504
+heap_tree=empty
