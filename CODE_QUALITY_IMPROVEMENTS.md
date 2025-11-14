@@ -259,4 +259,11 @@ static void process_percent(sds *result, ParserState *state) {
 ~~Total: Modest improvement (~5-10% in fallback scenarios)~~
 **ACTUAL (#1 completed): Exceptional 52.6% average performance improvement**
 
+**Additional Optimization - Issue #5** (from FALLBACK_PATH_ANALYSIS.md):
+- ✅ **COMPLETED**: SubState YYSTYPEList capacity reduction (128→8)
+  - **Commit**: 1dd82a4 "Optimize: Reduce SubState YYSTYPEList capacity from 128 to 8 elements"
+  - **Results**: +1.74% avg speedup, 93.75% allocation reduction, -0.6% memory footprint
+  - **Analysis**: See ISSUE_5_SUBSTATE_CAPACITY_RESULTS.md
+  - **Combined with #1**: 54.34% total fallback path speedup
+
 Remaining items: Minor improvements, primarily code quality focused
