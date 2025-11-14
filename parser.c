@@ -2322,6 +2322,11 @@ int ParseStackPeak(void *p){
   yyParser *pParser = (yyParser*)p;
   return pParser->yyhwm;
 }
+
+void ParseStackPeakSet(void *p, int value){
+  yyParser *pParser = (yyParser*)p;
+  pParser->yyhwm = value;
+}
 #endif
 
 /* This array of booleans keeps track of the parser statement

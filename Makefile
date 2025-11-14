@@ -75,6 +75,10 @@ test/remove_char_inplace.yaml: ;
 $(CORE_OBJS): %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
 
+# parser_compat needs stack depth tracking enabled
+parser_compat.o: parser_compat.c $(DEPS)
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c $< -o $@
+
 branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
 
@@ -144,8 +148,8 @@ parser.h: parser.c
 	@echo '#define INTERFACE 0' >> parser.h
 
 parser.o: parser.h
-	# produces parser.o
-	$(OMNOMNUM_CC) -c parser.c
+	# produces parser.o with stack depth tracking enabled
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c parser.c
 
 scanner.c: scanner.re parser.yy parser.h
 	@if [ -z "$(RE2C)" ] || ! command -v $(RE2C) >/dev/null 2>&1; then \
