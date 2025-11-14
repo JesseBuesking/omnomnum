@@ -1,0 +1,13 @@
+# Include README and license
+include README.md
+include LICENSE
+
+# Include C source files (needed for building)
+recursive-include .. *.c *.h *.re *.yy
+
+# Exclude build artifacts
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude *.so
+global-exclude *.o
