@@ -65,15 +65,20 @@ fi
 
 ensure_objs() {
   mkdir -p grisu2 branchlut || true
+
+  # Move misplaced object files to correct subdirectories
   [[ -f grisu2.o && ! -f grisu2/grisu2.o ]] && mv -f grisu2.o grisu2/grisu2.o || true
   [[ -f branchlut.o && ! -f branchlut/branchlut.o ]] && mv -f branchlut.o branchlut/branchlut.o || true
+
+  # Build subdirectory objects if they don't exist
   if [[ ! -f grisu2/grisu2.o && -f grisu2/grisu2.c ]]; then
     cc -O3 -std=c99 -Wall -W -Wno-missing-field-initializers -I. -c grisu2/grisu2.c -o grisu2/grisu2.o || true
   fi
   if [[ ! -f branchlut/branchlut.o && -f branchlut/branchlut.c ]]; then
     cc -O3 -std=c99 -Wall -W -Wno-missing-field-initializers -I. -c branchlut/branchlut.c -o branchlut/branchlut.o || true
   fi
-  # If top-level objects exist (produced by older rules), create symlinks expected by linker
+
+  # If top-level objects still exist (produced by older rules), create symlinks expected by linker
   if [[ -f grisu2.o && ! -f grisu2/grisu2.o ]]; then ln -s ../grisu2.o grisu2/grisu2.o 2>/dev/null || true; fi
   if [[ -f branchlut.o && ! -f branchlut/branchlut.o ]]; then ln -s ../branchlut.o branchlut/branchlut.o 2>/dev/null || true; fi
 }
@@ -87,10 +92,12 @@ if [[ "${QUICK_BENCH:-0}" == "1" ]]; then
 fi
 
 ensure_objs
-if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS"; then
+if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS" 2>/dev/null; then
   echo "[bench_current] Make link failed; ensuring objects and retrying"
+  # Fix: Some old commits build grisu2.o and branchlut.o in top-level dir instead of subdirs
+  # Move them to correct location if needed
   ensure_objs
-  if ! make -B test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS"; then
+  if ! make test/test_benchmark BENCH_PREFIX="$BENCH_PREFIX_ENV" CXX17FLAGS="-std=c++17 $EXTRA_CXXFLAGS" 2>/dev/null; then
     echo "[bench_current] Manual compile+link fallback"
     # Build core objects explicitly (ignore failures; gather what exists)
     make -k parser.o parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o BENCH_PREFIX="$BENCH_PREFIX_ENV" || true

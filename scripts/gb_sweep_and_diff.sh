@@ -106,6 +106,34 @@ for c in "${COMMITS[@]}"; do
       echo "[sweep] Copied current test_benchmark.c to $short"
     fi
 
+    # Fix old Makefile incompatibilities
+    if [[ -f Makefile ]]; then
+      # Remove yaml-cpp dependency
+      if grep -q "yaml-cpp" Makefile 2>/dev/null; then
+        echo "[sweep] Patching Makefile to remove yaml-cpp dependency"
+        sed -i.sweep-bak1 's/-lyaml-cpp//g' Makefile
+      fi
+
+      # Fix incorrect library paths (old Makefiles used -L/usr/local/include which is wrong)
+      if grep -q "\-L/usr/local/include" Makefile 2>/dev/null; then
+        echo "[sweep] Patching Makefile to fix library paths"
+        # Replace -L/usr/local/include with proper benchmark paths
+        sed -i.sweep-bak2 "s|-L/usr/local/include|-I${BENCH_PREFIX_ENV}/include -L${BENCH_PREFIX_ENV}/lib|g" Makefile
+      fi
+
+      # Fix missing subdirectory object files (early commits have broken paths)
+      if grep -q "grisu2/grisu2.o" Makefile 2>/dev/null && [[ ! -f grisu2/grisu2.o ]]; then
+        echo "[sweep] Fixing subdirectory object file paths"
+        # Build the subdirectory objects if directories exist
+        if [[ -d grisu2 ]] && [[ -f grisu2/grisu2.c ]]; then
+          make grisu2/grisu2.o >/dev/null 2>&1 || true
+        fi
+        if [[ -d branchlut ]] && [[ -f branchlut/branchlut.c ]]; then
+          make branchlut/branchlut.o >/dev/null 2>&1 || true
+        fi
+      fi
+    fi
+
     # Optional freeze of generated files if tracked in this ref (handled by runner via FREEZE_CODEGEN)
     FREEZE_VARS=()
     if [[ "$FREEZE_CODEGEN" == "1" ]]; then FREEZE_VARS=(FREEZE_CODEGEN=1); fi

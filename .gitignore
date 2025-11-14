@@ -45,3 +45,4 @@ tools/
 worktrees/
 bench_runs/*.json
 *_sweep/
+benchmark_history/
