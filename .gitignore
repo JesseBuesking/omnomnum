@@ -10,3 +10,6 @@ tags
 *.o
 
 *.gch
+
+# Profiling artifacts
+massif*.out
