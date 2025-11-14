@@ -4,6 +4,16 @@ test_omnomnum
 test_benchmark
 test_util
 
+# Test executables (binaries only, not .c source files)
+test/test_memory
+test/test_malloc_count
+test/test_allocation_count
+test/test_allocation_count_issue*
+
+# Benchmark executables
+benchmark_c
+quick_benchmark
+
 tags
 
 *.swp
@@ -26,10 +36,14 @@ test/stability_*.json
 test/absolute_*.json
 test/ultra_*.json
 test/benchmark_*.json
+test/baseline_*.json
+test/optimized_*.json
 
 # Bench artifacts
 bench_*.txt
 test/gb_*.json
+test/baseline_*.txt
+test/optimized_*.txt
 build/
 benchmark_results/
 benchmark_results_gb/
