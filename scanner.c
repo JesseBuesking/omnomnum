@@ -346,7 +346,10 @@ yy3:
             if (state->is_parsing) {
                 Parse(pParser, 0, *yylval, state);
 #ifdef YYTRACKMAXSTACKDEPTH
-                state->last_stack_depth = ParseStackPeak(pParser);
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
 #endif
                 ParseReset(pParser);
                 state->is_parsing = false;
@@ -573,7 +576,10 @@ yy17:
                 }
 
 #ifdef YYTRACKMAXSTACKDEPTH
-                state->last_stack_depth = ParseStackPeak(pParser);
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
 #endif
                 ParseReset(pParser);
                 state->is_parsing = false;
@@ -1345,7 +1351,10 @@ yy82:
                 }
 
 #ifdef YYTRACKMAXSTACKDEPTH
-                state->last_stack_depth = ParseStackPeak(pParser);
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
 #endif
                 ParseReset(pParser);
                 state->is_parsing = false;
@@ -2347,7 +2356,10 @@ yy185:
                         Parse(pParser, 0, *yylval, state);
                     }
 #ifdef YYTRACKMAXSTACKDEPTH
-                    state->last_stack_depth = ParseStackPeak(pParser);
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
 #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
@@ -4727,7 +4739,10 @@ yy455:
                 }
 
 #ifdef YYTRACKMAXSTACKDEPTH
-                state->last_stack_depth = ParseStackPeak(pParser);
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
 #endif
                 ParseReset(pParser);
                 state->is_parsing = false;
@@ -4988,7 +5003,10 @@ yy488:
                         Parse(pParser, 0, *yylval, state);
                     }
 #ifdef YYTRACKMAXSTACKDEPTH
-                    state->last_stack_depth = ParseStackPeak(pParser);
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
 #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
@@ -7332,7 +7350,10 @@ yy793:
                         Parse(pParser, 0, *yylval, state);
                     }
 #ifdef YYTRACKMAXSTACKDEPTH
-                    state->last_stack_depth = ParseStackPeak(pParser);
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
 #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
@@ -7871,7 +7892,10 @@ yy860:
                         Parse(pParser, 0, *yylval, state);
                     }
 #ifdef YYTRACKMAXSTACKDEPTH
-                    state->last_stack_depth = ParseStackPeak(pParser);
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
 #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
