@@ -381,7 +381,7 @@ typedef union {
   ParseTOKENTYPE yy0;
 } YYMINORTYPE;
 #ifndef YYSTACKDEPTH
-#define YYSTACKDEPTH 100
+#define YYSTACKDEPTH 32
 #endif
 #if INTERFACE
 #define ParseARG_SDECL  ParserState *state ;
