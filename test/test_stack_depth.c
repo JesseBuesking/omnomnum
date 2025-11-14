@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
+// Must match YYSTACKDEPTH in parser.c
+#ifndef YYSTACKDEPTH
+#define YYSTACKDEPTH 32
+#endif
+
 typedef struct {
     const char* name;
     const char* input;
@@ -63,7 +68,7 @@ int main(int argc, char *argv[]) {
     int num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
 
     printf("Testing parser stack depth across %d test cases...\n\n", num_tests);
-    printf("YYSTACKDEPTH = 100 (current allocation)\n\n");
+    printf("YYSTACKDEPTH = %d (current allocation)\n\n", YYSTACKDEPTH);
 
     initOmNomNum();
 
@@ -105,10 +110,10 @@ int main(int argc, char *argv[]) {
     printf("\n" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "\n");
     printf("RESULTS:\n");
     printf("=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "=" "\n");
-    printf("Maximum stack depth:     %d / %d slots\n", overall_max_depth, 100);
+    printf("Maximum stack depth:     %d / %d slots\n", overall_max_depth, YYSTACKDEPTH);
     printf("Deepest test case:       %s\n", deepest_test);
-    printf("Stack utilization:       %.1f%%\n", (overall_max_depth * 100.0) / 100);
-    printf("Unused stack slots:      %d\n", 100 - overall_max_depth);
+    printf("Stack utilization:       %.1f%%\n", (overall_max_depth * 100.0) / YYSTACKDEPTH);
+    printf("Unused stack slots:      %d\n", YYSTACKDEPTH - overall_max_depth);
     printf("\n");
 
     if (overall_max_depth < 25) {

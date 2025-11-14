@@ -5,6 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Must match YYSTACKDEPTH in parser.c
+#ifndef YYSTACKDEPTH
+#define YYSTACKDEPTH 32
+#endif
+
 int main(int argc, char *argv[]) {
     (void)argc;
     (void)argv;
@@ -126,8 +131,8 @@ int main(int argc, char *argv[]) {
     if (depth5 > max_depth) max_depth = depth5;
 
     printf("Maximum depth across all extreme tests: %d\n", max_depth);
-    printf("YYSTACKDEPTH = 100 (current)\n");
-    printf("Safety margin: %.1fx\n", 100.0 / max_depth);
+    printf("YYSTACKDEPTH = %d (current)\n", YYSTACKDEPTH);
+    printf("Safety margin: %.1fx\n", (double)YYSTACKDEPTH / max_depth);
     printf("\n");
 
     if (max_depth < 20) {
@@ -138,7 +143,7 @@ int main(int argc, char *argv[]) {
         printf("  Recommendation: YYSTACKDEPTH = 50 for safety\n");
     } else {
         printf("⚠ WARNING: Extreme cases exceed 32 slots\n");
-        printf("  Recommendation: Keep YYSTACKDEPTH = 100\n");
+        printf("  Recommendation: Keep YYSTACKDEPTH = %d\n", YYSTACKDEPTH);
     }
 #endif
 

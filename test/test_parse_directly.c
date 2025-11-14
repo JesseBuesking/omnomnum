@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 #endif
 
     ParseFree(pParser, free);
-    free_ParserState(&state);
+    freeParserState(&state);
     freeOmNomNum();
 
     return 0;

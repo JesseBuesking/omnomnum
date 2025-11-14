@@ -309,3 +309,19 @@ pgo-clean:
 	@echo "Removing PGO profile data..."
 	@rm -f *.gcda test/*.gcda branchlut/*.gcda grisu2/*.gcda
 	@echo "Profile data removed"
+
+# Stack depth and memory profiling test executables
+test/test_stack_depth: $(OMNOMNUM_OBJ) test/test_stack_depth.c
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+
+test/test_stack_depth_extreme: $(OMNOMNUM_OBJ) test/test_stack_depth_extreme.c
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth_extreme.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+
+test/test_parse_directly: $(OMNOMNUM_OBJ) test/test_parse_directly.c
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_parse_directly.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+
+test/test_massif: $(OMNOMNUM_OBJ) test/test_massif.c
+	$(OMNOMNUM_CC) -o $@ test/test_massif.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+
+test/test_performance_yystackdepth32: $(OMNOMNUM_OBJ) test/test_performance_yystackdepth32.c
+	$(OMNOMNUM_CC) -o $@ test/test_performance_yystackdepth32.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
