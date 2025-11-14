@@ -82,9 +82,9 @@ int main(int argc, char *argv[]) {
         // Run normalization
         normalize(test_cases[i].input, strlen(test_cases[i].input), &state);
 
-        // Get stack depth
+        // Get stack depth from last parse
 #ifdef YYTRACKMAXSTACKDEPTH
-        int depth = ParseStackPeak(state.pParser);
+        int depth = state.last_stack_depth;
 
         printf("%-20s  depth: %3d  \"%s\"\n",
                test_cases[i].name,

@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     normalize(long_simple, strlen(long_simple), &state);
 #ifdef YYTRACKMAXSTACKDEPTH
-    int depth1 = ParseStackPeak(state.pParser);
+    int depth1 = state.last_stack_depth;
     printf("  Stack depth: %d\n", depth1);
     printf("  Input length: %zu chars\n", strlen(long_simple));
     printf("  Result length: %zu chars\n\n", strlen(state.result));
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 
     normalize(long_complex, strlen(long_complex), &state);
 #ifdef YYTRACKMAXSTACKDEPTH
-    int depth2 = ParseStackPeak(state.pParser);
+    int depth2 = state.last_stack_depth;
     printf("  Stack depth: %d\n", depth2);
     printf("  Input length: %zu chars\n", strlen(long_complex));
     printf("  Result length: %zu chars\n\n", strlen(state.result));
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     normalize(book, strlen(book), &state);
 #ifdef YYTRACKMAXSTACKDEPTH
-    int depth3 = ParseStackPeak(state.pParser);
+    int depth3 = state.last_stack_depth;
     printf("  Stack depth: %d\n", depth3);
     printf("  Input length: %zu chars\n", strlen(book));
     printf("  Result length: %zu chars\n\n", strlen(book));
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 
     normalize(fractions, strlen(fractions), &state);
 #ifdef YYTRACKMAXSTACKDEPTH
-    int depth4 = ParseStackPeak(state.pParser);
+    int depth4 = state.last_stack_depth;
     printf("  Stack depth: %d\n", depth4);
     printf("  Input length: %zu chars\n", strlen(fractions));
     printf("  Result length: %zu chars\n\n", strlen(state.result));
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 
     normalize(max_nest, strlen(max_nest), &state);
 #ifdef YYTRACKMAXSTACKDEPTH
-    int depth5 = ParseStackPeak(state.pParser);
+    int depth5 = state.last_stack_depth;
     printf("  Stack depth: %d\n", depth5);
     printf("  Input: %s\n", max_nest);
     printf("  Result: %s\n\n", state.result);
