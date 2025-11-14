@@ -368,6 +368,12 @@ fast_path:
                     } else {
                         Parse(pParser, 0, *yylval, state);
                     }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -404,6 +410,12 @@ fast_path:
             } else {
                 if (state->is_parsing) {
                     if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser); state->is_parsing = false;
                 }
                 state->last_token = TOKEN_CHARACTERS; goto fast_path;
@@ -573,6 +585,12 @@ fast_path:
                     } else {
                         Parse(pParser, 0, *yylval, state);
                     }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -615,6 +633,12 @@ fast_path:
                     } else {
                         Parse(pParser, 0, *yylval, state);
                     }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -640,6 +664,12 @@ fast_path:
                     } else {
                         Parse(pParser, 0, *yylval, state);
                     }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -868,6 +898,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -884,6 +920,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -1101,6 +1143,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }

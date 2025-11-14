@@ -169,6 +169,7 @@ ParserState* getOrInitSubState(ParserState *state) {
         state->subState->pParser = NULL;
         state->subState->numberHolder = sdsempty();
         state->subState->subState = NULL;
+        state->subState->last_stack_depth = 0;
         // OPTIMIZATION: SubState typically processes single tokens with 1-2 numbers
         // Use smaller initial capacity (8) vs main state (128) to reduce allocation overhead
         initYYSTYPEList(&(state->subState->yystypeList), 8);
