@@ -75,7 +75,7 @@ test/remove_char_inplace.yaml: ;
 $(CORE_OBJS): %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
 
-# parser_compat, scanner, and scanner.def need stack depth tracking enabled
+# parser_compat, scanner, scanner.def, and omnomnum need stack depth tracking enabled
 parser_compat.o: parser_compat.c $(DEPS)
 	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c $< -o $@
 
@@ -83,6 +83,9 @@ scanner.o: scanner.c $(DEPS)
 	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c $< -o $@
 
 scanner.def.o: scanner.def.c $(DEPS)
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c $< -o $@
+
+omnomnum.o: omnomnum.c $(DEPS)
 	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c $< -o $@
 
 branchlut/branchlut.o: branchlut/branchlut.c $(DEPS)
