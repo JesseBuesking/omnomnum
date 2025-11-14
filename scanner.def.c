@@ -112,9 +112,7 @@ void initParserState(ParserState *state) {
     state->pParser = NULL;
     state->numberHolder = sdsempty();
     state->subState = NULL; // Lazy-allocate on first use
-#ifdef YYTRACKMAXSTACKDEPTH
     state->last_stack_depth = 0;
-#endif
     // OPTIMIZATION: Start with larger capacity to reduce reallocations
     // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
     initYYSTYPEList(&(state->yystypeList), 128);
@@ -131,9 +129,7 @@ void resetParserState(ParserState *state) {
     state->reduce_fractions = false; // default: off
     state->normalize_percent_symbol = false; // default: off
     state->percent_as_decimal = false; // default: off
-#ifdef YYTRACKMAXSTACKDEPTH
     state->last_stack_depth = 0;
-#endif
     // Keep the cached parser and scratch buffer; just clear the buffer
     // No NULL check needed - numberHolder is always allocated in initParserState
     sdsclear(state->numberHolder);
