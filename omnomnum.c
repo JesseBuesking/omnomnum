@@ -212,6 +212,32 @@ void freeOmNomNum(void) {
     /* No global state to free; kept for API compatibility. */
 }
 
+/* Helper: Process a single token through fallback tokenization using subState */
+static void process_fallback_token(ParserState *state, const char *data,
+                                    unsigned int tok_start, unsigned int tok_len) {
+    // OPTIMIZATION: Reuse subState instead of allocating new ParserState
+    ParserState *sub = getOrInitSubState(state);
+
+    // Copy all runtime flags to respect caller's settings
+    sub->parse_second = state->parse_second;
+    sub->precision = state->precision;
+    sub->reduce_fractions = state->reduce_fractions;
+    sub->parse_fractions = state->parse_fractions;
+    sub->normalize_percent_symbol = state->normalize_percent_symbol;
+    sub->percent_as_decimal = state->percent_as_decimal;
+
+    YYSTYPEList sl = find_numbers(data + tok_start, tok_len, sub);
+    if (sl.used > 0) {
+        // OPTIMIZATION: Reuse scratch buffer instead of allocating tmp
+        sdsclear(state->numberHolder);
+        yystypeToStringWithReduction(&state->numberHolder, sl.values[0],
+                                      sub->precision, sub->reduce_fractions);
+        state->result = sdscatsds(state->result, state->numberHolder);
+    } else {
+        state->result = sdscatlen(state->result, data + tok_start, tok_len);
+    }
+}
+
 /* Post-process result to handle percent normalization */
 static void process_percent(sds *result, ParserState *state) {
     if (!state->normalize_percent_symbol && !state->percent_as_decimal) {
@@ -508,43 +534,10 @@ void normalize(const char *data, size_t data_len, ParserState *state) {
                         state->result = sdscatlen(state->result, data + tok_start, tok_len);
                     } else {
                         // Not fraction-related, proceed with normal normalization
-                        // OPTIMIZATION: Reuse subState instead of allocating new ParserState
-                        ParserState *sub = getOrInitSubState(state);
-                        sub->parse_second = state->parse_second;
-                        sub->precision = state->precision;
-                        sub->reduce_fractions = state->reduce_fractions;
-                        sub->parse_fractions = state->parse_fractions;
-                        sub->normalize_percent_symbol = state->normalize_percent_symbol;
-                        sub->percent_as_decimal = state->percent_as_decimal;
-                        YYSTYPEList sl = find_numbers(data + tok_start, tok_len, sub);
-                        if (sl.used > 0) {
-                            // OPTIMIZATION: Reuse scratch buffer instead of allocating tmp
-                            sdsclear(state->numberHolder);
-                            yystypeToStringWithReduction(&state->numberHolder, sl.values[0], sub->precision, sub->reduce_fractions);
-                            state->result = sdscatsds(state->result, state->numberHolder);
-                        } else {
-                            state->result = sdscatlen(state->result, data + tok_start, tok_len);
-                        }
+                        process_fallback_token(state, data, tok_start, tok_len);
                     }
                 } else {
-                    // OPTIMIZATION: Reuse subState instead of allocating new ParserState
-                    ParserState *sub = getOrInitSubState(state);
-                    // Copy all runtime flags to respect caller's settings
-                    sub->parse_second = state->parse_second;
-                    sub->precision = state->precision;
-                    sub->reduce_fractions = state->reduce_fractions;
-                    sub->parse_fractions = state->parse_fractions;
-                    sub->normalize_percent_symbol = state->normalize_percent_symbol;
-                    sub->percent_as_decimal = state->percent_as_decimal;
-                    YYSTYPEList sl = find_numbers(data + tok_start, tok_len, sub);
-                    if (sl.used > 0) {
-                        // OPTIMIZATION: Reuse scratch buffer instead of allocating tmp
-                        sdsclear(state->numberHolder);
-                        yystypeToStringWithReduction(&state->numberHolder, sl.values[0], sub->precision, sub->reduce_fractions);
-                        state->result = sdscatsds(state->result, state->numberHolder);
-                    } else {
-                        state->result = sdscatlen(state->result, data + tok_start, tok_len);
-                    }
+                    process_fallback_token(state, data, tok_start, tok_len);
                 }
             }
         }
