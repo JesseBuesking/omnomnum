@@ -239,9 +239,15 @@ static void process_percent(sds *result, ParserState *state) {
    - **Results**: 52.6% avg speedup, 99.9% allocation reduction, 1,799 malloc/free cycles eliminated
    - **Analysis**: See SUBSTATE_OPTIMIZATION_RESULTS.md and MALLOC_CYCLE_ANALYSIS.md
 2. **MEDIUM**: Optimize process_percent allocation (use numberHolder or quick scan)
-3. **MEDIUM**: Extract duplicate fallback tokenization code
-4. **LOW**: Remove redundant NULL checks
+3. ~~**MEDIUM**: Extract duplicate fallback tokenization code~~ ✅ **COMPLETED**
+   - **Commit**: b0b3a6f "Refactor: Extract duplicate fallback tokenization code"
+   - **Results**: -7 net lines, code quality improvement, no performance impact (-0.55% within noise)
+4. ~~**LOW**: Remove redundant NULL checks~~ ✅ **COMPLETED**
+   - **Commit**: 49c5fcd "Refactor: Remove redundant NULL checks for numberHolder"
+   - **Results**: Removed 2 branches, improved code clarity, no meaningful performance impact
 5. **LOW**: Consider in-place percent processing
+
+**Summary for #3 and #4**: See ISSUES_3_AND_4_SUMMARY.md
 
 ## Estimated Impact
 
