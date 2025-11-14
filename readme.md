@@ -2,6 +2,19 @@
 
 Implements most of the logic from [numerizer](https://github.com/jduff/numerizer) in c using [re2c](http://re2c.org/) and [lemon](http://www.hwaci.com/sw/lemon/).
 
+## Python Wrapper Available! 🐍
+
+A Python wrapper is now available for easy integration with Python projects:
+
+```python
+from omnomnum import normalize
+
+normalize("I have two hundred fifty dollars")
+# "I have 250 dollars"
+```
+
+**[See python/README.md for Python documentation →](python/README.md)**
+
 ## Differences between Numerizer and OmNomNum
 
 - OmNomNum preserves whitespace, Numerizer does not.
