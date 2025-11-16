@@ -882,6 +882,12 @@ fast_path:
                         Parse(pParser, 0, *yylval, state);
                     }
 
+    #ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+    #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
