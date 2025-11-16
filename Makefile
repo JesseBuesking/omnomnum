@@ -65,6 +65,9 @@ GIT_DIRTY:=$(shell test -n "$$(git status --porcelain 2>/dev/null)" && echo 1 ||
 
 CORE_OBJS=parser_compat.o omnomnum.o scanner.o scan.o sds.o itoa.o dtoa.o scanner.def.o util.o
 OMNOMNUM_OBJ=$(CORE_OBJS) parser.o grisu2/grisu2.o branchlut/branchlut.o
+# Variant object set that links against a 32-slot parser stack for stack-depth
+# profiling and performance tests.
+OMNOMNUM_OBJ_YYSTACK32=$(CORE_OBJS) parser_yystack32.o grisu2/grisu2.o branchlut/branchlut.o
 DEPS=parser.h scan.h omnomnum.h scanner.h
 
 test/cases.yaml: ;
@@ -161,6 +164,10 @@ parser.h: parser.c
 parser.o: parser.h
 	# produces parser.o with stack depth tracking enabled
 	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -c parser.c
+
+# Parser variant compiled with a reduced YYSTACKDEPTH=32 for stack-depth tests
+parser_yystack32.o: parser.c parser.h
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -DYYSTACKDEPTH=32 -c parser.c -o $@
 
 scanner.c: scanner.re parser.yy parser.h
 	@if [ -z "$(RE2C)" ] || ! command -v $(RE2C) >/dev/null 2>&1; then \
@@ -322,11 +329,11 @@ pgo-clean:
 	@echo "Profile data removed"
 
 # Stack depth and memory profiling test executables
-test/test_stack_depth: $(OMNOMNUM_OBJ) test/test_stack_depth.c
-	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+test/test_stack_depth: $(OMNOMNUM_OBJ_YYSTACK32) test/test_stack_depth.c
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth.c $(OMNOMNUM_OBJ_YYSTACK32) $(FINAL_LIBS)
 
-test/test_stack_depth_extreme: $(OMNOMNUM_OBJ) test/test_stack_depth_extreme.c
-	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth_extreme.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+test/test_stack_depth_extreme: $(OMNOMNUM_OBJ_YYSTACK32) test/test_stack_depth_extreme.c
+	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_stack_depth_extreme.c $(OMNOMNUM_OBJ_YYSTACK32) $(FINAL_LIBS)
 
 test/test_parse_directly: $(OMNOMNUM_OBJ) test/test_parse_directly.c
 	$(OMNOMNUM_CC) -DYYTRACKMAXSTACKDEPTH -o $@ test/test_parse_directly.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
@@ -334,5 +341,5 @@ test/test_parse_directly: $(OMNOMNUM_OBJ) test/test_parse_directly.c
 test/test_massif: $(OMNOMNUM_OBJ) test/test_massif.c
 	$(OMNOMNUM_CC) -o $@ test/test_massif.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
 
-test/test_performance_yystackdepth32: $(OMNOMNUM_OBJ) test/test_performance_yystackdepth32.c
-	$(OMNOMNUM_CC) -o $@ test/test_performance_yystackdepth32.c $(OMNOMNUM_OBJ) $(FINAL_LIBS)
+test/test_performance_yystackdepth32: $(OMNOMNUM_OBJ_YYSTACK32) test/test_performance_yystackdepth32.c
+	$(OMNOMNUM_CC) -DYYSTACKDEPTH=32 -o $@ test/test_performance_yystackdepth32.c $(OMNOMNUM_OBJ_YYSTACK32) $(FINAL_LIBS)
