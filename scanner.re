@@ -374,6 +374,9 @@ fast_path:
                         state->last_stack_depth = depth;
                     }
 #endif
+                    /* Convention: always record stack depth before resetting
+                     * the parser so ParserState.last_stack_depth reflects the
+                     * deepest stack used by this request. */
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -390,6 +393,12 @@ fast_path:
                 } else {
                     Parse(pParser, 0, *yylval, state);
                 }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -423,6 +432,12 @@ fast_path:
             #else
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser); state->is_parsing = false;
             }
             state->last_token = TOKEN_CHARACTERS; goto fast_path;
@@ -474,6 +489,12 @@ fast_path:
                 if (state->is_parsing) {
                     if (state->last_token != TOKEN_SEPARATOR) { }
                     else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser); state->is_parsing = false;
                 }
                 // When parse_fractions is false, treat the first word as a regular word token
@@ -488,6 +509,12 @@ fast_path:
             if (state->is_parsing) {
                 if (state->last_token != TOKEN_SEPARATOR) { }
                 else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser); state->is_parsing = false;
             }
             state->last_token = TOKEN_CHARACTERS;
@@ -573,6 +600,12 @@ fast_path:
                         } else {
                             Parse(pParser, 0, *yylval, state);
                         }
+#ifdef YYTRACKMAXSTACKDEPTH
+                        int depth = ParseStackPeak(pParser);
+                        if (depth > state->last_stack_depth) {
+                            state->last_stack_depth = depth;
+                        }
+#endif
                         ParseReset(pParser);
                         state->is_parsing = false;
                     }
@@ -621,6 +654,12 @@ fast_path:
                         } else {
                             Parse(pParser, 0, *yylval, state);
                         }
+#ifdef YYTRACKMAXSTACKDEPTH
+                        int depth = ParseStackPeak(pParser);
+                        if (depth > state->last_stack_depth) {
+                            state->last_stack_depth = depth;
+                        }
+#endif
                         ParseReset(pParser);
                         state->is_parsing = false;
                     }
@@ -686,6 +725,12 @@ fast_path:
                 } else {
                     Parse(pParser, 0, *yylval, state);
                 }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -762,6 +807,12 @@ fast_path:
                         Parse(pParser, 0, *yylval, state);
                     }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -1161,6 +1212,12 @@ fast_path:
         ALL_OTHERS {
             if (state->is_parsing) {
                 Parse(pParser, 0, *yylval, state);
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }

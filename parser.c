@@ -381,7 +381,7 @@ typedef union {
   ParseTOKENTYPE yy0;
 } YYMINORTYPE;
 #ifndef YYSTACKDEPTH
-#define YYSTACKDEPTH 32
+#define YYSTACKDEPTH 100
 #endif
 #if INTERFACE
 #define ParseARG_SDECL  ParserState *state ;
@@ -2321,11 +2321,6 @@ void ParseFree(
 int ParseStackPeak(void *p){
   yyParser *pParser = (yyParser*)p;
   return pParser->yyhwm;
-}
-
-void ParseStackPeakSet(void *p, int value){
-  yyParser *pParser = (yyParser*)p;
-  pParser->yyhwm = value;
 }
 #endif
 
