@@ -72,7 +72,9 @@ test/remove_char_inplace.yaml: ;
 
 
 # Only use the generic C compile rule for core objects, not tests
-$(CORE_OBJS): %.o: %.c $(DEPS)
+CORE_GENERIC_OBJS=scan.o sds.o itoa.o dtoa.o util.o
+
+$(CORE_GENERIC_OBJS): %.o: %.c $(DEPS)
 	$(OMNOMNUM_CC) -c $< -o $@
 
 # parser_compat, scanner, scanner.def, and omnomnum need stack depth tracking enabled
