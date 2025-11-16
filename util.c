@@ -67,15 +67,12 @@ void replace_char_inplace(char *str, size_t str_len, const unsigned char remove,
 // characters.
 size_t replace_two_byte_char_inplace(unsigned char *str, size_t str_len, const unsigned char* remove, const unsigned char replacement) {
     size_t orig_index = 0, new_index = 0;
-    for(;orig_index < str_len - 1;) {
-        if (str[orig_index] == remove[0] && str[orig_index + 1] == remove[1]) {
-            str[new_index] = replacement;
+    while (orig_index < str_len) {
+        if (orig_index + 1 < str_len && str[orig_index] == remove[0] && str[orig_index + 1] == remove[1]) {
+            str[new_index++] = replacement;
             orig_index += 2;
-            new_index += 1;
         } else {
-            str[new_index] = str[orig_index];
-            orig_index += 1;
-            new_index += 1;
+            str[new_index++] = str[orig_index++];
         }
     }
 

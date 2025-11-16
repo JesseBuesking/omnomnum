@@ -1,0 +1,641 @@
+[bench_current] Repo:  /home/user/omnomnum
+[bench_current] JSON:  test/meta_results/t0.5_r2.json
+[bench_current] Mode:  COMPARE (5 runs)
+[bench_current] Using BENCH_PREFIX=/home/user/.local/usr/local
+[bench_current] Building benchmark binary ...
+Error: lemon not found. parser.c is checked into git; use existing file or install lemon to regenerate.
+Continuing with existing parser.c...
+Error: re2c not found. scanner.c is checked into git; use existing file or install re2c to regenerate.
+Continuing with existing scanner.c...
+[bench_current] Running benchmark -> /home/user/omnomnum/test/meta_results/t0.5_r2.json
+[bench_current] Using THOROUGH mode (2s min_time, 10 reps)
+[bench_current] Running 5 independent benchmark runs...
+[bench_current]   Run 1/5 (min_time=0.5s, reps=2)...
+2025-11-09T22:51:05+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+------------------------------------------------------------------------------------------------
+Benchmark                                                      Time             CPU   Iterations
+------------------------------------------------------------------------------------------------
+BM_simple_mean                                               620 ns          574 ns            2
+BM_simple_median                                             620 ns          574 ns            2
+BM_simple_stddev                                           0.663 ns        0.000 ns            2
+BM_simple_cv                                                0.11 %          0.00 %             2
+BM_long_string_mean                                         2672 ns         2500 ns            2
+BM_long_string_median                                       2672 ns         2500 ns            2
+BM_long_string_stddev                                       35.6 ns         50.5 ns            2
+BM_long_string_cv                                           1.33 %          2.02 %             2
+BM_many_numbers_mean                                       84623 ns        78857 ns            2
+BM_many_numbers_median                                     84623 ns        78857 ns            2
+BM_many_numbers_stddev                                      78.0 ns        0.000 ns            2
+BM_many_numbers_cv                                          0.09 %          0.00 %             2
+BM_decimals_simple/real_time/threads:1_mean                 6712 ns         6283 ns            2
+BM_decimals_simple/real_time/threads:1_median               6712 ns         6283 ns            2
+BM_decimals_simple/real_time/threads:1_stddev               48.5 ns         65.8 ns            2
+BM_decimals_simple/real_time/threads:1_cv                   0.72 %          1.05 %             2
+BM_decimals_complex/real_time/threads:1_mean                4307 ns         4007 ns            2
+BM_decimals_complex/real_time/threads:1_median              4307 ns         4007 ns            2
+BM_decimals_complex/real_time/threads:1_stddev              27.4 ns        0.000 ns            2
+BM_decimals_complex/real_time/threads:1_cv                  0.64 %          0.00 %             2
+BM_ordinals_common/real_time/threads:1_mean                16529 ns        15486 ns            2
+BM_ordinals_common/real_time/threads:1_median              16529 ns        15486 ns            2
+BM_ordinals_common/real_time/threads:1_stddev               72.2 ns          170 ns            2
+BM_ordinals_common/real_time/threads:1_cv                   0.44 %          1.10 %             2
+BM_ordinals_large/real_time/threads:1_mean                  5251 ns         4919 ns            2
+BM_ordinals_large/real_time/threads:1_median                5251 ns         4919 ns            2
+BM_ordinals_large/real_time/threads:1_stddev                20.5 ns        0.000 ns            2
+BM_ordinals_large/real_time/threads:1_cv                    0.39 %          0.00 %             2
+BM_negatives/real_time/threads:1_mean                      12397 ns        11549 ns            2
+BM_negatives/real_time/threads:1_median                    12397 ns        11549 ns            2
+BM_negatives/real_time/threads:1_stddev                     78.6 ns        0.000 ns            2
+BM_negatives/real_time/threads:1_cv                         0.63 %          0.00 %             2
+BM_large_numbers/real_time/threads:1_mean                  25609 ns        23878 ns            2
+BM_large_numbers/real_time/threads:1_median                25609 ns        23878 ns            2
+BM_large_numbers/real_time/threads:1_stddev                  353 ns          266 ns            2
+BM_large_numbers/real_time/threads:1_cv                     1.38 %          1.11 %             2
+BM_large_numbers_composed/real_time/threads:1_mean         23580 ns        22168 ns            2
+BM_large_numbers_composed/real_time/threads:1_median       23580 ns        22168 ns            2
+BM_large_numbers_composed/real_time/threads:1_stddev         429 ns          239 ns            2
+BM_large_numbers_composed/real_time/threads:1_cv            1.82 %          1.08 %             2
+BM_mixed_fractions_word/real_time/threads:1_mean            6658 ns         6232 ns            2
+BM_mixed_fractions_word/real_time/threads:1_median          6658 ns         6232 ns            2
+BM_mixed_fractions_word/real_time/threads:1_stddev           130 ns          134 ns            2
+BM_mixed_fractions_word/real_time/threads:1_cv              1.95 %          2.14 %             2
+BM_mixed_fractions_numeric/real_time/threads:1_mean         8836 ns         8254 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_median       8836 ns         8254 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_stddev       17.8 ns          160 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_cv           0.20 %          1.94 %             2
+BM_numeric_fractions/real_time/threads:1_mean              11147 ns        10389 ns            2
+BM_numeric_fractions/real_time/threads:1_median            11147 ns        10389 ns            2
+BM_numeric_fractions/real_time/threads:1_stddev              624 ns          658 ns            2
+BM_numeric_fractions/real_time/threads:1_cv                 5.60 %          6.33 %             2
+BM_percents/real_time/threads:1_mean                        6358 ns         5906 ns            2
+BM_percents/real_time/threads:1_median                      6358 ns         5906 ns            2
+BM_percents/real_time/threads:1_stddev                      32.7 ns        0.000 ns            2
+BM_percents/real_time/threads:1_cv                          0.51 %          0.00 %             2
+BM_zeros/real_time/threads:1_mean                           7145 ns         6637 ns            2
+BM_zeros/real_time/threads:1_median                         7145 ns         6637 ns            2
+BM_zeros/real_time/threads:1_stddev                         5.11 ns        0.000 ns            2
+BM_zeros/real_time/threads:1_cv                             0.07 %          0.00 %             2
+BM_edge_cases_boundary/real_time/threads:1_mean            19319 ns        18098 ns            2
+BM_edge_cases_boundary/real_time/threads:1_median          19319 ns        18098 ns            2
+BM_edge_cases_boundary/real_time/threads:1_stddev            502 ns          413 ns            2
+BM_edge_cases_boundary/real_time/threads:1_cv               2.60 %          2.28 %             2
+BM_decimal_multipliers/real_time/threads:1_mean             4036 ns         3785 ns            2
+BM_decimal_multipliers/real_time/threads:1_median           4036 ns         3785 ns            2
+BM_decimal_multipliers/real_time/threads:1_stddev           42.3 ns         41.5 ns            2
+BM_decimal_multipliers/real_time/threads:1_cv               1.05 %          1.10 %             2
+BM_compound_numbers/real_time/threads:1_mean               16298 ns        15140 ns            2
+BM_compound_numbers/real_time/threads:1_median             16298 ns        15140 ns            2
+BM_compound_numbers/real_time/threads:1_stddev              19.0 ns          163 ns            2
+BM_compound_numbers/real_time/threads:1_cv                  0.12 %          1.08 %             2
+BM_all_digits/real_time/threads:1_mean                      2366 ns         2195 ns            2
+BM_all_digits/real_time/threads:1_median                    2366 ns         2195 ns            2
+BM_all_digits/real_time/threads:1_stddev                    6.30 ns         24.4 ns            2
+BM_all_digits/real_time/threads:1_cv                        0.27 %          1.11 %             2
+BM_teens/real_time/threads:1_mean                          16010 ns        15006 ns            2
+BM_teens/real_time/threads:1_median                        16010 ns        15006 ns            2
+BM_teens/real_time/threads:1_stddev                          151 ns          326 ns            2
+BM_teens/real_time/threads:1_cv                             0.94 %          2.18 %             2
+BM_tens/real_time/threads:1_mean                           19650 ns        18257 ns            2
+BM_tens/real_time/threads:1_median                         19650 ns        18257 ns            2
+BM_tens/real_time/threads:1_stddev                           148 ns        0.000 ns            2
+BM_tens/real_time/threads:1_cv                              0.75 %          0.00 %             2
+BM_comprehensive_mix/real_time/threads:1_mean               5448 ns         5067 ns            2
+BM_comprehensive_mix/real_time/threads:1_median             5448 ns         5067 ns            2
+BM_comprehensive_mix/real_time/threads:1_stddev              307 ns          269 ns            2
+BM_comprehensive_mix/real_time/threads:1_cv                 5.64 %          5.32 %             2
+[bench_current]   Run 2/5 (min_time=0.5s, reps=2)...
+2025-11-09T22:51:40+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+------------------------------------------------------------------------------------------------
+Benchmark                                                      Time             CPU   Iterations
+------------------------------------------------------------------------------------------------
+BM_simple_mean                                               614 ns          574 ns            2
+BM_simple_median                                             614 ns          574 ns            2
+BM_simple_stddev                                            2.82 ns        0.000 ns            2
+BM_simple_cv                                                0.46 %          0.00 %             2
+BM_long_string_mean                                         2763 ns         2571 ns            2
+BM_long_string_median                                       2763 ns         2571 ns            2
+BM_long_string_stddev                                        175 ns          152 ns            2
+BM_long_string_cv                                           6.35 %          5.89 %             2
+BM_many_numbers_mean                                       84271 ns        78857 ns            2
+BM_many_numbers_median                                     84271 ns        78857 ns            2
+BM_many_numbers_stddev                                       228 ns        0.000 ns            2
+BM_many_numbers_cv                                          0.27 %          0.00 %             2
+BM_decimals_simple/real_time/threads:1_mean                 6811 ns         6321 ns            2
+BM_decimals_simple/real_time/threads:1_median               6811 ns         6321 ns            2
+BM_decimals_simple/real_time/threads:1_stddev                233 ns          267 ns            2
+BM_decimals_simple/real_time/threads:1_cv                   3.42 %          4.22 %             2
+BM_decimals_complex/real_time/threads:1_mean                4312 ns         4001 ns            2
+BM_decimals_complex/real_time/threads:1_median              4312 ns         4001 ns            2
+BM_decimals_complex/real_time/threads:1_stddev              58.4 ns         43.9 ns            2
+BM_decimals_complex/real_time/threads:1_cv                  1.35 %          1.10 %             2
+BM_ordinals_common/real_time/threads:1_mean                16411 ns        15343 ns            2
+BM_ordinals_common/real_time/threads:1_median              16411 ns        15343 ns            2
+BM_ordinals_common/real_time/threads:1_stddev               29.7 ns        0.000 ns            2
+BM_ordinals_common/real_time/threads:1_cv                   0.18 %          0.00 %             2
+BM_ordinals_large/real_time/threads:1_mean                  5119 ns         4775 ns            2
+BM_ordinals_large/real_time/threads:1_median                5119 ns         4775 ns            2
+BM_ordinals_large/real_time/threads:1_stddev                7.88 ns        0.000 ns            2
+BM_ordinals_large/real_time/threads:1_cv                    0.15 %          0.00 %             2
+BM_negatives/real_time/threads:1_mean                      12170 ns        11306 ns            2
+BM_negatives/real_time/threads:1_median                    12170 ns        11306 ns            2
+BM_negatives/real_time/threads:1_stddev                     5.93 ns        0.000 ns            2
+BM_negatives/real_time/threads:1_cv                         0.05 %          0.00 %             2
+BM_large_numbers/real_time/threads:1_mean                  25611 ns        23965 ns            2
+BM_large_numbers/real_time/threads:1_median                25611 ns        23965 ns            2
+BM_large_numbers/real_time/threads:1_stddev                 80.6 ns          259 ns            2
+BM_large_numbers/real_time/threads:1_cv                     0.31 %          1.08 %             2
+BM_large_numbers_composed/real_time/threads:1_mean         23239 ns        21754 ns            2
+BM_large_numbers_composed/real_time/threads:1_median       23239 ns        21754 ns            2
+BM_large_numbers_composed/real_time/threads:1_stddev        39.9 ns        0.000 ns            2
+BM_large_numbers_composed/real_time/threads:1_cv            0.17 %          0.00 %             2
+BM_mixed_fractions_word/real_time/threads:1_mean            6650 ns         6204 ns            2
+BM_mixed_fractions_word/real_time/threads:1_median          6650 ns         6204 ns            2
+BM_mixed_fractions_word/real_time/threads:1_stddev          13.9 ns        0.000 ns            2
+BM_mixed_fractions_word/real_time/threads:1_cv              0.21 %          0.00 %             2
+BM_mixed_fractions_numeric/real_time/threads:1_mean         8170 ns         7599 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_median       8170 ns         7599 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_stddev       74.9 ns        0.000 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_cv           0.92 %          0.00 %             2
+BM_numeric_fractions/real_time/threads:1_mean              10684 ns         9996 ns            2
+BM_numeric_fractions/real_time/threads:1_median            10684 ns         9996 ns            2
+BM_numeric_fractions/real_time/threads:1_stddev             78.6 ns          106 ns            2
+BM_numeric_fractions/real_time/threads:1_cv                 0.74 %          1.06 %             2
+BM_percents/real_time/threads:1_mean                        6394 ns         5950 ns            2
+BM_percents/real_time/threads:1_median                      6394 ns         5950 ns            2
+BM_percents/real_time/threads:1_stddev                      82.8 ns        0.000 ns            2
+BM_percents/real_time/threads:1_cv                          1.30 %          0.00 %             2
+BM_zeros/real_time/threads:1_mean                           7360 ns         6889 ns            2
+BM_zeros/real_time/threads:1_median                         7360 ns         6889 ns            2
+BM_zeros/real_time/threads:1_stddev                          191 ns          216 ns            2
+BM_zeros/real_time/threads:1_cv                             2.59 %          3.14 %             2
+BM_edge_cases_boundary/real_time/threads:1_mean            20137 ns        18757 ns            2
+BM_edge_cases_boundary/real_time/threads:1_median          20137 ns        18757 ns            2
+BM_edge_cases_boundary/real_time/threads:1_stddev           1766 ns         1718 ns            2
+BM_edge_cases_boundary/real_time/threads:1_cv               8.77 %          9.16 %             2
+BM_decimal_multipliers/real_time/threads:1_mean             4016 ns         3755 ns            2
+BM_decimal_multipliers/real_time/threads:1_median           4016 ns         3755 ns            2
+BM_decimal_multipliers/real_time/threads:1_stddev           6.21 ns        0.000 ns            2
+BM_decimal_multipliers/real_time/threads:1_cv               0.15 %          0.00 %             2
+BM_compound_numbers/real_time/threads:1_mean               16003 ns        14968 ns            2
+BM_compound_numbers/real_time/threads:1_median             16003 ns        14968 ns            2
+BM_compound_numbers/real_time/threads:1_stddev              60.4 ns          162 ns            2
+BM_compound_numbers/real_time/threads:1_cv                  0.38 %          1.08 %             2
+BM_all_digits/real_time/threads:1_mean                      2367 ns         2215 ns            2
+BM_all_digits/real_time/threads:1_median                    2367 ns         2215 ns            2
+BM_all_digits/real_time/threads:1_stddev                    27.6 ns         23.9 ns            2
+BM_all_digits/real_time/threads:1_cv                        1.16 %          1.08 %             2
+BM_teens/real_time/threads:1_mean                          15847 ns        14796 ns            2
+BM_teens/real_time/threads:1_median                        15847 ns        14796 ns            2
+BM_teens/real_time/threads:1_stddev                         54.3 ns          160 ns            2
+BM_teens/real_time/threads:1_cv                             0.34 %          1.08 %             2
+BM_tens/real_time/threads:1_mean                           19364 ns        18038 ns            2
+BM_tens/real_time/threads:1_median                         19364 ns        18038 ns            2
+BM_tens/real_time/threads:1_stddev                          73.5 ns        0.000 ns            2
+BM_tens/real_time/threads:1_cv                              0.38 %          0.00 %             2
+BM_comprehensive_mix/real_time/threads:1_mean               5152 ns         4812 ns            2
+BM_comprehensive_mix/real_time/threads:1_median             5152 ns         4812 ns            2
+BM_comprehensive_mix/real_time/threads:1_stddev             12.0 ns         51.9 ns            2
+BM_comprehensive_mix/real_time/threads:1_cv                 0.23 %          1.08 %             2
+[bench_current]   Run 3/5 (min_time=0.5s, reps=2)...
+2025-11-09T22:52:15+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+------------------------------------------------------------------------------------------------
+Benchmark                                                      Time             CPU   Iterations
+------------------------------------------------------------------------------------------------
+BM_simple_mean                                               607 ns          570 ns            2
+BM_simple_median                                             607 ns          570 ns            2
+BM_simple_stddev                                            4.40 ns        0.000 ns            2
+BM_simple_cv                                                0.72 %          0.00 %             2
+BM_long_string_mean                                         2674 ns         2489 ns            2
+BM_long_string_median                                       2674 ns         2489 ns            2
+BM_long_string_stddev                                       14.2 ns         52.5 ns            2
+BM_long_string_cv                                           0.53 %          2.11 %             2
+BM_many_numbers_mean                                       84750 ns        78857 ns            2
+BM_many_numbers_median                                     84750 ns        78857 ns            2
+BM_many_numbers_stddev                                       343 ns        0.000 ns            2
+BM_many_numbers_cv                                          0.41 %          0.00 %             2
+BM_decimals_simple/real_time/threads:1_mean                 6653 ns         6208 ns            2
+BM_decimals_simple/real_time/threads:1_median               6653 ns         6208 ns            2
+BM_decimals_simple/real_time/threads:1_stddev               97.1 ns         68.1 ns            2
+BM_decimals_simple/real_time/threads:1_cv                   1.46 %          1.10 %             2
+BM_decimals_complex/real_time/threads:1_mean                4310 ns         4026 ns            2
+BM_decimals_complex/real_time/threads:1_median              4310 ns         4026 ns            2
+BM_decimals_complex/real_time/threads:1_stddev              9.37 ns        0.000 ns            2
+BM_decimals_complex/real_time/threads:1_cv                  0.22 %          0.00 %             2
+BM_ordinals_common/real_time/threads:1_mean                16606 ns        15545 ns            2
+BM_ordinals_common/real_time/threads:1_median              16606 ns        15545 ns            2
+BM_ordinals_common/real_time/threads:1_stddev                177 ns          168 ns            2
+BM_ordinals_common/real_time/threads:1_cv                   1.07 %          1.08 %             2
+BM_ordinals_large/real_time/threads:1_mean                  5201 ns         4870 ns            2
+BM_ordinals_large/real_time/threads:1_median                5201 ns         4870 ns            2
+BM_ordinals_large/real_time/threads:1_stddev               0.076 ns        0.000 ns            2
+BM_ordinals_large/real_time/threads:1_cv                    0.00 %          0.00 %             2
+BM_negatives/real_time/threads:1_mean                      12703 ns        11794 ns            2
+BM_negatives/real_time/threads:1_median                    12703 ns        11794 ns            2
+BM_negatives/real_time/threads:1_stddev                      260 ns          124 ns            2
+BM_negatives/real_time/threads:1_cv                         2.05 %          1.05 %             2
+BM_large_numbers/real_time/threads:1_mean                  27179 ns        25370 ns            2
+BM_large_numbers/real_time/threads:1_median                27179 ns        25370 ns            2
+BM_large_numbers/real_time/threads:1_stddev                 1084 ns         1071 ns            2
+BM_large_numbers/real_time/threads:1_cv                     3.99 %          4.22 %             2
+BM_large_numbers_composed/real_time/threads:1_mean         23628 ns        22055 ns            2
+BM_large_numbers_composed/real_time/threads:1_median       23628 ns        22055 ns            2
+BM_large_numbers_composed/real_time/threads:1_stddev         404 ns          246 ns            2
+BM_large_numbers_composed/real_time/threads:1_cv            1.71 %          1.11 %             2
+BM_mixed_fractions_word/real_time/threads:1_mean            6598 ns         6179 ns            2
+BM_mixed_fractions_word/real_time/threads:1_median          6598 ns         6179 ns            2
+BM_mixed_fractions_word/real_time/threads:1_stddev          68.4 ns        0.000 ns            2
+BM_mixed_fractions_word/real_time/threads:1_cv              1.04 %          0.00 %             2
+BM_mixed_fractions_numeric/real_time/threads:1_mean         8234 ns         7681 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_median       8234 ns         7681 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_stddev       55.6 ns          170 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_cv           0.68 %          2.21 %             2
+BM_numeric_fractions/real_time/threads:1_mean              10788 ns        10018 ns            2
+BM_numeric_fractions/real_time/threads:1_median            10788 ns        10018 ns            2
+BM_numeric_fractions/real_time/threads:1_stddev             37.4 ns        0.000 ns            2
+BM_numeric_fractions/real_time/threads:1_cv                 0.35 %          0.00 %             2
+BM_percents/real_time/threads:1_mean                        6514 ns         6070 ns            2
+BM_percents/real_time/threads:1_median                      6514 ns         6070 ns            2
+BM_percents/real_time/threads:1_stddev                       214 ns          194 ns            2
+BM_percents/real_time/threads:1_cv                          3.29 %          3.19 %             2
+BM_zeros/real_time/threads:1_mean                           7505 ns         6999 ns            2
+BM_zeros/real_time/threads:1_median                         7505 ns         6999 ns            2
+BM_zeros/real_time/threads:1_stddev                         83.3 ns         77.9 ns            2
+BM_zeros/real_time/threads:1_cv                             1.11 %          1.11 %             2
+BM_edge_cases_boundary/real_time/threads:1_mean            19283 ns        17958 ns            2
+BM_edge_cases_boundary/real_time/threads:1_median          19283 ns        17958 ns            2
+BM_edge_cases_boundary/real_time/threads:1_stddev           82.5 ns          403 ns            2
+BM_edge_cases_boundary/real_time/threads:1_cv               0.43 %          2.24 %             2
+BM_decimal_multipliers/real_time/threads:1_mean             4525 ns         4189 ns            2
+BM_decimal_multipliers/real_time/threads:1_median           4525 ns         4189 ns            2
+BM_decimal_multipliers/real_time/threads:1_stddev            597 ns          568 ns            2
+BM_decimal_multipliers/real_time/threads:1_cv              13.19 %         13.56 %             2
+BM_compound_numbers/real_time/threads:1_mean               16642 ns        15376 ns            2
+BM_compound_numbers/real_time/threads:1_median             16642 ns        15376 ns            2
+BM_compound_numbers/real_time/threads:1_stddev               599 ns          403 ns            2
+BM_compound_numbers/real_time/threads:1_cv                  3.60 %          2.62 %             2
+BM_all_digits/real_time/threads:1_mean                      2367 ns         2217 ns            2
+BM_all_digits/real_time/threads:1_median                    2367 ns         2217 ns            2
+BM_all_digits/real_time/threads:1_stddev                    6.38 ns         23.9 ns            2
+BM_all_digits/real_time/threads:1_cv                        0.27 %          1.08 %             2
+BM_teens/real_time/threads:1_mean                          16556 ns        15399 ns            2
+BM_teens/real_time/threads:1_median                        16556 ns        15399 ns            2
+BM_teens/real_time/threads:1_stddev                          540 ns          499 ns            2
+BM_teens/real_time/threads:1_cv                             3.26 %          3.24 %             2
+BM_tens/real_time/threads:1_mean                           19900 ns        18504 ns            2
+BM_tens/real_time/threads:1_median                         19900 ns        18504 ns            2
+BM_tens/real_time/threads:1_stddev                           171 ns          200 ns            2
+BM_tens/real_time/threads:1_cv                              0.86 %          1.08 %             2
+BM_comprehensive_mix/real_time/threads:1_mean               5396 ns         5007 ns            2
+BM_comprehensive_mix/real_time/threads:1_median             5396 ns         5007 ns            2
+BM_comprehensive_mix/real_time/threads:1_stddev             35.8 ns        0.000 ns            2
+BM_comprehensive_mix/real_time/threads:1_cv                 0.66 %          0.00 %             2
+[bench_current]   Run 4/5 (min_time=0.5s, reps=2)...
+2025-11-09T22:52:50+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+------------------------------------------------------------------------------------------------
+Benchmark                                                      Time             CPU   Iterations
+------------------------------------------------------------------------------------------------
+BM_simple_mean                                               633 ns          591 ns            2
+BM_simple_median                                             633 ns          591 ns            2
+BM_simple_stddev                                            36.3 ns         36.4 ns            2
+BM_simple_cv                                                5.73 %          6.15 %             2
+BM_long_string_mean                                         2633 ns         2451 ns            2
+BM_long_string_median                                       2633 ns         2451 ns            2
+BM_long_string_stddev                                       6.23 ns         24.2 ns            2
+BM_long_string_cv                                           0.24 %          0.99 %             2
+BM_many_numbers_mean                                       88196 ns        82286 ns            2
+BM_many_numbers_median                                     88196 ns        82286 ns            2
+BM_many_numbers_stddev                                      2602 ns         3232 ns            2
+BM_many_numbers_cv                                          2.95 %          3.93 %             2
+BM_decimals_simple/real_time/threads:1_mean                 6567 ns         6127 ns            2
+BM_decimals_simple/real_time/threads:1_median               6567 ns         6127 ns            2
+BM_decimals_simple/real_time/threads:1_stddev               69.4 ns          131 ns            2
+BM_decimals_simple/real_time/threads:1_cv                   1.06 %          2.14 %             2
+BM_decimals_complex/real_time/threads:1_mean                4374 ns         4109 ns            2
+BM_decimals_complex/real_time/threads:1_median              4374 ns         4109 ns            2
+BM_decimals_complex/real_time/threads:1_stddev              10.6 ns         44.4 ns            2
+BM_decimals_complex/real_time/threads:1_cv                  0.24 %          1.08 %             2
+BM_ordinals_common/real_time/threads:1_mean                16279 ns        15200 ns            2
+BM_ordinals_common/real_time/threads:1_median              16279 ns        15200 ns            2
+BM_ordinals_common/real_time/threads:1_stddev               46.6 ns        0.000 ns            2
+BM_ordinals_common/real_time/threads:1_cv                   0.29 %          0.00 %             2
+BM_ordinals_large/real_time/threads:1_mean                  5169 ns         4825 ns            2
+BM_ordinals_large/real_time/threads:1_median                5169 ns         4825 ns            2
+BM_ordinals_large/real_time/threads:1_stddev                55.1 ns          103 ns            2
+BM_ordinals_large/real_time/threads:1_cv                    1.07 %          2.14 %             2
+BM_negatives/real_time/threads:1_mean                      12459 ns        11618 ns            2
+BM_negatives/real_time/threads:1_median                    12459 ns        11618 ns            2
+BM_negatives/real_time/threads:1_stddev                      328 ns          245 ns            2
+BM_negatives/real_time/threads:1_cv                         2.64 %          2.11 %             2
+BM_large_numbers/real_time/threads:1_mean                  27001 ns        25062 ns            2
+BM_large_numbers/real_time/threads:1_median                27001 ns        25062 ns            2
+BM_large_numbers/real_time/threads:1_stddev                  420 ns          788 ns            2
+BM_large_numbers/real_time/threads:1_cv                     1.55 %          3.14 %             2
+BM_large_numbers_composed/real_time/threads:1_mean         23350 ns        21605 ns            2
+BM_large_numbers_composed/real_time/threads:1_median       23350 ns        21605 ns            2
+BM_large_numbers_composed/real_time/threads:1_stddev         569 ns          477 ns            2
+BM_large_numbers_composed/real_time/threads:1_cv            2.44 %          2.21 %             2
+BM_mixed_fractions_word/real_time/threads:1_mean            6930 ns         6398 ns            2
+BM_mixed_fractions_word/real_time/threads:1_median          6930 ns         6398 ns            2
+BM_mixed_fractions_word/real_time/threads:1_stddev           306 ns          340 ns            2
+BM_mixed_fractions_word/real_time/threads:1_cv              4.41 %          5.32 %             2
+BM_mixed_fractions_numeric/real_time/threads:1_mean         7969 ns         7384 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_median       7969 ns         7384 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_stddev       32.7 ns        0.000 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_cv           0.41 %          0.00 %             2
+BM_numeric_fractions/real_time/threads:1_mean              10504 ns         9808 ns            2
+BM_numeric_fractions/real_time/threads:1_median            10504 ns         9808 ns            2
+BM_numeric_fractions/real_time/threads:1_stddev             67.8 ns          104 ns            2
+BM_numeric_fractions/real_time/threads:1_cv                 0.65 %          1.06 %             2
+BM_percents/real_time/threads:1_mean                        6626 ns         6177 ns            2
+BM_percents/real_time/threads:1_median                      6626 ns         6177 ns            2
+BM_percents/real_time/threads:1_stddev                       415 ns          324 ns            2
+BM_percents/real_time/threads:1_cv                          6.27 %          5.24 %             2
+BM_zeros/real_time/threads:1_mean                           7239 ns         6687 ns            2
+BM_zeros/real_time/threads:1_median                         7239 ns         6687 ns            2
+BM_zeros/real_time/threads:1_stddev                         8.86 ns         75.7 ns            2
+BM_zeros/real_time/threads:1_cv                             0.12 %          1.13 %             2
+BM_edge_cases_boundary/real_time/threads:1_mean            19431 ns        18049 ns            2
+BM_edge_cases_boundary/real_time/threads:1_median          19431 ns        18049 ns            2
+BM_edge_cases_boundary/real_time/threads:1_stddev            361 ns          613 ns            2
+BM_edge_cases_boundary/real_time/threads:1_cv               1.86 %          3.39 %             2
+BM_decimal_multipliers/real_time/threads:1_mean             4482 ns         4170 ns            2
+BM_decimal_multipliers/real_time/threads:1_median           4482 ns         4170 ns            2
+BM_decimal_multipliers/real_time/threads:1_stddev            639 ns          581 ns            2
+BM_decimal_multipliers/real_time/threads:1_cv              14.25 %         13.94 %             2
+BM_compound_numbers/real_time/threads:1_mean               18349 ns        17087 ns            2
+BM_compound_numbers/real_time/threads:1_median             18349 ns        17087 ns            2
+BM_compound_numbers/real_time/threads:1_stddev              1011 ns          993 ns            2
+BM_compound_numbers/real_time/threads:1_cv                  5.51 %          5.81 %             2
+BM_all_digits/real_time/threads:1_mean                      2639 ns         2450 ns            2
+BM_all_digits/real_time/threads:1_median                    2639 ns         2450 ns            2
+BM_all_digits/real_time/threads:1_stddev                     324 ns          315 ns            2
+BM_all_digits/real_time/threads:1_cv                       12.28 %         12.86 %             2
+BM_teens/real_time/threads:1_mean                          16390 ns        15089 ns            2
+BM_teens/real_time/threads:1_median                        16390 ns        15089 ns            2
+BM_teens/real_time/threads:1_stddev                         22.2 ns        0.000 ns            2
+BM_teens/real_time/threads:1_cv                             0.14 %          0.00 %             2
+BM_tens/real_time/threads:1_mean                           19903 ns        18501 ns            2
+BM_tens/real_time/threads:1_median                         19903 ns        18501 ns            2
+BM_tens/real_time/threads:1_stddev                           148 ns          203 ns            2
+BM_tens/real_time/threads:1_cv                              0.74 %          1.10 %             2
+BM_comprehensive_mix/real_time/threads:1_mean               5528 ns         5158 ns            2
+BM_comprehensive_mix/real_time/threads:1_median             5528 ns         5158 ns            2
+BM_comprehensive_mix/real_time/threads:1_stddev              373 ns          313 ns            2
+BM_comprehensive_mix/real_time/threads:1_cv                 6.74 %          6.06 %             2
+[bench_current]   Run 5/5 (min_time=0.5s, reps=2)...
+2025-11-09T22:53:26+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+------------------------------------------------------------------------------------------------
+Benchmark                                                      Time             CPU   Iterations
+------------------------------------------------------------------------------------------------
+BM_simple_mean                                               639 ns          591 ns            2
+BM_simple_median                                             639 ns          591 ns            2
+BM_simple_stddev                                            6.71 ns        0.000 ns            2
+BM_simple_cv                                                1.05 %          0.00 %             2
+BM_long_string_mean                                         2716 ns         2526 ns            2
+BM_long_string_median                                       2716 ns         2526 ns            2
+BM_long_string_stddev                                       11.9 ns        0.000 ns            2
+BM_long_string_cv                                           0.44 %          0.00 %             2
+BM_many_numbers_mean                                       93806 ns        87429 ns            2
+BM_many_numbers_median                                     93806 ns        87429 ns            2
+BM_many_numbers_stddev                                     11713 ns        10506 ns            2
+BM_many_numbers_cv                                         12.49 %         12.02 %             2
+BM_decimals_simple/real_time/threads:1_mean                 7351 ns         6861 ns            2
+BM_decimals_simple/real_time/threads:1_median               7351 ns         6861 ns            2
+BM_decimals_simple/real_time/threads:1_stddev                283 ns          285 ns            2
+BM_decimals_simple/real_time/threads:1_cv                   3.85 %          4.16 %             2
+BM_decimals_complex/real_time/threads:1_mean                4312 ns         4032 ns            2
+BM_decimals_complex/real_time/threads:1_median              4312 ns         4032 ns            2
+BM_decimals_complex/real_time/threads:1_stddev              14.7 ns        0.000 ns            2
+BM_decimals_complex/real_time/threads:1_cv                  0.34 %          0.00 %             2
+BM_ordinals_common/real_time/threads:1_mean                17356 ns        16194 ns            2
+BM_ordinals_common/real_time/threads:1_median              17356 ns        16194 ns            2
+BM_ordinals_common/real_time/threads:1_stddev               1065 ns         1224 ns            2
+BM_ordinals_common/real_time/threads:1_cv                   6.14 %          7.56 %             2
+BM_ordinals_large/real_time/threads:1_mean                  5179 ns         4837 ns            2
+BM_ordinals_large/real_time/threads:1_median                5179 ns         4837 ns            2
+BM_ordinals_large/real_time/threads:1_stddev                8.13 ns        0.000 ns            2
+BM_ordinals_large/real_time/threads:1_cv                    0.16 %          0.00 %             2
+BM_negatives/real_time/threads:1_mean                      12412 ns        11595 ns            2
+BM_negatives/real_time/threads:1_median                    12412 ns        11595 ns            2
+BM_negatives/real_time/threads:1_stddev                     84.6 ns        0.000 ns            2
+BM_negatives/real_time/threads:1_cv                         0.68 %          0.00 %             2
+BM_large_numbers/real_time/threads:1_mean                  26582 ns        24840 ns            2
+BM_large_numbers/real_time/threads:1_median                26582 ns        24840 ns            2
+BM_large_numbers/real_time/threads:1_stddev                  300 ns        0.000 ns            2
+BM_large_numbers/real_time/threads:1_cv                     1.13 %          0.00 %             2
+BM_large_numbers_composed/real_time/threads:1_mean         23642 ns        21924 ns            2
+BM_large_numbers_composed/real_time/threads:1_median       23642 ns        21924 ns            2
+BM_large_numbers_composed/real_time/threads:1_stddev         889 ns          756 ns            2
+BM_large_numbers_composed/real_time/threads:1_cv            3.76 %          3.45 %             2
+BM_mixed_fractions_word/real_time/threads:1_mean            6681 ns         6189 ns            2
+BM_mixed_fractions_word/real_time/threads:1_median          6681 ns         6189 ns            2
+BM_mixed_fractions_word/real_time/threads:1_stddev           153 ns          162 ns            2
+BM_mixed_fractions_word/real_time/threads:1_cv              2.29 %          2.62 %             2
+BM_mixed_fractions_numeric/real_time/threads:1_mean         8016 ns         7432 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_median       8016 ns         7432 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_stddev       31.2 ns        0.000 ns            2
+BM_mixed_fractions_numeric/real_time/threads:1_cv           0.39 %          0.00 %             2
+BM_numeric_fractions/real_time/threads:1_mean              11059 ns        10274 ns            2
+BM_numeric_fractions/real_time/threads:1_median            11059 ns        10274 ns            2
+BM_numeric_fractions/real_time/threads:1_stddev              987 ns         1076 ns            2
+BM_numeric_fractions/real_time/threads:1_cv                 8.93 %         10.48 %             2
+BM_percents/real_time/threads:1_mean                        6567 ns         6090 ns            2
+BM_percents/real_time/threads:1_median                      6567 ns         6090 ns            2
+BM_percents/real_time/threads:1_stddev                      81.1 ns         71.2 ns            2
+BM_percents/real_time/threads:1_cv                          1.23 %          1.17 %             2
+BM_zeros/real_time/threads:1_mean                           7105 ns         6594 ns            2
+BM_zeros/real_time/threads:1_median                         7105 ns         6594 ns            2
+BM_zeros/real_time/threads:1_stddev                         35.2 ns        0.000 ns            2
+BM_zeros/real_time/threads:1_cv                             0.49 %          0.00 %             2
+BM_edge_cases_boundary/real_time/threads:1_mean            19763 ns        18407 ns            2
+BM_edge_cases_boundary/real_time/threads:1_median          19763 ns        18407 ns            2
+BM_edge_cases_boundary/real_time/threads:1_stddev            773 ns          596 ns            2
+BM_edge_cases_boundary/real_time/threads:1_cv               3.91 %          3.24 %             2
+BM_decimal_multipliers/real_time/threads:1_mean             4010 ns         3745 ns            2
+BM_decimal_multipliers/real_time/threads:1_median           4010 ns         3745 ns            2
+BM_decimal_multipliers/real_time/threads:1_stddev           30.4 ns        0.000 ns            2
+BM_decimal_multipliers/real_time/threads:1_cv               0.76 %          0.00 %             2
+BM_compound_numbers/real_time/threads:1_mean               16702 ns        15539 ns            2
+BM_compound_numbers/real_time/threads:1_median             16702 ns        15539 ns            2
+BM_compound_numbers/real_time/threads:1_stddev               404 ns          179 ns            2
+BM_compound_numbers/real_time/threads:1_cv                  2.42 %          1.15 %             2
+BM_all_digits/real_time/threads:1_mean                      2585 ns         2412 ns            2
+BM_all_digits/real_time/threads:1_median                    2585 ns         2412 ns            2
+BM_all_digits/real_time/threads:1_stddev                     144 ns          155 ns            2
+BM_all_digits/real_time/threads:1_cv                        5.59 %          6.43 %             2
+BM_teens/real_time/threads:1_mean                          16643 ns        15331 ns            2
+BM_teens/real_time/threads:1_median                        16643 ns        15331 ns            2
+BM_teens/real_time/threads:1_stddev                         65.5 ns        0.000 ns            2
+BM_teens/real_time/threads:1_cv                             0.39 %          0.00 %             2
+BM_tens/real_time/threads:1_mean                           21368 ns        19832 ns            2
+BM_tens/real_time/threads:1_median                         21368 ns        19832 ns            2
+BM_tens/real_time/threads:1_stddev                          1109 ns          786 ns            2
+BM_tens/real_time/threads:1_cv                              5.19 %          3.97 %             2
+BM_comprehensive_mix/real_time/threads:1_mean               5334 ns         5000 ns            2
+BM_comprehensive_mix/real_time/threads:1_median             5334 ns         5000 ns            2
+BM_comprehensive_mix/real_time/threads:1_stddev             41.7 ns        0.000 ns            2
+BM_comprehensive_mix/real_time/threads:1_cv                 0.78 %          0.00 %             2
+[bench_current] Analyzing mean differences...
+
+================================================================================
+MEAN COMPARISON RESULTS
+================================================================================
+Configuration: min_time=0.5s, reps=2, compare_runs=5
+
+BM_all_digits/real_time/threads:1:
+  Average mean:          2464.85 ns
+  Std dev of means:       135.57 ns
+  CV of means:             5.50%
+  Max pairwise diff:      11.05%
+
+BM_compound_numbers/real_time/threads:1:
+  Average mean:         16798.88 ns
+  Std dev of means:       911.32 ns
+  CV of means:             5.42%
+  Max pairwise diff:      13.97%
+
+BM_comprehensive_mix/real_time/threads:1:
+  Average mean:          5371.87 ns
+  Std dev of means:       141.95 ns
+  CV of means:             2.64%
+  Max pairwise diff:       7.00%
+
+BM_decimal_multipliers/real_time/threads:1:
+  Average mean:          4213.86 ns
+  Std dev of means:       264.98 ns
+  CV of means:             6.29%
+  Max pairwise diff:      12.22%
+
+BM_decimals_complex/real_time/threads:1:
+  Average mean:          4322.96 ns
+  Std dev of means:        28.35 ns
+  CV of means:             0.66%
+  Max pairwise diff:       1.54%
+
+BM_decimals_simple/real_time/threads:1:
+  Average mean:          6818.75 ns
+  Std dev of means:       310.60 ns
+  CV of means:             4.56%
+  Max pairwise diff:      11.50%
+
+BM_edge_cases_boundary/real_time/threads:1:
+  Average mean:         19586.65 ns
+  Std dev of means:       361.17 ns
+  CV of means:             1.84%
+  Max pairwise diff:       4.36%
+
+BM_large_numbers/real_time/threads:1:
+  Average mean:         26396.21 ns
+  Std dev of means:       749.74 ns
+  CV of means:             2.84%
+  Max pairwise diff:       5.95%
+
+BM_large_numbers_composed/real_time/threads:1:
+  Average mean:         23487.72 ns
+  Std dev of means:       182.05 ns
+  CV of means:             0.78%
+  Max pairwise diff:       1.72%
+
+BM_long_string:
+  Average mean:          2691.82 ns
+  Std dev of means:        49.54 ns
+  CV of means:             1.84%
+  Max pairwise diff:       4.83%
+
+BM_many_numbers:
+  Average mean:         87129.30 ns
+  Std dev of means:      4056.52 ns
+  CV of means:             4.66%
+  Max pairwise diff:      10.94%
+
+BM_mixed_fractions_numeric/real_time/threads:1:
+  Average mean:          8245.00 ns
+  Std dev of means:       347.83 ns
+  CV of means:             4.22%
+  Max pairwise diff:      10.52%
+
+BM_mixed_fractions_word/real_time/threads:1:
+  Average mean:          6703.49 ns
+  Std dev of means:       129.95 ns
+  CV of means:             1.94%
+  Max pairwise diff:       4.94%
+
+BM_negatives/real_time/threads:1:
+  Average mean:         12428.46 ns
+  Std dev of means:       189.99 ns
+  CV of means:             1.53%
+  Max pairwise diff:       4.29%
+
+BM_numeric_fractions/real_time/threads:1:
+  Average mean:         10836.32 ns
+  Std dev of means:       265.66 ns
+  CV of means:             2.45%
+  Max pairwise diff:       5.93%
+
+BM_ordinals_common/real_time/threads:1:
+  Average mean:         16636.15 ns
+  Std dev of means:       420.89 ns
+  CV of means:             2.53%
+  Max pairwise diff:       6.47%
+
+BM_ordinals_large/real_time/threads:1:
+  Average mean:          5183.68 ns
+  Std dev of means:        48.14 ns
+  CV of means:             0.93%
+  Max pairwise diff:       2.55%
+
+BM_percents/real_time/threads:1:
+  Average mean:          6491.87 ns
+  Std dev of means:       113.51 ns
+  CV of means:             1.75%
+  Max pairwise diff:       4.13%
+
+BM_simple:
+  Average mean:           622.78 ns
+  Std dev of means:        13.35 ns
+  CV of means:             2.14%
+  Max pairwise diff:       5.19%
+
+BM_teens/real_time/threads:1:
+  Average mean:         16289.28 ns
+  Std dev of means:       346.64 ns
+  CV of means:             2.13%
+  Max pairwise diff:       4.89%
+
+BM_tens/real_time/threads:1:
+  Average mean:         20036.87 ns
+  Std dev of means:       776.34 ns
+  CV of means:             3.87%
+  Max pairwise diff:      10.00%
+
+BM_zeros/real_time/threads:1:
+  Average mean:          7271.02 ns
+  Std dev of means:       163.66 ns
+  CV of means:             2.25%
+  Max pairwise diff:       5.50%
+
+================================================================================
+OVERALL STATISTICS
+================================================================================
+Average CV of means:      2.85%
+Average max pairwise diff: 6.79%
+
+✓ PASS: Average CV of means < 3%
+⚠ WARNING: Max pairwise diff >= 5% (may miss small regressions)
+================================================================================
+[bench_current] Done: /home/user/omnomnum/test/meta_results/t0.5_r2.json (comparison mode)

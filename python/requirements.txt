@@ -1,0 +1,4 @@
+# Runtime dependencies
+cffi>=1.15.0
+
+# Development dependencies (install with: pip install -r requirements.txt -r requirements-dev.txt)

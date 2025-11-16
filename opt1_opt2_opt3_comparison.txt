@@ -1,0 +1,23 @@
+===============================================================================
+PROFILING COMPARISON: OPT1+OPT2 vs OPT1+OPT2+OPT3
+===============================================================================
+
+Baseline: OPT1+OPT2 (buffer reuse + capacity=128)
+- Total instructions: 1,235,159,045
+- Benchmark time: 1866 μs
+- realloc: 30,150,410 instructions (2.44%)
+- sdsfree: 9,338,556 instructions (0.76%)
+
+With OPT1+OPT2+OPT3 (+ stack buffers for temps):
+- Total instructions: 1,197,141,820 (-3.1% fewer)
+- Benchmark time: 1907 μs (+2.2% slower callgrind time)
+- realloc: 29,220,530 instructions (2.44%)
+- sdsfree: 9,050,556 instructions (0.76%)
+
+Analysis:
+- Instruction count decreased by 38M instructions (3.1%)
+- realloc reduced by 930K instructions
+- sdsfree reduced by 288K instructions
+- Stack buffers successfully reducing allocation overhead
+- Callgrind wall-time slightly increased (measurement variance)
+===============================================================================

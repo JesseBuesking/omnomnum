@@ -82,24 +82,36 @@ typedef struct {
     size_t size;
 } YYSTYPEList;
 
-typedef struct {
+typedef struct ParserState ParserState;
+struct ParserState {
     int precision;
     sds result;
     enum errors error;
     YYSTYPEList yystypeList;
     bool parse_second;
+    bool parse_fractions; // runtime toggle for fraction parsing
+    bool reduce_fractions; // runtime toggle for fraction reduction
+    bool normalize_percent_symbol; // convert "percent" to "%"
+    bool percent_as_decimal; // convert "n percent" to n/100
     bool is_parsing;
     int last_token;
-} ParserState;
+    // Per-request context (reentrancy + caching)
+    void *pParser;      // Lemon parser instance cached per ParserState
+    sds numberHolder;   // Scratch buffer for number rendering
+    ParserState *subState; // Reusable sub-state for fallback tokenization (lazy-allocated)
+    int last_stack_depth; // Stack depth from most recent parse (for profiling, 0 if tracking disabled)
+};
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element);
 void resetYYSTYPElist(YYSTYPEList *l);
 void freeYYSTYPElist(YYSTYPEList *l);
 void sortYYSTYPElist(YYSTYPEList *l);
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need);
 
 void initParserState(ParserState *state);
 void resetParserState(ParserState *state);
 void freeParserState(ParserState *state);
+ParserState* getOrInitSubState(ParserState *state);
 
 #endif // SCANNER_DEF_H

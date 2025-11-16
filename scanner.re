@@ -29,6 +29,280 @@
  */
 
 #include "scanner.h"
+#include <string.h>
+
+/* BEGIN: gperf generated perfect hash for denominator words - Preset B */
+struct denom_word { const char *name; double value; };
+
+#define DENOM_TOTAL_KEYWORDS 68
+#define DENOM_MIN_WORD_LENGTH 4
+#define DENOM_MAX_WORD_LENGTH 14
+#define DENOM_MIN_HASH_VALUE 5
+#define DENOM_MAX_HASH_VALUE 90
+/* maximum key range = 86, duplicates = 0 */
+
+#ifdef __GNUC__
+__inline
+#else
+#ifdef __cplusplus
+inline
+#endif
+#endif
+static unsigned int
+denom_hash (register const char *str, register size_t len)
+{
+  static const unsigned char asso_values[] =
+    {
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91,  1,  2, 91,
+       0,  2,  0, 48,  0,  0, 91, 91, 71,  0,
+       4, 12, 91, 56, 16,  6, 22,  1, 39, 37,
+      31, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
+      91, 91, 91, 91, 91, 91
+    };
+  return len + asso_values[(unsigned char)str[2]] + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]] + asso_values[(unsigned char)str[len - 1]];
+}
+
+const struct denom_word *
+denom_in_word_set (register const char *str, register size_t len)
+{
+  static const unsigned char lengthtable[] =
+    {
+       0,  0,  0,  0,  0,  5,  0,  0,  8,  9,  0,  0,  6,  5,
+       9,  9, 10,  9, 10,  6,  6, 10,  9, 10, 10, 11,  7,  5,
+       0, 10, 11,  9, 10,  5,  6,  0,  8,  0, 10, 11,  6,  0,
+       5,  9, 10,  8,  9,  0, 10,  6,  0, 11,  9, 10,  7, 11,
+       6, 10, 11,  9, 10,  8,  0,  7, 11, 12, 10, 11,  7,  0,
+       9, 13,  8,  0,  0,  8,  4, 10, 14,  0,  9,  7,  9,  8,
+       6,  0,  0, 10,  0, 10,  9
+    };
+  static const struct denom_word wordlist[] =
+    {
+      {""}, {""}, {""}, {""}, {""},
+#line 18 "denom_words.gperf"
+      {"fifth", 5},
+      {""}, {""},
+#line 20 "denom_words.gperf"
+      {"fiftieth", 50},
+#line 16 "denom_words.gperf"
+      {"fifteenth", 15},
+      {""}, {""},
+#line 19 "denom_words.gperf"
+      {"fifths", 5},
+#line 40 "denom_words.gperf"
+      {"ninth", 9},
+#line 32 "denom_words.gperf"
+      {"hundredth", 100},
+#line 21 "denom_words.gperf"
+      {"fiftieths", 50},
+#line 17 "denom_words.gperf"
+      {"fifteenths", 15},
+#line 38 "denom_words.gperf"
+      {"ninetieth", 90},
+#line 36 "denom_words.gperf"
+      {"nineteenth", 19},
+#line 26 "denom_words.gperf"
+      {"fourth", 4},
+#line 41 "denom_words.gperf"
+      {"ninths", 9},
+#line 33 "denom_words.gperf"
+      {"hundredths", 100},
+#line 28 "denom_words.gperf"
+      {"fourtieth", 40},
+#line 24 "denom_words.gperf"
+      {"fourteenth", 14},
+#line 39 "denom_words.gperf"
+      {"ninetieths", 90},
+#line 37 "denom_words.gperf"
+      {"nineteenths", 19},
+#line 27 "denom_words.gperf"
+      {"fourths", 4},
+#line 60 "denom_words.gperf"
+      {"third", 3},
+      {""},
+#line 29 "denom_words.gperf"
+      {"fourtieths", 40},
+#line 25 "denom_words.gperf"
+      {"fourteenths", 14},
+#line 64 "denom_words.gperf"
+      {"thirtieth", 30},
+#line 62 "denom_words.gperf"
+      {"thirteenth", 13},
+#line 58 "denom_words.gperf"
+      {"tenth", 10},
+#line 61 "denom_words.gperf"
+      {"thirds", 3},
+      {""},
+#line 22 "denom_words.gperf"
+      {"fortieth", 40},
+      {""},
+#line 65 "denom_words.gperf"
+      {"thirtieths", 30},
+#line 63 "denom_words.gperf"
+      {"thirteenths", 13},
+#line 59 "denom_words.gperf"
+      {"tenths", 10},
+      {""},
+#line 54 "denom_words.gperf"
+      {"sixth", 6},
+#line 23 "denom_words.gperf"
+      {"fortieths", 40},
+#line 66 "denom_words.gperf"
+      {"thousandth", 1000},
+#line 56 "denom_words.gperf"
+      {"sixtieth", 60},
+#line 52 "denom_words.gperf"
+      {"sixteenth", 16},
+      {""},
+#line 68 "denom_words.gperf"
+      {"trillionth", 1000000000000.0},
+#line 55 "denom_words.gperf"
+      {"sixths", 6},
+      {""},
+#line 67 "denom_words.gperf"
+      {"thousandths", 1000},
+#line 57 "denom_words.gperf"
+      {"sixtieths", 60},
+#line 53 "denom_words.gperf"
+      {"sixteenths", 16},
+#line 48 "denom_words.gperf"
+      {"seventh", 7},
+#line 69 "denom_words.gperf"
+      {"trillionths", 1000000000000.0},
+#line 10 "denom_words.gperf"
+      {"eighth", 8},
+#line 50 "denom_words.gperf"
+      {"seventieth", 70},
+#line 46 "denom_words.gperf"
+      {"seventeenth", 17},
+#line 12 "denom_words.gperf"
+      {"eightieth", 80},
+#line 8 "denom_words.gperf"
+      {"eighteenth", 18},
+#line 49 "denom_words.gperf"
+      {"sevenths", 7},
+      {""},
+#line 11 "denom_words.gperf"
+      {"eighths", 8},
+#line 51 "denom_words.gperf"
+      {"seventieths", 70},
+#line 47 "denom_words.gperf"
+      {"seventeenths", 17},
+#line 13 "denom_words.gperf"
+      {"eightieths", 80},
+#line 9 "denom_words.gperf"
+      {"eighteenths", 18},
+#line 70 "denom_words.gperf"
+      {"twelfth", 12},
+      {""},
+#line 72 "denom_words.gperf"
+      {"twentieth", 20},
+#line 42 "denom_words.gperf"
+      {"quadrillionth", 1000000000000000.0},
+#line 45 "denom_words.gperf"
+      {"quarters", 4},
+      {""}, {""},
+#line 71 "denom_words.gperf"
+      {"twelfths", 12},
+#line 30 "denom_words.gperf"
+      {"half", 2},
+#line 73 "denom_words.gperf"
+      {"twentieths", 20},
+#line 43 "denom_words.gperf"
+      {"quadrillionths", 1000000000000000.0},
+      {""},
+#line 34 "denom_words.gperf"
+      {"millionth", 1000000},
+#line 44 "denom_words.gperf"
+      {"quarter", 4},
+#line 6 "denom_words.gperf"
+      {"billionth", 1000000000},
+#line 14 "denom_words.gperf"
+      {"eleventh", 11},
+#line 31 "denom_words.gperf"
+      {"halves", 2},
+      {""}, {""},
+#line 35 "denom_words.gperf"
+      {"millionths", 1000000},
+      {""},
+#line 7 "denom_words.gperf"
+      {"billionths", 1000000000},
+#line 15 "denom_words.gperf"
+      {"elevenths", 11}
+    };
+
+  if (len <= DENOM_MAX_WORD_LENGTH && len >= DENOM_MIN_WORD_LENGTH)
+    {
+      register unsigned int key = denom_hash (str, len);
+
+      if (key <= DENOM_MAX_HASH_VALUE)
+        if (len == lengthtable[key])
+          {
+            register const char *s = wordlist[key].name;
+
+            if (*str == *s && !memcmp (str + 1, s + 1, len - 1))
+              return &wordlist[key];
+          }
+    }
+  return 0;
+}
+/* END: gperf generated perfect hash - Preset B */
+
+static int map_card_small(const char* s, size_t n, double* out) {
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    return 0;
+}
+
+static int map_digit_word(const char* s, size_t n, int* out) {
+    if (n==4 && !strncmp(s,"zero",4)) { *out=0; return 1; }
+    if (n==3 && !strncmp(s,"one",3)) { *out=1; return 1; }
+    if (n==3 && !strncmp(s,"two",3)) { *out=2; return 1; }
+    if (n==5 && !strncmp(s,"three",5)) { *out=3; return 1; }
+    if (n==4 && !strncmp(s,"four",4)) { *out=4; return 1; }
+    if (n==4 && !strncmp(s,"five",4)) { *out=5; return 1; }
+    if (n==3 && !strncmp(s,"six",3)) { *out=6; return 1; }
+    if (n==5 && !strncmp(s,"seven",5)) { *out=7; return 1; }
+    if (n==5 && !strncmp(s,"eight",5)) { *out=8; return 1; }
+    if (n==4 && !strncmp(s,"nine",4)) { *out=9; return 1; }
+    return 0;
+}
+
+static int map_denom_word(const char* s, size_t n, double* den) {
+    const struct denom_word *result = denom_in_word_set(s, n);
+    if (result) {
+        *den = result->value;
+        return 1;
+    }
+    return 0;
+}
 
 #define TOKEN_SEPARATOR 10000
 #define TOKEN_CHARACTERS 10001
@@ -72,12 +346,408 @@ fast_path:
         DECIMAL_SWI     = S* D{1,3} ("'" D{3})+ ("." D+)+;
         DECIMAL_CHI     = S* D{1,4} ("," D{4})+ ("." D+)+;
 
+        // FRACTIONS (word-based and mixed numeric) must come before base tokens
+        // Mixed numeric: <int> WS <int>/<int>
+        D+ WS+ D+ "/" D+ {
+            // determine numbers by scanning substring
+            const char* s = ss->token;
+            const char* e = ss->cursor;
+            // parse whole
+            const char* p = s;
+            double whole=0; while (p<e && *p>='0' && *p<='9') { whole = whole*10 + (*p - '0'); p++; }
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double num=0; while (p<e && *p>='0' && *p<='9') { num = num*10 + (*p - '0'); p++; }
+            if (p<e && *p=='/') p++;
+            double den=0; while (p<e && *p>='0' && *p<='9') { den = den*10 + (*p - '0'); p++; }
+            #ifdef SCANNER_FRACTIONS
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = whole*den + num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    /* Convention: always record stack depth before resetting
+                     * the parser so ParserState.last_stack_depth reflects the
+                     * deepest stack used by this request. */
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                // When parse_fractions is false, preserve the matched text as-is
+                // Initialize numeric fields to prevent undefined behavior
+                (*yylval).is_dbl = true;
+                (*yylval).dbl = 0.0;
+                (*yylval).leave_alone = true;
+                return TOKEN_DECIMAL;
+            }
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                } else {
+                    Parse(pParser, 0, *yylval, state);
+                }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
+            goto fast_path;
+            #endif
+        }
+
+        // Specific: <card> WS 'hundredth(s)'
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'hundredth' | 'hundredths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
+            double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
+            #ifdef SCANNER_FRACTIONS
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = 100.0; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    ParseReset(pParser); state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            }
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) { } else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
+                ParseReset(pParser); state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS; goto fast_path;
+            #endif
+        }
+
+        // Combine: <digits> WS 'thousand' WS 'and' WS <small-card>  => number
+        D+ WS+ 'thousand' WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // parse leading digits
+            const char* p = s; double big=0.0;
+            while (p<e && *p>='0' && *p<='9') { big = big*10 + (*p - '0'); p++; }
+            // find standalone 'and' word (not the 'and' in 'thousand')
+            // Must be preceded and followed by non-alphabetic chars
+            const char* andp = NULL;
+            for (const char* scan = s; scan + 3 <= e; scan++) {
+                if (scan[0]=='a' && scan[1]=='n' && scan[2]=='d') {
+                    // Check before: must be non-alpha (start of string or whitespace/hyphen)
+                    bool ok_before = (scan == s) ||
+                                     (scan > s && !(scan[-1]>='a' && scan[-1]<='z') &&
+                                                   !(scan[-1]>='A' && scan[-1]<='Z'));
+                    // Check after: must be non-alpha (end of string or whitespace/hyphen)
+                    bool ok_after = (scan + 3 == e) ||
+                                    (scan + 3 < e && !(scan[3]>='a' && scan[3]<='z') &&
+                                                      !(scan[3]>='A' && scan[3]<='Z'));
+                    if (ok_before && ok_after) {
+                        andp = scan;
+                        break;
+                    }
+                }
+            }
+            const char* small = andp ? andp + 3 : s;  // skip "and" (3 chars)
+            while (small<e && (*small==' '||*small=='\t'||*small=='\r'||*small=='\n'||*small=='\f'||*small=='-')) small++;
+            const char* qw = small; while (qw<e && (*qw!=' '&&*qw!='\t'&&*qw!='\r'&&*qw!='\n'&&*qw!='\f'&&*qw!='-')) qw++;
+            // Map the small word to its numeric value (Task 13: robust <100 mapping)
+            double sm=0.0;
+            if (!map_card_small(small, (size_t)(qw - small), &sm)) {
+                sm = 0.0; // fallback if word not recognized
+            }
+            (*yylval).dbl = big * 1000.0 + sm; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // Special-case: 'one and a quarter' => 5/4
+        'one' WS+ 'and' WS+ 'a' WS+ 'quarter' {
+            #ifdef SCANNER_FRACTIONS
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = 5; (*yylval).frac_denom = 4; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) { }
+                    else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    ParseReset(pParser); state->is_parsing = false;
+                }
+                // When parse_fractions is false, treat the first word as a regular word token
+                // Find the end of the first word in the matched pattern
+                const char* p = ss->token;
+                while (p < ss->cursor && (*p>='a' && *p<='z' || *p>='A' && *p<='Z' || *p>='0' && *p<='9')) p++;
+                ss->cursor = p;  // Position cursor after first word
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+            }
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) { }
+                else { Parse(pParser, 0, *yylval, state); }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
+                ParseReset(pParser); state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
+            goto fast_path;
+            #endif
+        }
+
+        // SPELLED DECIMAL: <digit-word> WS+ 'point' WS+ <digit-word> (WS+ <digit-word>)+
+        ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // parse first digit word
+            const char* ws1 = s; while (ws1<e && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+            int intd=0; (void)map_digit_word(s, (size_t)(ws1 - s), &intd);
+            double intpart = (double)intd;
+            // find 'point'
+            const char* pointp = strstr(ws1, "point");
+            const char* p = pointp ? pointp + 5 : ws1; // skip 'point'
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = intpart + frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // SPELLED DECIMAL: D+ WS+ 'point' WS+ <digit-word> (WS+ <digit-word>)+
+        D+ WS+ 'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // integer part: scan digits until space before 'point'
+            const char* pointp = strstr(s, "point");
+            double intpart = 0.0; const char* p = s;
+            while (p < pointp && p < e) { if (*p>='0' && *p<='9') { intpart = intpart*10 + (*p - '0'); } p++; }
+            p = pointp + 5; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = intpart + frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // SPELLED DECIMAL: 'point' WS+ <digit-word> (WS+ <digit-word>)+  -> 0.<digits>
+        'point' WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) ( WS+ ( 'zero' | 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) )* {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* p = s + 5; // after 'point'
+            while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            double frac = 0.0; double place = 1.0;
+            while (p < e) {
+                const char* tok = p; while (p<e && (*p!=' '&&*p!='\t'&&*p!='\r'&&*p!='\n'&&*p!='\f'&&*p!='-')) p++;
+                int d=0; (void)map_digit_word(tok, (size_t)(p - tok), &d);
+                place /= 10.0; frac += d * place;
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+            }
+            (*yylval).dbl = frac; (*yylval).is_dbl = true; return TOKEN_DECIMAL;
+        }
+
+        // Mixed word: <card> WS 'and' WS <card> WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'tenth' | 'tenths' | 'eleventh' | 'elevenths' | 'twelfth' | 'twelfths' | 'thirteenth' | 'thirteenths' | 'fourteenth' | 'fourteenths' | 'fifteenth' | 'fifteenths' | 'sixteenth' | 'sixteenths' | 'seventeenth' | 'seventeenths' | 'eighteenth' | 'eighteenths' | 'nineteenth' | 'nineteenths' | 'twentieth' | 'twentieths' | 'thirtieth' | 'thirtieths' | 'fortieth' | 'fortieths' | 'fourtieth' | 'fourtieths' | 'fiftieth' | 'fiftieths' | 'sixtieth' | 'sixtieths' | 'seventieth' | 'seventieths' | 'eightieth' | 'eightieths' | 'ninetieth' | 'ninetieths' | 'hundredth' | 'hundredths' | 'thousandth' | 'thousandths' | 'millionth' | 'millionths' | 'billionth' | 'billionths' | 'trillionth' | 'trillionths' | 'quadrillionth' | 'quadrillionths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            // find 'and'
+            const char* andp = strstr(s, "and");
+            if (andp) {
+                // left card
+                const char* ws1 = s; while (ws1<andp && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+                double x=0; (void)map_card_small(s, (size_t)(ws1 - s), &x);
+                const char* p = andp + 3; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                const char* ws2 = p; while (ws2<e && (*ws2!=' '&&*ws2!='\t'&&*ws2!='\r'&&*ws2!='\n'&&*ws2!='\f'&&*ws2!='-')) ws2++;
+                double y=0; (void)map_card_small(p, (size_t)(ws2 - p), &y);
+                while (ws2<e && (*ws2==' '||*ws2=='\t'||*ws2=='\r'||*ws2=='\n'||*ws2=='\f'||*ws2=='-')) ws2++;
+                double den=0; (void)map_denom_word(ws2, (size_t)(e - ws2), &den);
+                #ifdef SCANNER_FRACTIONS
+                if (state->parse_fractions) {
+                    (*yylval).is_frac = true; (*yylval).frac_num = x*den + y; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                } else {
+                    if (state->is_parsing) {
+                        if (state->last_token != TOKEN_SEPARATOR) {
+                        } else {
+                            Parse(pParser, 0, *yylval, state);
+                        }
+#ifdef YYTRACKMAXSTACKDEPTH
+                        int depth = ParseStackPeak(pParser);
+                        if (depth > state->last_stack_depth) {
+                            state->last_stack_depth = depth;
+                        }
+#endif
+                        ParseReset(pParser);
+                        state->is_parsing = false;
+                    }
+                    state->last_token = TOKEN_CHARACTERS;
+                    goto fast_path;
+                }
+                #else
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+                #endif
+            }
+        }
+
+        // Mixed word (with 'a'): <card> WS 'and' WS 'a' WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ 'and' WS+ 'a' WS+ ( 'half' | 'third' | 'quarter' | 'fourth' | 'fifth' | 'sixth' | 'seventh' | 'eighth' | 'ninth' | 'tenth' | 'eleventh' | 'twelfth' | 'thirteenth' | 'fourteenth' | 'fifteenth' | 'sixteenth' | 'seventeenth' | 'eighteenth' | 'nineteenth' | 'twentieth' | 'thirtieth' | 'fortieth' | 'fourtieth' | 'fiftieth' | 'sixtieth' | 'seventieth' | 'eightieth' | 'ninetieth' | 'hundredth' | 'thousandth' | 'millionth' | 'billionth' | 'trillionth' | 'quadrillionth' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* andp = strstr(s, "and");
+            if (andp) {
+                const char* ws1 = s; while (ws1<andp && (*ws1!=' '&&*ws1!='\t'&&*ws1!='\r'&&*ws1!='\n'&&*ws1!='\f'&&*ws1!='-')) ws1++;
+                double x=0; (void)map_card_small(s, (size_t)(ws1 - s), &x);
+                const char* p = andp + 3; while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                // skip 'a'
+                if (p+1<e && *p=='a') { p++; }
+                while (p<e && (*p==' '||*p=='\t'||*p=='\r'||*p=='\n'||*p=='\f'||*p=='-')) p++;
+                double den=0; (void)map_denom_word(p, (size_t)(e - p), &den);
+                #ifdef SCANNER_FRACTIONS
+                if (state->parse_fractions) {
+                    (*yylval).is_frac = true; (*yylval).frac_num = x*den + 1; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+                } else {
+                    if (state->is_parsing) {
+                        if (state->last_token != TOKEN_SEPARATOR) {
+                        } else {
+                            Parse(pParser, 0, *yylval, state);
+                        }
+#ifdef YYTRACKMAXSTACKDEPTH
+                        int depth = ParseStackPeak(pParser);
+                        if (depth > state->last_stack_depth) {
+                            state->last_stack_depth = depth;
+                        }
+#endif
+                        ParseReset(pParser);
+                        state->is_parsing = false;
+                    }
+                    state->last_token = TOKEN_CHARACTERS;
+                    goto fast_path;
+                }
+                #else
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                state->last_token = TOKEN_CHARACTERS;
+                goto fast_path;
+                #endif
+            }
+        }
+
+        // Simple word: <card> WS <denom>
+        ( 'one' | 'two' | 'three' | 'four' | 'five' | 'six' | 'seven' | 'eight' | 'nine' ) WS+ ( 'half' | 'halves' | 'third' | 'thirds' | 'quarter' | 'quarters' | 'fourth' | 'fourths' | 'fifth' | 'fifths' | 'sixth' | 'sixths' | 'seventh' | 'sevenths' | 'eighth' | 'eighths' | 'ninth' | 'ninths' | 'tenth' | 'tenths' | 'eleventh' | 'elevenths' | 'twelfth' | 'twelfths' | 'thirteenth' | 'thirteenths' | 'fourteenth' | 'fourteenths' | 'fifteenth' | 'fifteenths' | 'sixteenth' | 'sixteenths' | 'seventeenth' | 'seventeenths' | 'eighteenth' | 'eighteenths' | 'nineteenth' | 'nineteenths' | 'twentieth' | 'twentieths' | 'thirtieth' | 'thirtieths' | 'fortieth' | 'fortieths' | 'fourtieth' | 'fourtieths' | 'fiftieth' | 'fiftieths' | 'sixtieth' | 'sixtieths' | 'seventieth' | 'seventieths' | 'eightieth' | 'eightieths' | 'ninetieth' | 'ninetieths' | 'hundredth' | 'hundredths' | 'thousandth' | 'thousandths' | 'millionth' | 'millionths' | 'billionth' | 'billionths' | 'trillionth' | 'trillionths' | 'quadrillionth' | 'quadrillionths' ) {
+            const char* s = ss->token; const char* e = ss->cursor;
+            const char* ws = s; while (ws<e && (*ws!=' '&&*ws!='\t'&&*ws!='\r'&&*ws!='\n'&&*ws!='\f'&&*ws!='-')) ws++;
+            double num=0; (void)map_card_small(s, (size_t)(ws - s), &num);
+            while (ws<e && (*ws==' '||*ws=='\t'||*ws=='\r'||*ws=='\n'||*ws=='\f'||*ws=='-')) ws++;
+            double den=0; (void)map_denom_word(ws, (size_t)(e - ws), &den);
+            #ifdef SCANNER_FRACTIONS
+            if (state->parse_fractions) {
+                (*yylval).is_frac = true; (*yylval).frac_num = num; (*yylval).frac_denom = den; return TOKEN_FRACTION;
+            } else {
+                if (state->is_parsing) {
+                    if (state->last_token != TOKEN_SEPARATOR) {
+                    } else {
+                        Parse(pParser, 0, *yylval, state);
+                    }
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
+                    ParseReset(pParser);
+                    state->is_parsing = false;
+                }
+                // When parse_fractions is false, preserve the matched text as-is
+                // Initialize numeric fields to prevent undefined behavior
+                (*yylval).is_dbl = true;
+                (*yylval).dbl = 0.0;
+                (*yylval).leave_alone = true;
+                return TOKEN_DECIMAL;
+            }
+            #else
+            if (state->is_parsing) {
+                if (state->last_token != TOKEN_SEPARATOR) {
+                } else {
+                    Parse(pParser, 0, *yylval, state);
+                }
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
+                ParseReset(pParser);
+                state->is_parsing = false;
+            }
+            state->last_token = TOKEN_CHARACTERS;
+            ss->cursor = ss->token;  // Reset cursor to preserve matched text
+            goto fast_path;
+            #endif
+        }
+
         'a' { return TOKEN_A; }
         'an' { return TOKEN_AN; }
-        'and' { return TOKEN_AND; }
+        // Ensure 'and a' is recognized before bare 'and'
         'and a' { return TOKEN_AND_A; }
+        'and' { return TOKEN_AND; }
 
         'negative' { return TOKEN_NEGATIVE; }
+        'minus' { return TOKEN_MINUS; }
 
         'zero' { return TOKEN_ZERO; }
         '1' | 'one' { return TOKEN_ONE; }
@@ -121,6 +791,8 @@ fast_path:
         'billion' { return TOKEN_BILLION; }
         'a trillion' { return TOKEN_TRILLION; }
         'trillion' { return TOKEN_TRILLION; }
+        'a quadrillion' { return TOKEN_QUADRILLION; }
+        'quadrillion' { return TOKEN_QUADRILLION; }
 
         'first' { return TOKEN_FIRST; }
         'second' {
@@ -135,6 +807,12 @@ fast_path:
                         Parse(pParser, 0, *yylval, state);
                     }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+#endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -185,6 +863,8 @@ fast_path:
         'billionth' { return TOKEN_BILLIONTH; }
         'a trillionth' { return TOKEN_TRILLIONTH; }
         'trillionth' { return TOKEN_TRILLIONTH; }
+        'a quadrillionth' { return TOKEN_QUADRILLIONTH; }
+        'quadrillionth' { return TOKEN_QUADRILLIONTH; }
 
         'quarter' { return TOKEN_QUARTER; }
         'half' { return TOKEN_HALF; }
@@ -202,6 +882,12 @@ fast_path:
                         Parse(pParser, 0, *yylval, state);
                     }
 
+    #ifdef YYTRACKMAXSTACKDEPTH
+                    int depth = ParseStackPeak(pParser);
+                    if (depth > state->last_stack_depth) {
+                        state->last_stack_depth = depth;
+                    }
+    #endif
                     ParseReset(pParser);
                     state->is_parsing = false;
                 }
@@ -246,6 +932,7 @@ fast_path:
         'millionths' { return TOKEN_MILLIONTHS; }
         'billionths' { return TOKEN_BILLIONTHS; }
         'trillionths' { return TOKEN_TRILLIONTHS; }
+        'quadrillionths' { return TOKEN_QUADRILLIONTHS; }
 
         'quarters' { return TOKEN_QUARTERS; }
         'halves' { return TOKEN_HALVES; }
@@ -268,6 +955,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -284,6 +977,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -300,12 +999,10 @@ fast_path:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -318,12 +1015,10 @@ fast_path:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -337,12 +1032,10 @@ fast_path:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ' ');
             replace_char_inplace(tmp, len, ',', '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -356,12 +1049,10 @@ fast_path:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
             len = replace_two_byte_char_inplace((unsigned char*)tmp, len, (unsigned char*)"·", '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -375,12 +1066,10 @@ fast_path:
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '.');
             replace_char_inplace(tmp, len, ',', '.');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -393,12 +1082,10 @@ fast_path:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -411,12 +1098,10 @@ fast_path:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, '\'');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
@@ -429,36 +1114,70 @@ fast_path:
 
             size_t len = remove_char_inplace(tmp, ss->cursor - ss->token, ',');
 
-            // turn string version of number into double
-            sds string_value = sdsnewlen(tmp, len);
+            // turn string version of number into double (fast path with strtod)
+            tmp[len] = '\0';
+            (*yylval).dbl = strtod(tmp, NULL);
             free(tmp);
-
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
 
             return TOKEN_DECIMAL;
         }
         ZERO_WHOLE_NUMBER {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_ZERO_WHOLE_NUMBER;
         }
         WHOLE_NUMBER {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_WHOLE_NUMBER;
         }
         DECIMAL {
-            // turn string version of number into double
-            sds string_value = sdsnewlen(ss->token, ss->cursor - ss->token);
-            sscanf(string_value, "%lf", &(*yylval).dbl);
-            sdsfree(string_value);
+            // turn string version of number into double (fast path with strtod)
+            size_t token_len = ss->cursor - ss->token;
+            char temp_buf[64];
+            char* parse_buf;
+            if (token_len < 64) {
+                memcpy(temp_buf, ss->token, token_len);
+                temp_buf[token_len] = '\0';
+                parse_buf = temp_buf;
+            } else {
+                // Fallback to heap allocation for unusually long numeric literals
+                parse_buf = (char*)malloc(token_len + 1);
+                memcpy(parse_buf, ss->token, token_len);
+                parse_buf[token_len] = '\0';
+            }
+            (*yylval).dbl = strtod(parse_buf, NULL);
+            if (parse_buf != temp_buf) free(parse_buf);
 
             return TOKEN_DECIMAL;
         }
@@ -481,6 +1200,12 @@ fast_path:
                     Parse(pParser, 0, *yylval, state);
                 }
 
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }
@@ -493,6 +1218,12 @@ fast_path:
         ALL_OTHERS {
             if (state->is_parsing) {
                 Parse(pParser, 0, *yylval, state);
+#ifdef YYTRACKMAXSTACKDEPTH
+                int depth = ParseStackPeak(pParser);
+                if (depth > state->last_stack_depth) {
+                    state->last_stack_depth = depth;
+                }
+#endif
                 ParseReset(pParser);
                 state->is_parsing = false;
             }

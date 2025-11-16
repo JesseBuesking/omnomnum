@@ -29,15 +29,25 @@
  */
 
 #include "scanner.def.h"
+// For ParseFree declaration and ParseReset wrapper
+#include "parser.h"
 // pull in definitions for malloc and free
 #include <stdlib.h>
 
 size_t RESET_LIST_SIZE = 8;
 
+#ifdef DEBUG_ALLOCATIONS
+unsigned long g_yystype_init_total_bytes = 0;
+unsigned long g_yystype_realloc_count = 0;
+#endif
+
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize) {
     l->values = (YYSTYPE *)malloc(initialSize * sizeof(YYSTYPE));
     l->used = 0;
     l->size = initialSize;
+#ifdef DEBUG_ALLOCATIONS
+    g_yystype_init_total_bytes += initialSize * sizeof(YYSTYPE);
+#endif
 }
 
 void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element) {
@@ -48,6 +58,9 @@ void insertYYSTYPE(YYSTYPEList *l, YYSTYPE element) {
             l->size *= 2;
         }
         l->values = (YYSTYPE *)realloc(l->values, l->size * sizeof(YYSTYPE));
+#ifdef DEBUG_ALLOCATIONS
+        g_yystype_realloc_count++;
+#endif
     }
     l->values[l->used] = element;
     l->used += 1;
@@ -78,20 +91,91 @@ void sortYYSTYPElist(YYSTYPEList *l) {
     qsort(l->values, l->used, sizeof(YYSTYPE), compare);
 }
 
+void ensureYYSTYPECapacity(YYSTYPEList *l, size_t need) {
+    if (l->size < need) {
+        l->size = need;
+        l->values = (YYSTYPE *)realloc(l->values, l->size * sizeof(YYSTYPE));
+    }
+}
+
 void initParserState(ParserState *state) {
     state->error = NO_ERROR;
     state->parse_second = false;
-    initYYSTYPEList(&(state->yystypeList), 4);
+    state->parse_fractions = true; // default: keep current behavior
+    state->reduce_fractions = false; // default: off (keep current behavior)
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
+    state->precision = 6;
+    state->result = NULL;
+    state->is_parsing = false;
+    state->last_token = -1;
+    state->pParser = NULL;
+    state->numberHolder = sdsempty();
+    state->subState = NULL; // Lazy-allocate on first use
+    state->last_stack_depth = 0;
+    // OPTIMIZATION: Start with larger capacity to reduce reallocations
+    // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
+    initYYSTYPEList(&(state->yystypeList), 128);
 }
 
 void resetParserState(ParserState *state) {
     state->precision = 6;
-    sdsfree(state->result);
+    // OPTIMIZATION: Clear result buffer instead of freeing (enables reuse)
+    if (state->result) { sdsclear(state->result); }
     state->error = NO_ERROR;
     resetYYSTYPElist(&(state->yystypeList));
     state->parse_second = false;
+    state->parse_fractions = true; // keep fractions enabled unless caller disables
+    state->reduce_fractions = false; // default: off
+    state->normalize_percent_symbol = false; // default: off
+    state->percent_as_decimal = false; // default: off
+    state->last_stack_depth = 0;
+    // Keep the cached parser and scratch buffer; just clear the buffer
+    // No NULL check needed - numberHolder is always allocated in initParserState
+    sdsclear(state->numberHolder);
 }
 
 void freeParserState(ParserState *state) {
     freeYYSTYPElist(&(state->yystypeList));
+    // No NULL check needed - numberHolder is always allocated in initParserState
+    sdsfree(state->numberHolder);
+    state->numberHolder = NULL;
+    if (state->pParser) { ParseFree(state->pParser, free); state->pParser = NULL; }
+    if (state->subState) {
+        freeParserState(state->subState);
+        free(state->subState);
+        state->subState = NULL;
+    }
+}
+
+ParserState* getOrInitSubState(ParserState *state) {
+    if (state->subState == NULL) {
+        // Lazy-allocate and initialize subState on first use
+        state->subState = (ParserState*)malloc(sizeof(ParserState));
+
+        // Initialize with smaller YYSTYPEList capacity than main state
+        // SubState processes single tokens (typically 1-2 numbers) vs full strings (many numbers)
+        // Using capacity 8 instead of 128 reduces initial allocation from ~1-4KB to ~64-256 bytes
+        state->subState->error = NO_ERROR;
+        state->subState->parse_second = false;
+        state->subState->parse_fractions = true;
+        state->subState->reduce_fractions = false;
+        state->subState->normalize_percent_symbol = false;
+        state->subState->percent_as_decimal = false;
+        state->subState->precision = 6;
+        state->subState->result = NULL;
+        state->subState->is_parsing = false;
+        state->subState->last_token = -1;
+        state->subState->pParser = NULL;
+        state->subState->numberHolder = sdsempty();
+        state->subState->subState = NULL;
+        state->subState->last_stack_depth = 0;
+        // OPTIMIZATION: SubState typically processes single tokens with 1-2 numbers
+        // Use smaller initial capacity (8) vs main state (128) to reduce allocation overhead
+        initYYSTYPEList(&(state->subState->yystypeList), 8);
+    } else {
+        // Reset existing subState for reuse
+        resetParserState(state->subState);
+    }
+    return state->subState;
 }

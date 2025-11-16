@@ -1,0 +1,24 @@
+===============================================================================
+PROFILING COMPARISON: OPT2-only vs OPT1+OPT2
+===============================================================================
+
+Baseline: OPT2 only (capacity=128, no buffer reuse)
+- Total instructions: 1,185,999,216
+- Benchmark time: 1907 μs
+- realloc: 28,910,570 instructions (2.44%)
+- sdsfree: 8,999,328 instructions (0.76%)
+- sdsempty: not in top functions
+
+With OPT1+OPT2 (capacity=128 + buffer reuse):
+- Total instructions: 1,235,159,045 (+4.1% MORE)
+- Benchmark time: 1866 μs (-2.2% FASTER)
+- realloc: 30,150,410 instructions (2.44%)
+- sdsfree: 9,338,556 instructions (0.76%)
+- sdsempty: 8,560,486 instructions (0.69%)
+
+Analysis:
+- Instruction count increased but wall-clock time improved
+- This suggests sdsclear + conditional checks add instructions
+- But reduced allocation/free overhead improves cache performance
+- Need Google Benchmark results for definitive answer
+===============================================================================

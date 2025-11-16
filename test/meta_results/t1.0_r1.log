@@ -1,0 +1,310 @@
+[bench_current] Repo:  /home/user/omnomnum
+[bench_current] JSON:  test/meta_results/t1.0_r1.json
+[bench_current] Mode:  COMPARE (5 runs)
+[bench_current] Using BENCH_PREFIX=/home/user/.local/usr/local
+[bench_current] Building benchmark binary ...
+Error: lemon not found. parser.c is checked into git; use existing file or install lemon to regenerate.
+Continuing with existing parser.c...
+Error: re2c not found. scanner.c is checked into git; use existing file or install re2c to regenerate.
+Continuing with existing scanner.c...
+[bench_current] Running benchmark -> /home/user/omnomnum/test/meta_results/t1.0_r1.json
+[bench_current] Using THOROUGH mode (2s min_time, 10 reps)
+[bench_current] Running 5 independent benchmark runs...
+[bench_current]   Run 1/5 (min_time=1.0s, reps=1)...
+2025-11-09T22:40:50+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM_simple                                             637 ns          594 ns      2372881
+BM_long_string                                       2633 ns         2449 ns       518519
+BM_many_numbers                                     90963 ns        86785 ns        17284
+BM_decimals_simple/real_time/threads:1               6796 ns         6594 ns       185013
+BM_decimals_complex/real_time/threads:1              4610 ns         4274 ns       325197
+BM_ordinals_common/real_time/threads:1              16921 ns        15830 ns        84017
+BM_ordinals_large/real_time/threads:1                5390 ns         5046 ns       265542
+BM_negatives/real_time/threads:1                    12871 ns        11872 ns       104448
+BM_large_numbers/real_time/threads:1                26098 ns        24468 ns        53131
+BM_large_numbers_composed/real_time/threads:1       23068 ns        21411 ns        60717
+BM_mixed_fractions_word/real_time/threads:1          6583 ns         6105 ns       212926
+BM_mixed_fractions_numeric/real_time/threads:1       8389 ns         7804 ns       171717
+BM_numeric_fractions/real_time/threads:1            11015 ns        10244 ns       100549
+BM_percents/real_time/threads:1                      6550 ns         6244 ns       213006
+BM_zeros/real_time/threads:1                         7126 ns         6917 ns       192272
+BM_edge_cases_boundary/real_time/threads:1          20018 ns        18666 ns        65360
+BM_decimal_multipliers/real_time/threads:1           4009 ns         3760 ns       345746
+BM_compound_numbers/real_time/threads:1             16411 ns        15301 ns        86922
+BM_all_digits/real_time/threads:1                    2450 ns         2284 ns       590966
+BM_teens/real_time/threads:1                        17312 ns        16164 ns        85377
+BM_tens/real_time/threads:1                         19434 ns        18156 ns        72152
+BM_comprehensive_mix/real_time/threads:1             5354 ns         5171 ns       264964
+[bench_current]   Run 2/5 (min_time=1.0s, reps=1)...
+2025-11-09T22:41:31+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM_simple                                             616 ns          601 ns      2295082
+BM_long_string                                       2639 ns         2464 ns       560000
+BM_many_numbers                                     86534 ns        82587 ns        17073
+BM_decimals_simple/real_time/threads:1               6774 ns         6602 ns       204483
+BM_decimals_complex/real_time/threads:1              4358 ns         4096 ns       322234
+BM_ordinals_common/real_time/threads:1              16443 ns        15348 ns        84703
+BM_ordinals_large/real_time/threads:1                5241 ns         4857 ns       263514
+BM_negatives/real_time/threads:1                    12460 ns        11638 ns       115139
+BM_large_numbers/real_time/threads:1                26305 ns        24546 ns        53776
+BM_large_numbers_composed/real_time/threads:1       24056 ns        22408 ns        60247
+BM_mixed_fractions_word/real_time/threads:1          7071 ns         6866 ns       203912
+BM_mixed_fractions_numeric/real_time/threads:1       8440 ns         8079 ns       158432
+BM_numeric_fractions/real_time/threads:1            11514 ns        10710 ns       112978
+BM_percents/real_time/threads:1                      6514 ns         6048 ns       213301
+BM_zeros/real_time/threads:1                         7645 ns         7101 ns       184486
+BM_edge_cases_boundary/real_time/threads:1          21288 ns        19844 ns        70552
+BM_decimal_multipliers/real_time/threads:1           4262 ns         3952 ns       288453
+BM_compound_numbers/real_time/threads:1             16670 ns        15442 ns        87422
+BM_all_digits/real_time/threads:1                    2401 ns         2233 ns       600024
+BM_teens/real_time/threads:1                        16884 ns        15702 ns        87886
+BM_tens/real_time/threads:1                         20232 ns        18841 ns        71652
+BM_comprehensive_mix/real_time/threads:1             5316 ns         4941 ns       255011
+[bench_current]   Run 3/5 (min_time=1.0s, reps=1)...
+2025-11-09T22:42:13+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM_simple                                             632 ns          590 ns      2372881
+BM_long_string                                       2910 ns         2693 ns       538462
+BM_many_numbers                                     86880 ns        80691 ns        17722
+BM_decimals_simple/real_time/threads:1               7108 ns         6582 ns       205117
+BM_decimals_complex/real_time/threads:1              4692 ns         4361 ns       307267
+BM_ordinals_common/real_time/threads:1              16768 ns        15621 ns        80659
+BM_ordinals_large/real_time/threads:1                5430 ns         5056 ns       253181
+BM_negatives/real_time/threads:1                    12734 ns        11804 ns       111829
+BM_large_numbers/real_time/threads:1                29804 ns        27750 ns        46487
+BM_large_numbers_composed/real_time/threads:1       25757 ns        23915 ns        59376
+BM_mixed_fractions_word/real_time/threads:1          6877 ns         6340 ns       192430
+BM_mixed_fractions_numeric/real_time/threads:1       8433 ns         7844 ns       165722
+BM_numeric_fractions/real_time/threads:1            12212 ns        11336 ns       119976
+BM_percents/real_time/threads:1                      6473 ns         5972 ns       207634
+BM_zeros/real_time/threads:1                         7496 ns         6951 ns       189910
+BM_edge_cases_boundary/real_time/threads:1          19804 ns        18504 ns        68634
+BM_decimal_multipliers/real_time/threads:1           4213 ns         3923 ns       300771
+BM_compound_numbers/real_time/threads:1             16880 ns        15663 ns        84911
+BM_all_digits/real_time/threads:1                    2423 ns         2251 ns       564090
+BM_teens/real_time/threads:1                        16020 ns        14949 ns        86292
+BM_tens/real_time/threads:1                         20782 ns        19454 ns        70421
+BM_comprehensive_mix/real_time/threads:1             5338 ns         4980 ns       247011
+[bench_current]   Run 4/5 (min_time=1.0s, reps=1)...
+2025-11-09T22:42:54+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM_simple                                             635 ns          594 ns      2456140
+BM_long_string                                       2652 ns         2486 ns       583333
+BM_many_numbers                                     87504 ns        81819 ns        17722
+BM_decimals_simple/real_time/threads:1               6541 ns         6094 ns       211675
+BM_decimals_complex/real_time/threads:1              4383 ns         4097 ns       329512
+BM_ordinals_common/real_time/threads:1              17063 ns        15897 ns        84920
+BM_ordinals_large/real_time/threads:1                5139 ns         4808 ns       270393
+BM_negatives/real_time/threads:1                    12306 ns        11474 ns       114176
+BM_large_numbers/real_time/threads:1                24522 ns        22796 ns        56149
+BM_large_numbers_composed/real_time/threads:1       23652 ns        22118 ns        61036
+BM_mixed_fractions_word/real_time/threads:1          6681 ns         6177 ns       194276
+BM_mixed_fractions_numeric/real_time/threads:1       8238 ns         7699 ns       175358
+BM_numeric_fractions/real_time/threads:1            11449 ns        10623 ns       129906
+BM_percents/real_time/threads:1                      6902 ns         6412 ns       191832
+BM_zeros/real_time/threads:1                         7634 ns         7073 ns       180964
+BM_edge_cases_boundary/real_time/threads:1          20990 ns        19493 ns        74386
+BM_decimal_multipliers/real_time/threads:1           4279 ns         3965 ns       325387
+BM_compound_numbers/real_time/threads:1             17204 ns        15998 ns        86263
+BM_all_digits/real_time/threads:1                    2449 ns         2272 ns       589813
+BM_teens/real_time/threads:1                        15946 ns        14888 ns        87319
+BM_tens/real_time/threads:1                         20117 ns        18595 ns        72061
+BM_comprehensive_mix/real_time/threads:1             5218 ns         4836 ns       243989
+[bench_current]   Run 5/5 (min_time=1.0s, reps=1)...
+2025-11-09T22:43:36+00:00
+Running ./test/test_benchmark
+Run on (16 X 2600.02 MHz CPU s)
+Load Average: 0.00, 0.00, 0.00
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM_simple                                             677 ns          630 ns      2222222
+BM_long_string                                       2761 ns         2563 ns       538462
+BM_many_numbers                                     95516 ns        88521 ns        17284
+BM_decimals_simple/real_time/threads:1               6691 ns         6224 ns       205668
+BM_decimals_complex/real_time/threads:1              4327 ns         4020 ns       320867
+BM_ordinals_common/real_time/threads:1              17112 ns        15836 ns        81460
+BM_ordinals_large/real_time/threads:1                5412 ns         5030 ns       258471
+BM_negatives/real_time/threads:1                    12784 ns        11827 ns       103997
+BM_large_numbers/real_time/threads:1                26398 ns        24578 ns        52487
+BM_large_numbers_composed/real_time/threads:1       23915 ns        22207 ns        59442
+BM_mixed_fractions_word/real_time/threads:1          6880 ns         6390 ns       208125
+BM_mixed_fractions_numeric/real_time/threads:1       8854 ns         8247 ns       163697
+BM_numeric_fractions/real_time/threads:1            11519 ns        10709 ns       122326
+BM_percents/real_time/threads:1                      6500 ns         6035 ns       213769
+BM_zeros/real_time/threads:1                         7165 ns         6679 ns       191636
+BM_edge_cases_boundary/real_time/threads:1          19348 ns        17904 ns        72050
+BM_decimal_multipliers/real_time/threads:1           4072 ns         3791 ns       329731
+BM_compound_numbers/real_time/threads:1             16732 ns        15574 ns        81548
+BM_all_digits/real_time/threads:1                    2446 ns         2277 ns       544532
+BM_teens/real_time/threads:1                        16577 ns        15410 ns        83062
+BM_tens/real_time/threads:1                         20120 ns        18704 ns        66831
+BM_comprehensive_mix/real_time/threads:1             5289 ns         4897 ns       261392
+[bench_current] Analyzing mean differences...
+
+================================================================================
+MEAN COMPARISON RESULTS
+================================================================================
+Configuration: min_time=1.0s, reps=1, compare_runs=5
+
+BM_all_digits/real_time/threads:1:
+  Average mean:          2434.05 ns
+  Std dev of means:        21.37 ns
+  CV of means:             0.88%
+  Max pairwise diff:       2.01%
+
+BM_compound_numbers/real_time/threads:1:
+  Average mean:         16779.55 ns
+  Std dev of means:       291.60 ns
+  CV of means:             1.74%
+  Max pairwise diff:       4.72%
+
+BM_comprehensive_mix/real_time/threads:1:
+  Average mean:          5303.07 ns
+  Std dev of means:        53.45 ns
+  CV of means:             1.01%
+  Max pairwise diff:       2.57%
+
+BM_decimal_multipliers/real_time/threads:1:
+  Average mean:          4166.91 ns
+  Std dev of means:       120.15 ns
+  CV of means:             2.88%
+  Max pairwise diff:       6.49%
+
+BM_decimals_complex/real_time/threads:1:
+  Average mean:          4473.96 ns
+  Std dev of means:       165.38 ns
+  CV of means:             3.70%
+  Max pairwise diff:       8.16%
+
+BM_decimals_simple/real_time/threads:1:
+  Average mean:          6781.98 ns
+  Std dev of means:       208.05 ns
+  CV of means:             3.07%
+  Max pairwise diff:       8.37%
+
+BM_edge_cases_boundary/real_time/threads:1:
+  Average mean:         20289.41 ns
+  Std dev of means:       819.17 ns
+  CV of means:             4.04%
+  Max pairwise diff:       9.56%
+
+BM_large_numbers/real_time/threads:1:
+  Average mean:         26625.40 ns
+  Std dev of means:      1934.03 ns
+  CV of means:             7.26%
+  Max pairwise diff:      19.84%
+
+BM_large_numbers_composed/real_time/threads:1:
+  Average mean:         24089.62 ns
+  Std dev of means:      1005.85 ns
+  CV of means:             4.18%
+  Max pairwise diff:      11.16%
+
+BM_long_string:
+  Average mean:          2718.89 ns
+  Std dev of means:       118.69 ns
+  CV of means:             4.37%
+  Max pairwise diff:      10.17%
+
+BM_many_numbers:
+  Average mean:         89479.39 ns
+  Std dev of means:      3807.24 ns
+  CV of means:             4.25%
+  Max pairwise diff:      10.04%
+
+BM_mixed_fractions_numeric/real_time/threads:1:
+  Average mean:          8471.03 ns
+  Std dev of means:       228.92 ns
+  CV of means:             2.70%
+  Max pairwise diff:       7.26%
+
+BM_mixed_fractions_word/real_time/threads:1:
+  Average mean:          6818.32 ns
+  Std dev of means:       190.54 ns
+  CV of means:             2.79%
+  Max pairwise diff:       7.15%
+
+BM_negatives/real_time/threads:1:
+  Average mean:         12630.80 ns
+  Std dev of means:       237.87 ns
+  CV of means:             1.88%
+  Max pairwise diff:       4.47%
+
+BM_numeric_fractions/real_time/threads:1:
+  Average mean:         11541.81 ns
+  Std dev of means:       429.29 ns
+  CV of means:             3.72%
+  Max pairwise diff:      10.37%
+
+BM_ordinals_common/real_time/threads:1:
+  Average mean:         16861.65 ns
+  Std dev of means:       269.80 ns
+  CV of means:             1.60%
+  Max pairwise diff:       3.97%
+
+BM_ordinals_large/real_time/threads:1:
+  Average mean:          5322.41 ns
+  Std dev of means:       126.95 ns
+  CV of means:             2.39%
+  Max pairwise diff:       5.47%
+
+BM_percents/real_time/threads:1:
+  Average mean:          6587.58 ns
+  Std dev of means:       177.67 ns
+  CV of means:             2.70%
+  Max pairwise diff:       6.51%
+
+BM_simple:
+  Average mean:           639.55 ns
+  Std dev of means:        22.70 ns
+  CV of means:             3.55%
+  Max pairwise diff:       9.59%
+
+BM_teens/real_time/threads:1:
+  Average mean:         16547.74 ns
+  Std dev of means:       578.35 ns
+  CV of means:             3.50%
+  Max pairwise diff:       8.25%
+
+BM_tens/real_time/threads:1:
+  Average mean:         20136.96 ns
+  Std dev of means:       479.34 ns
+  CV of means:             2.38%
+  Max pairwise diff:       6.69%
+
+BM_zeros/real_time/threads:1:
+  Average mean:          7413.04 ns
+  Std dev of means:       251.84 ns
+  CV of means:             3.40%
+  Max pairwise diff:       7.01%
+
+================================================================================
+OVERALL STATISTICS
+================================================================================
+Average CV of means:      3.09%
+Average max pairwise diff: 7.72%
+
+✗ FAIL: Average CV of means >= 3%
+⚠ WARNING: Max pairwise diff >= 5% (may miss small regressions)
+================================================================================
