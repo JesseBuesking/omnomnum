@@ -440,6 +440,12 @@ YYSTYPEList find_numbers(const char *data, size_t data_len, ParserState *state) 
 
     if (state->is_parsing) {
         Parse(state->pParser, 0, yylval, state);
+#ifdef YYTRACKMAXSTACKDEPTH
+        int depth = ParseStackPeak(state->pParser);
+        if (depth > state->last_stack_depth) {
+            state->last_stack_depth = depth;
+        }
+#endif
         ParseReset(state->pParser);
     }
 

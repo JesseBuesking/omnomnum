@@ -99,6 +99,7 @@ struct ParserState {
     void *pParser;      // Lemon parser instance cached per ParserState
     sds numberHolder;   // Scratch buffer for number rendering
     ParserState *subState; // Reusable sub-state for fallback tokenization (lazy-allocated)
+    int last_stack_depth; // Stack depth from most recent parse (for profiling, 0 if tracking disabled)
 };
 
 void initYYSTYPEList(YYSTYPEList *l, size_t initialSize);

@@ -9,6 +9,12 @@ test/test_memory
 test/test_malloc_count
 test/test_allocation_count
 test/test_allocation_count_issue*
+test/test_massif
+test/test_stack_depth
+test/test_stack_depth_debug
+test/test_stack_depth_extreme
+test/test_parse_directly
+test/test_performance_yystackdepth32
 
 # Benchmark executables
 benchmark_c

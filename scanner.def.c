@@ -112,6 +112,7 @@ void initParserState(ParserState *state) {
     state->pParser = NULL;
     state->numberHolder = sdsempty();
     state->subState = NULL; // Lazy-allocate on first use
+    state->last_stack_depth = 0;
     // OPTIMIZATION: Start with larger capacity to reduce reallocations
     // Typical BM_many_numbers has ~90 numbers, so 128 avoids most growth
     initYYSTYPEList(&(state->yystypeList), 128);
@@ -128,6 +129,7 @@ void resetParserState(ParserState *state) {
     state->reduce_fractions = false; // default: off
     state->normalize_percent_symbol = false; // default: off
     state->percent_as_decimal = false; // default: off
+    state->last_stack_depth = 0;
     // Keep the cached parser and scratch buffer; just clear the buffer
     // No NULL check needed - numberHolder is always allocated in initParserState
     sdsclear(state->numberHolder);
@@ -167,6 +169,7 @@ ParserState* getOrInitSubState(ParserState *state) {
         state->subState->pParser = NULL;
         state->subState->numberHolder = sdsempty();
         state->subState->subState = NULL;
+        state->subState->last_stack_depth = 0;
         // OPTIMIZATION: SubState typically processes single tokens with 1-2 numbers
         // Use smaller initial capacity (8) vs main state (128) to reduce allocation overhead
         initYYSTYPEList(&(state->subState->yystypeList), 8);
